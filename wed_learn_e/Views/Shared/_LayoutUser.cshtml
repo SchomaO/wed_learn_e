@@ -1,0 +1,133 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Tạo tài khoản</title>
+    <style>
+        body {
+            background: #e8e8e8;
+            font-family: Arial;
+        }
+
+        .register-box {
+            width: 500px;
+            margin: auto;
+            background: white;
+            text-align: center;
+            border-radius: 10px;
+        }
+
+        /* thanh vàng */
+
+        .title {
+            background: #ffc107;
+            padding: 20px;
+            border-radius: 10px 10px 0 0;
+            position: relative;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .mochi {
+            width: 180px;
+            margin: 20px 0;
+        }
+
+        /* nút */
+
+        button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 30px;
+            margin-top: 15px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        /* google */
+
+        .google {
+            background: #e53935;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* apple */
+
+        .trangchu {
+            background: black;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* email */
+
+        .email {
+            background: #f1f1f1;
+        }
+
+        /* text */
+
+        .or {
+            margin: 20px 0;
+        }
+
+        .login a {
+            color: #1e88e5;
+            text-decoration: none;
+        }
+        table {
+            margin: auto;
+        }
+
+        td {
+            padding: 8px 15px;
+        }
+
+        input {
+            width: 200px;
+            padding: 5px;
+        }
+
+        .canle_dk_noidung {
+            text-align: left;
+            font-weight: bold;
+        }
+        .close-btn {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            padding: 0; /* thêm */
+            margin: 0; /* thêm */
+
+            border-radius: 50%;
+            border: none;
+            background: #eee;
+            font-size: 22px;
+            cursor: pointer;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 30px;
+            margin-top: 15px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="register-box">
+
+       @RenderBody();
+    </div>
+</body>
+</html>

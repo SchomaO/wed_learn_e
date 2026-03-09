@@ -6,24 +6,20 @@ using System.Web.Mvc;
 
 namespace wed_learn_e.Controllers
 {
-    public class HomeController : Controller
+    public class UserController : Controller
     {
+        // GET: User
         public ActionResult Index()
         {
             return View();
         }
-
-        public ActionResult About()
+        public ActionResult dangky()
         {
-            ViewBag.Message = "Your application description page.";
 
             return View();
         }
-
-        public ActionResult Contact()
+        public ActionResult dangnhap()
         {
-            ViewBag.Message = "Your contact page.";
-
             return View();
         }
     }

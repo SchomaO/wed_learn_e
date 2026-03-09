@@ -6,12 +6,13 @@ using System.Web.Mvc;
 
 namespace wed_learn_e.Controllers
 {
-    public class Tranh_chuController : Controller
+    public class Trang_chuController : Controller
     {
         // GET: Tranh_chu
         public ActionResult Index()
         {
             return View();
         }
+        
     }
 }
