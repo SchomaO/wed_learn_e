@@ -183,6 +183,8 @@
     <Content Include="Views\User\dangnhap.cshtml" />
     <Content Include="Views\Trang_chu\Index.cshtml" />
     <Content Include="Views\bai_test\Index.cshtml" />
+    <Content Include="Views\Shared\_Layoutcauhoi.cshtml" />
+    <Content Include="Views\bai_test\nav_baitest.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
