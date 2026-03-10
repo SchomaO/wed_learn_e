@@ -17,12 +17,16 @@ namespace wed_learn_e.Controllers
         {
             return View();
         }
-        public ActionResult nav_khaosat()
+        public ActionResult khaosat()
         {   
             return View();  
         }
         public ActionResult nav_choncapdo()
         {
+            return View();
+        }
+        public ActionResult khoadaotao()
+        { 
             return View();
         }
     }

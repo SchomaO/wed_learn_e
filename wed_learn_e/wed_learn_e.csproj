@@ -223,13 +223,14 @@
     <Content Include="Views\Trang_chu\Index.cshtml" />
     <Content Include="Views\Page\Index.cshtml" />
     <Content Include="Views\Shared\_Layoutcauhoi.cshtml" />
-    <Content Include="Views\Page\nav_baitest.cshtml" />
     <Content Include="Views\Page\nav_choncapdo.cshtml" />
-    <Content Include="Views\Page\nav_khaosat.cshtml" />
     <Content Include="Views\bai_test\bai_test.cshtml" />
     <Content Include="Views\bai_test\nav_baitest.cshtml" />
     <Content Include="Views\bai_test\thong_tin_bai_test.cshtml" />
     <Content Include="Views\bai_test\end_bai_test.cshtml" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Page\khaosat.cshtml" />
+    <Content Include="Views\Page\khoadaotao.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

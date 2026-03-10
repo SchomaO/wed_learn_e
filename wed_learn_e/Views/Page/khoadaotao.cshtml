@@ -1,0 +1,326 @@
+﻿@{
+    ViewBag.Title = "Khóa Đào Tạo";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            background: #e9f5ff;
+        }
+
+        /* tiêu đề */
+        .title {
+            text-align: center;
+            padding: 40px;
+            font-size: 32px;
+            font-weight: bold;
+            color: #0d6efd;
+        }
+
+        /* container */
+        .course-container {
+            width: 90%;
+            margin: auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+            gap: 25px;
+            padding-bottom: 50px;
+        }
+
+        /* box */
+        .course-box {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: 0.3s;
+        }
+
+            .course-box:hover {
+                transform: translateY(-6px);
+                box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            }
+
+        /* icon */
+        .course-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        /* title */
+        .course-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #007bff;
+        }
+
+        /* description */
+        .course-desc {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        /* button */
+        .btn-course {
+            background: #0d6efd;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+        }
+
+            .btn-course:hover {
+                background: #0b5ed7;
+            }
+
+        .extra-title {
+            text-align: center;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #0b5ed7;
+            position: relative;
+        }
+
+            .extra-title:after {
+                content: "";
+                width: 120px;
+                height: 3px;
+                background: #0d6efd;
+                display: block;
+                margin: 10px auto;
+                border-radius: 3px;
+            }
+
+        .cat-mascot {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 55px;
+            animation: floatCat 2s infinite ease-in-out;
+        }
+
+        .cat-text {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            background: white;
+            padding: 6px 10px;
+            border-radius: 10px;
+            font-size: 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        @@keyframes floatCat {
+            0% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-8px);
+            }
+
+            100% {
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="title">
+        Khóa Đào Tạo Tiếng Anh
+    </div>
+
+
+    <div class="course-container">
+
+        <div class="course-box">
+            <div class="course-icon">📘</div>
+            <div class="course-title">Beginner</div>
+            <div class="course-desc">
+                Khóa học tiếng Anh cơ bản dành cho người mới bắt đầu.
+            </div>
+            <a class="btn-course" href="#">Chọn khóa học</a>
+        </div>
+
+
+        <div class="course-box" style="background:#f0f8ff">
+            <div class="course-icon">📗</div>
+            <div class="course-title">Elementary</div>
+            <div class="course-desc">
+                Nâng cao từ vựng cơ bản và kỹ năng giao tiếp đơn giản.
+            </div>
+            <a class="btn-course" href="#">Chọn khóa học</a>
+        </div>
+
+
+        <div class="course-box" style="background:#e6f4ff">
+            <div class="course-icon">📙</div>
+            <div class="course-title">Pre-Intermediate</div>
+            <div class="course-desc">
+                Luyện kỹ năng nghe và nói trong các tình huống hàng ngày.
+            </div>
+            <a class="btn-course" href="#">Chọn khóa học</a>
+        </div>
+
+
+        <div class="course-box" style="background:#f5fbff">
+            <div class="course-icon">📕</div>
+            <div class="course-title">Intermediate</div>
+            <div class="course-desc">
+                Phát triển ngữ pháp, kỹ năng nói và đọc hiểu.
+            </div>
+            <a class="btn-course" href="#">Chọn khóa học</a>
+        </div>
+
+
+        <div class="course-box" style="background:#eef7ff">
+            <div class="course-icon">🎓</div>
+            <div class="course-title">Upper-Intermediate</div>
+            <div class="course-desc">
+                Cải thiện khả năng giao tiếp và tiếng Anh học thuật.
+            </div>
+            <a class="btn-course" href="#">Chọn khóa học</a>
+        </div>
+
+
+        <div class="course-box" style="background:#f2f9ff">
+            <div class="course-icon">🏆</div>
+            <div class="course-title">Advanced</div>
+            <div class="course-desc">
+                Thành thạo tiếng Anh trong môi trường học tập và công việc.
+            </div>
+            <a class="btn-course" href="#">Chọn khóa học</a>
+        </div>
+
+    </div>
+    <div class="extra-title">
+        Khóa Học Bổ Sung
+    </div>
+    <div class="course-container">
+
+        <div class="course-box" style="background:#ffffff">
+            <div class="course-icon">📖</div>
+            <div class="course-title">1000 Từ Vựng Thông Dụng</div>
+            <div class="course-desc">
+                Học và ghi nhớ 1000 từ vựng tiếng Anh quan trọng nhất.
+            </div>
+            <a class="btn-course" href="#">Bắt đầu học</a>
+        </div>
+
+        <div class="course-box" style="background:#eef7ff">
+            <div class="course-icon">📝</div>
+            <div class="course-title">Bài Kiểm Tra Trình Độ</div>
+            <div class="course-desc">
+                Kiểm tra trình độ tiếng Anh hiện tại của bạn.
+            </div>
+            <a class="btn-course" href="#">Làm bài test</a>
+        </div>
+
+        <div class="course-box" style="background:#f5fbff">
+            <div class="course-icon">🎧</div>
+            <div class="course-title">Luyện Nghe</div>
+            <div class="course-desc">
+                Các bài luyện nghe từ cơ bản đến nâng cao.
+            </div>
+            <a class="btn-course" href="#">Bắt đầu</a>
+        </div>
+
+        <div class="course-box" style="background:#f0f8ff">
+            <div class="course-icon">🗣</div>
+            <div class="course-title">Luyện Nói</div>
+            <div class="course-desc">
+                Thực hành giao tiếp tiếng Anh hàng ngày.
+            </div>
+            <a class="btn-course" href="#">Thực hành</a>
+        </div>
+
+        <div class="course-box" style="background:#e6f4ff">
+            <div class="course-icon">📚</div>
+            <div class="course-title">Ngữ Pháp Cơ Bản</div>
+            <div class="course-desc">
+                Ôn tập và luyện tập các cấu trúc ngữ pháp quan trọng.
+            </div>
+            <a class="btn-course" href="#">Học ngay</a>
+        </div>
+
+        <div class="course-box" style="background:#f2f9ff">
+            <div class="course-icon">🏅</div>
+            <div class="course-title">Mini Test Hàng Ngày</div>
+            <div class="course-desc">
+                Các bài kiểm tra nhỏ giúp bạn luyện tập mỗi ngày.
+            </div>
+            <a class="btn-course" href="#">Làm bài</a>
+        </div>
+
+        <div class="course-box" style="background:#f2f9ff">
+            <div class="course-icon">🎮</div>
+            <div class="course-title">Game Từ Vựng</div>
+            <div class="course-desc">
+                Học từ vựng tiếng Anh thông qua trò chơi thú vị.
+            </div>
+            <a class="btn-course" href="#">Chơi ngay</a>
+        </div>
+
+        <div class="course-box" style="background:#e6f4ff">
+            <div class="course-icon">🎬</div>
+            <div class="course-title">Học Qua Video</div>
+            <div class="course-desc">
+                Học tiếng Anh qua video và hội thoại thực tế.
+            </div>
+            <a class="btn-course" href="#">Xem bài học</a>
+        </div>
+
+        <div class="course-box" style="background:#f0f8ff">
+            <div class="course-icon">✍</div>
+            <div class="course-title">Luyện Viết</div>
+            <div class="course-desc">
+                Luyện viết câu và đoạn văn tiếng Anh.
+            </div>
+            <a class="btn-course" href="#">Thực hành</a>
+        </div>
+
+        <div class="course-box" style="background:#f5fbff">
+            <div class="course-icon">💡</div>
+            <div class="course-title">Thành Ngữ Tiếng Anh</div>
+            <div class="course-desc">
+                Học các idioms thông dụng trong giao tiếp.
+            </div>
+            <a class="btn-course" href="#">Xem ngay</a>
+        </div>
+
+    </div>
+    <div class="cat-mascot">
+        🐱
+        <div class="cat-text">Let's learn English!</div>
+    </div>
+</body>
+</html>
+<script>
+
+var texts = [
+"Let's learn English!",
+"Practice makes perfect!",
+"Keep studying!",
+"You can do it!",
+"New words today?"
+];
+
+function changeText(){
+    var random = Math.floor(Math.random()*texts.length);
+    document.getElementById("catText").innerText = texts[random];
+}
+
+setInterval(changeText,3000);
+
+</script>
