@@ -21,7 +21,7 @@ namespace wed_learn_e.Controllers
         {   
             return View();  
         }
-        public ActionResult nav_choncapdo_1()
+        public ActionResult nav_choncapdo()
         {
             return View();
         }
