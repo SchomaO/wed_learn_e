@@ -1,0 +1,334 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Khảo sát IELTS</title>
+
+    <style>
+
+        body {
+            font-family: Arial;
+            background: #f2f2f2;
+        }
+
+        /* progress */
+
+        .progressBar {
+            width: 80%;
+            height: 12px;
+            background: #ddd;
+            border-radius: 10px;
+            margin: 30px auto;
+        }
+
+        .progressFill {
+            height: 100%;
+            width: 20%;
+            background: linear-gradient(to right,#ffb100,#ff8800);
+            border-radius: 10px;
+        }
+
+        /* layout */
+
+        .container {
+            width: 80%;
+            margin: auto;
+            display: flex;
+            gap: 40px;
+        }
+
+        /* guide */
+
+        .guideBox {
+            width: 200px;
+        }
+
+        .avatar img {
+            width: 120px;
+        }
+
+        .bubble {
+            background: #f3e3b5;
+            padding: 15px;
+            border-radius: 15px;
+            margin-top: 10px;
+        }
+
+        /* question */
+
+        .questionArea {
+            flex: 1;
+        }
+
+        .questionBox {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* options */
+
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            padding: 18px;
+            margin-top: 15px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+            .option:hover {
+                background: #f8f8f8;
+            }
+
+            .option.selected {
+                border: 3px solid #ffb100;
+                background: #fff7df;
+            }
+
+        .icon {
+            font-size: 28px;
+        }
+
+        /* buttons */
+
+        .buttonArea {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .backBtn {
+            background: #ddd;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .nextBtn {
+            background: #2ecc40;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+            .nextBtn:hover {
+                background: #27ae38;
+            }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="progressBar">
+        <div class="progressFill" id="progressFill"></div>
+    </div>
+
+    <div class="container">
+
+        <!-- LEFT GUIDE -->
+
+        <div class="guideBox">
+
+            <div class="avatar">
+                <img src="https://cdn-icons-png.flaticon.com/512/763/763704.png">
+            </div>
+
+            <div class="bubble">
+                Mèo sẽ giúp bạn chọn lộ trình học IELTS 🐱
+            </div>
+
+        </div>
+
+        <!-- QUESTION -->
+
+        <div class="questionArea">
+
+            <div class="questionBox">
+
+                <h2 id="questionTitle"></h2>
+
+                <div id="options"></div>
+
+                <div class="buttonArea">
+
+                    <button class="backBtn" onclick="prevQuestion()">← Quay lại</button>
+
+                    <button class="nextBtn" onclick="nextQuestion()">Tiếp tục →</button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        let step = 0
+        let answers = {}
+
+        let questions = [
+
+            {
+                title: "Trình độ IELTS hiện tại của bạn?",
+                options: [
+                    { icon: "📘", text: "0 - 3.5 IELTS" },
+                    { icon: "📋", text: "3.5 - 5.0 IELTS" },
+                    { icon: "📕", text: "5.0 - 6.5 IELTS" },
+                    { icon: "🎓", text: "6.5+ IELTS" },
+                    { icon: "❓", text: "Không biết"}
+                ]
+            },
+
+            {
+                title: "Bạn muốn cải thiện kỹ năng nào?",
+                options: [
+                    { icon: "🗣", text: "Speaking" },
+                    { icon: "✍", text: "Writing" },
+                    { icon: "👂", text: "Listening" },
+                    { icon: "📖", text: "Reading" }
+                ]
+            },
+
+            {
+                title: "Bạn học tiếng Anh bao lâu mỗi ngày?",
+                options: [
+                    { icon: "⏰", text: "15 phút" },
+                    { icon: "⏱", text: "30 phút" },
+                    { icon: "🕐", text: "1 giờ" },
+                    { icon: "📚", text: "Hơn 1 giờ" }
+                ]
+            }
+
+        ]
+
+        function loadQuestion() {
+
+            let q = questions[step]
+
+            document.getElementById("questionTitle").innerText = q.title
+
+            let html = ""
+
+            q.options.forEach(function (o) {
+
+                html += `
+<div class="option" onclick="selectOption('${o.text}',this)">
+<div class="icon">${o.icon}</div>
+<div>${o.text}</div>
+</div>
+`
+
+            })
+
+            document.getElementById("options").innerHTML = html
+
+            /* giữ đáp án khi quay lại */
+
+            if (answers[step]) {
+
+                document.querySelectorAll(".option").forEach(o => {
+
+                    if (o.innerText.includes(answers[step])) {
+
+                        o.classList.add("selected")
+
+                    }
+
+                })
+
+            }
+
+            updateProgress()
+
+        }
+
+        function selectOption(value, el) {
+
+            document.querySelectorAll(".option").forEach(o => o.classList.remove("selected"))
+
+            el.classList.add("selected")
+
+            answers[step] = value
+
+        }
+
+        function nextQuestion() {
+
+            if (!answers[step]) {
+
+                alert("Hãy chọn một đáp án!")
+
+                return
+
+            }
+
+            if (step < questions.length - 1) {
+
+                step++
+
+                loadQuestion()
+
+            } else {
+
+                document.querySelector(".questionBox").innerHTML =
+
+                    "<h2>🎉 Bạn đã hoàn thành khảo sát!</h2>" +
+
+                    "<p><b>Trình độ hiện tại:</b> " + answers[0] + "</p>" +
+
+                    "<p><b>Kỹ năng muốn cải thiện:</b> " + answers[1] + "</p>" +
+
+                    "<p><b>Thời gian học mỗi ngày:</b> " + answers[2] + "</p>" +
+
+                    "<br>" +
+
+                    "<p>📚 Dựa trên lựa chọn của bạn, hệ thống sẽ gợi ý lộ trình học IELTS phù hợp để giúp bạn cải thiện kỹ năng nhanh hơn.</p>" +
+
+                    "<p>👉 Hãy bắt đầu bài học đầu tiên ngay bây giờ!</p>";
+
+            }
+
+        }
+
+        function prevQuestion() {
+
+            if (step > 0) {
+
+                step--
+
+                loadQuestion()
+
+            }
+
+        }
+
+        function updateProgress() {
+
+            let percent = (step + 1) / questions.length * 100
+
+            document.getElementById("progressFill").style.width = percent + "%"
+
+        }
+
+        loadQuestion()
+
+    </script>
+
+</body>
+</html>

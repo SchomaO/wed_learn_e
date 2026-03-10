@@ -6,7 +6,7 @@ using System.Web.Mvc;
 
 namespace wed_learn_e.Controllers
 {
-    public class bai_testController : Controller
+    public class PageController : Controller
     {
         // GET: bai_test
         public ActionResult Index()
@@ -14,6 +14,14 @@ namespace wed_learn_e.Controllers
             return View();
         }
         public ActionResult nav_baitest()
+        {
+            return View();
+        }
+        public ActionResult nav_khaosat()
+        {   
+            return View();  
+        }
+        public ActionResult nav_choncapdo_1()
         {
             return View();
         }
