@@ -1,0 +1,70 @@
+﻿
+@{
+    Layout = null;
+}
+
+<style>
+
+
+    body {
+        margin: 0;
+        font-family: Arial;
+    }
+    nav {
+        position: fixed;
+        top: 0px;
+        width: 100%; /* full chiều ngang */
+
+        background: white;
+        padding: 20px 25px;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+        nav a {
+            text-decoration: none;
+            margin-right: 20px;
+            padding: 10px;
+            color: #1f3f52;
+            font-weight: 700;
+        }
+
+            nav a:hover {
+                color: #0aa3ff;
+            }
+    nav {
+        display: flex;
+        justify-content: space-between;
+        background: linear-gradient(360deg, #e5e5e5, #00aaff);
+        padding: 30px 10px 30px 10px;
+       
+    }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+            nav ul li {
+                margin-right: 20px;
+            }
+
+                nav ul li a {
+                    text-decoration: none;
+                    color: black;
+                }
+
+</style>
+<nav>
+    <ul>
+        <li><a href="/Trang_chu/Index">Trang chủ</a></li>
+
+    </ul>
+    <ul>
+        <li><a href="/bai_test/Index">Bài test</a></li>
+        <li><a href="/bai_test/Index">xin chào</a></li>
+        <li><a href="/bai_test/Index">đăng xuất</a></li>
+    </ul>
+</nav>

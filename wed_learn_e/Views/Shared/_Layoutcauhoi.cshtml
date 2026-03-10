@@ -3,12 +3,15 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>@ViewBag.Title</title>
+    <title>Index</title>
 </head>
+
 <body>
-    @Html.Action("nav_cauhoi", "cauhoi")
-    <div>
+
+    @Html.Action("nav_baitest", "bai_test")
+    <div style="text-align:center;margin-top:50px">
         @RenderBody()
-    </div>
+
+        </div>
 </body>
 </html>

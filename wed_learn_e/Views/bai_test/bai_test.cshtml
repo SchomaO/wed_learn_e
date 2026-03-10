@@ -1,0 +1,241 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layoutcauhoi.cshtml";
+}
+<title>Bài Test</title>
+
+<style>
+
+    body {
+        background: linear-gradient(177deg, #dcdcdc, #ffffff, #bfe7ff, #d6f4ff, #006c97);
+        font-family: Arial;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding-top: 90px; /* khoảng trống cho navbar */
+        margin: 0;
+        min-height: 100vh;
+    }
+
+    /* layout */
+
+    .container {
+        display: flex;
+        gap: 30px;
+    }
+
+    /* hộp câu hỏi */
+
+    .quiz-box {
+        background: white;
+        width: 520px;
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    .question {
+        font-size: 22px;
+        font-weight: bold;
+        margin-bottom: 25px;
+        color: #2b4a5a;
+    }
+
+    /* đáp án */
+
+    .answers {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+        .answers input {
+            display: none;
+        }
+
+    .answer {
+        background: #eef8ff;
+        padding: 15px;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: 0.3s;
+        border: 2px solid transparent;
+    }
+
+        .answer:hover {
+            background: #dff3ff;
+            transform: scale(1.02);
+        }
+
+    /* khi chọn */
+
+    .answers input:checked + .answer {
+        background: #bfe9ff;
+        border: 2px solid #6ec8ff;
+    }
+
+    /* mục lục */
+
+    .question-list {
+        background: white;
+        width: 220px;
+        padding: 20px;
+        border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+        .question-list h3 {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #2b4a5a;
+        }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(5,1fr);
+        gap: 10px;
+    }
+
+    .q-number {
+        background: #eef8ff;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+        .q-number:hover {
+            background: #dff3ff;
+        }
+    .nav-question {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 25px;
+    }
+
+    .btn-nav {
+        text-decoration: none;
+        background: #bfe9ff;
+        padding: 10px 18px;
+        border-radius: 10px;
+        color: #1b4d63;
+        font-weight: bold;
+        transition: 0.2s;
+    }
+
+        .btn-nav:hover {
+            background: #9edcff;
+        }
+   
+</style>
+
+
+    <div class="container">
+
+        <!-- câu hỏi -->
+
+        <div class="quiz-box">
+
+            <div class="question">
+                Câu 1: Thủ đô của Việt Nam là gì?
+            </div>
+
+            <div class="answers">
+
+                <label>
+                    <input type="radio" name="q1">
+                    <div class="answer">A. TP.HCM</div>
+                </label>
+
+                <label>
+                    <input type="radio" name="q1">
+                    <div class="answer">B. Hà Nội</div>
+                </label>
+
+                <label>
+                    <input type="radio" name="q1">
+                    <div class="answer">C. Đà Nẵng</div>
+                </label>
+
+                <label>
+                    <input type="radio" name="q1">
+                    <div class="answer">D. Cần Thơ</div>
+                </label>
+                <div class="nav-question">
+
+                    <a href="#" class="btn-nav">← Câu trước</a>
+
+                    <a href="#" class="btn-nav">Câu sau →</a>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- mục lục -->
+
+        <div class="question-list">
+
+            <h3>Câu hỏi</h3>
+
+            <div class="grid">
+
+                <div class="q-number">1</div>
+                <div class="q-number">2</div>
+                <div class="q-number">3</div>
+                <div class="q-number">4</div>
+                <div class="q-number">5</div>
+
+                <div class="q-number">6</div>
+                <div class="q-number">7</div>
+                <div class="q-number">8</div>
+                <div class="q-number">9</div>
+                <div class="q-number">10</div>
+
+            </div>
+
+        </div>
+        
+
+    </div>
+    <div class="submit-box">
+
+            <button class="submit-btn"onclick="location.href='@Url.Action("end_bai_test","bai_test")'" >Nộp bài</button>
+
+
+    </div>
+
+
+    <style>
+        .submit-box {
+            background: white;
+            width: 220px;
+            margin-top: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: right;
+            align-items: center;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg,#6ec8ff,#4bbcff);
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.25s;
+        }
+
+            .submit-btn:hover {
+                transform: scale(1.05);
+                box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+            }
+    </style>

@@ -1,0 +1,37 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layoutcauhoi.cshtml";
+}
+<style>
+    .start-btn {
+        margin-top: 30px;
+        padding: 15px 35px;
+        border: none;
+        border-radius: 10px;
+        background: #4786e3;
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+        .start-btn:hover {
+            background: #2dafff;
+        }
+    body{
+        background:white;
+    }
+</style>
+<div style="margin-top:150px">
+    thể lệ
+</div>
+<div>
+    <p>1. Bài test gồm 10 câu hỏi trắc nghiệm, mỗi câu hỏi có 4 đáp án, chỉ có một đáp án đúng.</p>
+    <p>2. Thí sinh sẽ có 15 phút để hoàn thành bài test.</p>
+    <p>3. Điểm số sẽ được tính dựa trên số câu trả lời đúng, mỗi câu đúng được 1 điểm.</p>
+    <p>4. Kết quả bài test sẽ được hiển thị ngay sau khi thí sinh hoàn thành và nộp bài.</p>
+    <p>5. Thí sinh cần đọc kỹ từng câu hỏi và lựa chọn đáp án chính xác nhất.</p>
+</div>
+<button class="start-btn" onclick="location.href='@Url.Action("bai_test","bai_test")'">
+    Bắt đầu làm bài test
+</button>
