@@ -12,13 +12,13 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: linear-gradient(360deg, #e5e5e5, #00aaff);
+    background: linear-gradient(360deg, #e5e5e5, #f4b400);
     padding: 20px 60px;
 }
 
 .logo {
     font-size: 24px;
-    font-weight: bold;
+    font-weight: bold;  
     color: white;
 }
 
