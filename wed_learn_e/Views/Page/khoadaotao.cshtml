@@ -2,10 +2,7 @@
     ViewBag.Title = "Khóa Đào Tạo";
     Layout = "~/Views/Shared/_Layoutcauhoi.cshtml";
 }
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
+
     <title>@ViewBag.Title</title>
     <style>
         body {
@@ -135,8 +132,7 @@
             }
         }
     </style>
-</head>
-<body>
+
     <div class="title">
         Khóa Đào Tạo Tiếng Anh
     </div>
@@ -215,7 +211,7 @@
             <div class="course-desc">
                 Học và ghi nhớ 1000 từ vựng tiếng Anh quan trọng nhất.
             </div>
-            <a class="btn-course" href="#">Bắt đầu học</a>
+            <a class="btn-course" href="@Url.Action("_1000TuVung","Page")">Bắt đầu học</a>
         </div>
 
         <div class="course-box" style="background:#eef7ff">
@@ -304,8 +300,6 @@
         <img src="https://cdn-icons-png.flaticon.com/512/763/763704.png" width="50">
         <div class="cat-text" id="catText">Let's learn English!</div>
     </div>
-</body>
-</html>
 <script>
 
 var texts = [

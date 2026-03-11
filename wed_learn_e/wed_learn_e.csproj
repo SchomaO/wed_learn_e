@@ -149,6 +149,7 @@
     <Compile Include="Models\NGUOIDUNG.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Vocabulary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -231,6 +232,7 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Page\khaosat.cshtml" />
     <Content Include="Views\Page\khoadaotao.cshtml" />
+    <Content Include="Views\Page\_1000TuVung.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
