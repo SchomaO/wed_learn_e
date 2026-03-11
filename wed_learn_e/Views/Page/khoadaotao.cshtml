@@ -1,6 +1,6 @@
 ﻿@{
     ViewBag.Title = "Khóa Đào Tạo";
-    Layout = null;
+    Layout = "~/Views/Shared/_Layoutcauhoi.cshtml";
 }
 <!DOCTYPE html>
 <html>
@@ -107,7 +107,7 @@
             bottom: 20px;
             right: 20px;
             font-size: 55px;
-            animation: floatCat 2s infinite ease-in-out;
+            animation: floatCat 10s infinite ease-in-out;
         }
 
         .cat-text {
@@ -301,8 +301,8 @@
 
     </div>
     <div class="cat-mascot">
-        🐱
-        <div class="cat-text">Let's learn English!</div>
+        <img src="https://cdn-icons-png.flaticon.com/512/763/763704.png" width="50">
+        <div class="cat-text" id="catText">Let's learn English!</div>
     </div>
 </body>
 </html>
@@ -321,6 +321,6 @@ function changeText(){
     document.getElementById("catText").innerText = texts[random];
 }
 
-setInterval(changeText,3000);
+setInterval(changeText,10000);
 
 </script>
