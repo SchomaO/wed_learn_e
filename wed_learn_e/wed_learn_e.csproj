@@ -231,6 +231,7 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Page\khaosat.cshtml" />
     <Content Include="Views\Page\khoadaotao.cshtml" />
+    <Content Include="Views\bai_test\kq_bai_test.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

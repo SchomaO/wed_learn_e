@@ -8,7 +8,160 @@
 <head>
     <meta charset="utf-8" />
     <title>@ViewBag.Title</title>
-    <link href="~/Content/baitest.css" rel="stylesheet" />
+    <style>
+
+        body {
+            margin: 0;
+            font-family: Arial;
+            background: white;
+        }
+
+
+        /* HEADER */
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(360deg, #e5e5e5, #f4b400);
+            padding: 20px 60px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .login {
+            color: white;
+        }
+
+            .login button {
+                margin-left: 15px;
+                padding: 8px 18px;
+                border: none;
+                border-radius: 20px;
+                background: white;
+                color: #4f83cc;
+                font-weight: bold;
+                cursor: pointer;
+            }
+
+                .login button:hover {
+                    background: #2dafff;
+                    color: black;
+                }
+
+
+        /* HERO */
+
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 80px;
+        }
+
+
+        /* LEFT IMAGE */
+
+        .hero-left img {
+            width: 420px;
+        }
+
+
+        /* RIGHT TEXT */
+
+        .hero-right {
+            margin-left: 80px;
+        }
+
+        .title {
+            color: #f4b400;
+        }
+
+        .hero-right h1 {
+            color: #4f83cc;
+            font-size: 36px;
+        }
+
+
+        .start-btn {
+            margin-top: 30px;
+            padding: 15px 35px;
+            border: none;
+            border-radius: 10px;
+            background: #4786e3;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+            .start-btn:hover {
+                background: #2dafff;
+            }
+
+        a {
+            text-decoration: none;
+            color: white;
+            border-bottom: 5px solid transparent;
+        }
+
+        .footer {
+            background: #4786e3;
+            padding: 50px 0;
+            color: white;
+        }
+
+        .footer-container {
+            width: 80%;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .footer-col {
+            width: 30%;
+        }
+
+            .footer-col h2,
+            .footer-col h3 {
+                margin-bottom: 15px;
+            }
+
+            .footer-col p {
+                margin: 8px 0;
+            }
+
+            .footer-col a {
+                color: white;
+            }
+
+        .gioi_thieu_khoa_hoc {
+            width: 70%;
+            margin: 40px auto;
+            background: #ffffff;
+            padding: 30px 35px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            font-family: Arial, sans-serif;
+            line-height: 1.7;
+        }
+
+            .gioi_thieu_khoa_hoc p {
+                font-size: 17px;
+                color: #333;
+                text-align: justify;
+            }
+
+                .gioi_thieu_khoa_hoc p::first-line {
+                    font-weight: bold;
+                    font-size: 20px;
+                    color: #2c7be5;
+                }
+    </style>
 </head>
 <body>
     <!-- HEADER -->
@@ -51,7 +204,15 @@
 
     </section>
     <div class="gioi_thieu_khoa_hoc">
-        giới thiệu
+        <p>
+            Giới thiệu
+
+            Trang web học tiếng Anh của chúng tôi được tạo ra với mục tiêu giúp người học tiếp cận tiếng Anh một cách dễ dàng và thú vị. Thay vì chỉ học lý thuyết khô khan, người dùng có thể vừa học vừa chơi thông qua các bài quiz, trò chơi từ vựng và các bài tập tương tác.
+
+            Trang web cung cấp nhiều nội dung như bài test từ vựng, bài tập ngữ pháp và trò chơi tiếng Anh, giúp người học ghi nhớ kiến thức nhanh hơn và luyện tập thường xuyên. Với giao diện đơn giản, dễ sử dụng, người học ở mọi trình độ đều có thể tham gia.
+
+            Chúng tôi mong muốn tạo ra một môi trường học tập vui vẻ, hiệu quả và dễ tiếp cận, giúp mọi người cải thiện kỹ năng tiếng Anh mỗi ngày.
+        </p>
     </div>
     <div class="gioi_thieu_cac_uu_dai">
         uu đãi

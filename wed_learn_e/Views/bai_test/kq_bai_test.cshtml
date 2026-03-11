@@ -1,0 +1,186 @@
+﻿
+@{
+    ViewBag.Title = "kq_bai_test";
+    Layout = "~/Views/Shared/_Layoutcauhoi.cshtml";
+}
+
+<style>
+    /* container */
+    .course-container {
+        width: 90%;
+        margin: auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+        gap: 25px;
+        padding-bottom: 50px;
+    }
+
+    /* box */
+    .course-box {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        text-align: center;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        transition: 0.3s;
+    }
+
+        .course-box:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+    /* icon */
+    .course-icon {
+        font-size: 40px;
+        margin-bottom: 15px;
+    }
+
+    /* title */
+    .course-title {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #007bff;
+    }
+
+    /* description */
+    .course-desc {
+        font-size: 14px;
+        color: #555;
+        margin-bottom: 20px;
+    }
+    /* button */
+    .btn-course {
+        background: #0d6efd;
+        color: white;
+        padding: 10px 18px;
+        border-radius: 6px;
+        text-decoration: none;
+    }
+
+        .btn-course:hover {
+            background: #0b5ed7;
+        }
+</style>
+<div class="result-container">
+
+    <div class="result-box">
+
+        <h2>Kết quả bài kiểm tra</h2>
+
+        <div class="score">
+            Bạn trả lời đúng: <b>8 / 10</b>
+        </div>
+
+        <div class="score">
+            Điểm của bạn: <b>8.0</b>
+        </div>
+
+        <button class="review-btn">
+            Xem lại bài làm
+        </button>
+
+    </div>
+
+
+    <div class="course-box">
+
+        <h3>Khóa học gợi ý</h3>
+
+        
+            <div class="course-container">
+
+                <div class="course-box">
+                    <div class="course-icon">📘</div>
+                    <div class="course-title">Beginner</div>
+                    <div class="course-desc">
+                        Khóa học tiếng Anh cơ bản dành cho người mới bắt đầu.
+                    </div>
+                    <a class="btn-course" href="#">Chọn khóa học</a>
+                </div>
+
+
+        <button class="course-btn" onclick="location.href='@Url.Action("khaodaotao","Page")'">
+            Tham gia khóa học khác 
+        </button>
+
+    </div>
+
+
+  
+
+</div>
+<style>
+    body {
+        background: linear-gradient(120deg,#dff5ff,#c7efff,#bfe7ff);
+        font-family: Arial;
+    }
+
+    .result-container {
+        width: 600px;
+        margin: auto;
+        margin-top: 120px;
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+    }
+
+    .result-box,
+    .course-box {
+        background: white;
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+
+    .score {
+        font-size: 18px;
+        margin: 10px 0;
+    }
+
+    .review-btn {
+        margin-top: 15px;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 10px;
+        background: #6ec8ff;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .course-box ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .course-box li {
+        background: #eef8ff;
+        margin: 8px 0;
+        padding: 10px;
+        border-radius: 10px;
+    }
+
+    .course-btn {
+        margin-top: 15px;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 10px;
+        background: #4bbcff;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .skip-box {
+        text-align: center;
+    }
+
+    .skip-btn {
+        text-decoration: none;
+        color: #2b4a5a;
+        font-weight: bold;
+    }
+</style>
