@@ -26,5 +26,9 @@ namespace wed_learn_e.Controllers
         {
             return View();
         }
+        public ActionResult kq_bai_test()
+        {
+            return View();
+        }
     }
 }
