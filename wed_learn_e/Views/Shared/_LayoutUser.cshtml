@@ -121,13 +121,15 @@
             font-size: 16px;
             cursor: pointer;
         }
+
     </style>
 </head>
 
 <body>
     <div class="register-box">
 
-       @RenderBody();
+        @RenderBody();
+        @RenderSection("Scripts", required: false)
     </div>
 </body>
 </html>

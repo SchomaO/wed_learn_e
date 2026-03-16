@@ -65,8 +65,18 @@
 
     </ul>
     <ul>
-        <li><a href="/bai_test/Index">Bài test</a></li>
-        <li><a href="/bai_test/Index">xin chào</a></li>
-        <li><a href="/bai_test/Index">đăng xuất</a></li>
+        <li><a href="@Url.Action("thong_tin_bai_test","bai_test")">Bài test</a></li>
+        <li><a href="@Url.Action("khoadaotao","Page")">Khóa đạo tạo</a></li>
+        @if (Session["TenDN"] != null)
+        {
+
+            <li><a href="#">Xin chào: @Session["HoTen"]</a></li>
+            <li><a href="@Url.Action("DangXuat","User")">Đăng xuất</a></li>
+        }
+        else
+        {
+            <li><a href="@Url.Action("DangNhap","User")">Đăng nhập</a></li>
+        }
+
     </ul>
 </nav>

@@ -1,63 +1,98 @@
-﻿
+﻿@model wed_learn_e.Models.NGUOIDUNG
+
 @{
     ViewBag.Title = "dangky";
     Layout = "~/Views/Shared/_LayoutUser.cshtml";
 }
-
+@section Scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<style>
+    .field-validation-error {
+        color: red;
+        font-size: 14px;
+    }
+</style>
 <div class="title">
-    <a href="/User/Index"> <button class="close-btn"> <span style="">></span> </button> </a>
-     
-    
-    <h2>Đăng ký</h2>
+    <button class="close-btn" onclick="location.href='@Url.Action("Index","User")'">
+        <span>></span>
+    </button>
 
+    <h2>Đăng ký</h2>
 </div>
 
 <div class="content">
-<h2>Đăng ký tài khoản</h2>
-<table>
-    <tr>
-        <td class="canle_dk_noidung">Họ tên:</td>
-        <td><input type="text"></td>
-    </tr>
 
-    <tr>
-        <td class="canle_dk_noidung">Tên đăng nhập:</td>
-        <td><input type="text"></td>
-    </tr>
+    <h2>Đăng ký tài khoản</h2>
 
-    <tr>
-        <td class="canle_dk_noidung">Mật khẩu:</td>
-        <td><input type="password"></td>
-    </tr>
+    @using (Html.BeginForm())
+    {
+        <table>
 
-    <tr>
-        <td class="canle_dk_noidung">Mật khẩu nhập lại:</td>
-        <td><input type="password"></td>
-    </tr>
+            <tr>
+                <td>Họ tên:</td>
+                <td>
+                    @Html.TextBoxFor(m => m.HoTen)<br>
+                    @Html.ValidationMessageFor(m => m.HoTen)
+                </td>
+            </tr>
 
-    <tr>
-        <td class="canle_dk_noidung">Email:</td>
-        <td><input type="email"></td>
-    </tr>
+            <tr>
+                <td>Tên đăng nhập:</td>
+                <td>
+                    @Html.TextBoxFor(m => m.TenDN) <br>
+                    @Html.ValidationMessageFor(m => m.TenDN)
+                </td>
+            </tr>
 
-    <tr>
-        <td class="canle_dk_noidung">Điện thoại:</td>
-        <td><input type="text"></td>
-    </tr>
+            <tr>
+                <td>Mật khẩu:</td>
+                <td>
+                    @Html.PasswordFor(m => m.MatKhau)<br>
+                    @Html.ValidationMessageFor(m => m.MatKhau)
+                </td>
+            </tr>
+            <tr>
+                <td>Nhập lại mật khẩu:</td>
+                <td>
+                    @Html.PasswordFor(m => m.MatKhauNL)<br>
+                    @Html.ValidationMessageFor(m => m.MatKhauNL)
+                </td>
+            </tr>
+            <tr>
+                <td>Email:</td>
+                <td>
+                    @Html.TextBoxFor(m => m.Email)<br>
+                    @Html.ValidationMessageFor(m => m.Email)
+                </td>
+            </tr>
 
-    <tr>
-        <td class="canle_dk_noidung">Ngày sinh:</td>
-        <td><input type="date"></td>
-    </tr>
+            <tr>
+                <td>Điện thoại:</td>
+                <td>
+                    @Html.TextBoxFor(m => m.DienThoai)<br>
+                    @Html.ValidationMessageFor(m => m.DienThoai)
+                </td>
+            </tr>
 
-    <tr>
-        <td class="canle_dk_noidung">Địa chỉ:</td>
-        <td><input type="text"></td>
-    </tr>
-</table>
-    <button>Đăng ký</button>
+            <tr>
+                <td>Ngày sinh:</td>
+                <td>
+                    @Html.TextBoxFor(m => m.NgaySinh, new { type = "date" })<br>
+                    @Html.ValidationMessageFor(m => m.NgaySinh)
+                </td>
+            </tr>
 
+            <tr>
+                <td>Địa chỉ:</td>
+                <td>
+                    @Html.TextBoxFor(m => m.DiaChi)
+                </td>
+            </tr>
 
+        </table>
+
+        <button type="submit">Đăng ký</button>
+
+    }
 </div>
-
-

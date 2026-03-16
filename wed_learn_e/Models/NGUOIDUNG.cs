@@ -11,16 +11,35 @@ namespace wed_learn_e.Models
 {
     using System;
     using System.Collections.Generic;
-    
-    public partial class NGUOIDUNG
+    using System.ComponentModel.DataAnnotations;
+
+    public class NGUOIDUNG
     {
         public int MaNguoiDung { get; set; }
+
+        [Required(ErrorMessage = "Họ tên không được để trống")]
         public string HoTen { get; set; }
+
+        [Required(ErrorMessage = "Tên đăng nhập không được để trống")]
         public string TenDN { get; set; }
+
+        [Required(ErrorMessage = "Mật khẩu không được để trống")]
+        [MinLength(6, ErrorMessage = "Mật khẩu phải ít nhất 6 ký tự")]
         public string MatKhau { get; set; }
+        [Required(ErrorMessage = "Nhập lại mật khẩu")]
+        [Compare("MatKhau", ErrorMessage = "Mật khẩu nhập lại không đúng")]
+        public string MatKhauNL { get; set; }
+
+        [Required(ErrorMessage = "Email không được để trống")]
+        [EmailAddress(ErrorMessage = "Email không đúng định dạng")]
         public string Email { get; set; }
+
+        [Required(ErrorMessage = "Số điện thoại không được để trống")]
         public string DienThoai { get; set; }
+
         public string DiaChi { get; set; }
-        public Nullable<System.DateTime> NgaySinh { get; set; }
+
+        [Required(ErrorMessage = "Ngày sinh không được để trống")]
+        public Nullable<DateTime> NgaySinh { get; set; }
     }
 }

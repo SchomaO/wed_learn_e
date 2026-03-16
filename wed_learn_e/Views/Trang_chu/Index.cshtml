@@ -169,11 +169,20 @@
         <div class="logo">
             trang chủ
         </div>
+        @if (Session["TenDN"] != null)
+        {
 
-        <div class="login">
-            <a href="@Url.Action("Index","User")"><span> <b>Bạn đã có tài khoản? </b></span></a>
-            <a href="@Url.Action("dangnhap","User")"><button>Đăng nhập</button></a>
-        </div>
+           <a href="#">Xin chào: @Session["HoTen"]</a>
+           <a href="@Url.Action("DangXuat","User")">Đăng xuất</a>
+        }
+        else
+        {
+            <div class="login">
+                <a href="@Url.Action("Index","User")"><span> <b>Bạn đã có tài khoản? </b></span></a>
+                <button onclick="location.href='@Url.Action("dangnhap","User")'">Đăng nhập</button>
+            </div>
+        }
+
     </header>
 
 

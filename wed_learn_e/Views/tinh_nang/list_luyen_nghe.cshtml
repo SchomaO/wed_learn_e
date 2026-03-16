@@ -1,0 +1,77 @@
+﻿
+@{
+    ViewBag.Title = "luyen_noi";
+    Layout = "~/Views/Shared/_Layoutcauhoi.cshtml";
+}
+<style>
+    .course-list {
+        width: 80%;
+        margin: auto;
+    }
+
+    .course-item {
+        display: flex;
+        align-items: center;
+        border: 1px solid #ddd;
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 10px;
+        background: white;
+        transition: 0.3s;
+    }
+
+    .course-img {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 10px;
+        margin-right: 20px;
+    }
+
+    .course-info h3 {
+        margin: 0;
+    }
+
+    .course-info p {
+        color: #666;
+    }
+
+    /* hiệu ứng hover */
+    .course-item:hover {
+        transform: scale(1.03); /* phóng to nhẹ */
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2); /* shadow */
+        background: #fafafa; /* sáng lên */
+        cursor: pointer;
+        border-color: #ff6600;  
+    }
+</style>
+<div class="course-list">
+
+    <div class="course-item">
+        <img src="~/Images/cat1.jpg" class="course-img" />
+
+        <div class="course-info">
+            <h3>Luyện nói tiếng Anh cơ bản</h3>
+            <p>Giúp bạn luyện phản xạ giao tiếp hằng ngày.</p>
+        </div>
+    </div>
+
+    <div class="course-item">
+        <img src="~/Images/cat2.jpg" class="course-img" />
+
+        <div class="course-info">
+            <h3>Luyện nghe tiếng Anh</h3>
+            <p>Nghe hội thoại thực tế và luyện điền từ.</p>
+        </div>
+    </div>
+
+    <div class="course-item">
+        <img src="~/Images/cat3.jpg" class="course-img" />
+
+        <div class="course-info">
+            <h3>Học từ vựng theo chủ đề</h3>
+            <p>Tăng vốn từ vựng nhanh chóng.</p>
+        </div>
+    </div>
+
+</div>

@@ -123,6 +123,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\bai_testController.cs" />
     <Compile Include="Controllers\PageController.cs" />
+    <Compile Include="Controllers\tinh_nangController.cs" />
     <Compile Include="Controllers\Trang_chuController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
@@ -233,6 +234,8 @@
     <Content Include="Views\Page\khaosat.cshtml" />
     <Content Include="Views\Page\khoadaotao.cshtml" />
     <Content Include="Views\Page\_1000TuVung.cshtml" />
+    <Content Include="Views\bai_test\kq_bai_test.cshtml" />
+    <Content Include="Views\tinh_nang\list_luyen_nghe.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
