@@ -27,7 +27,9 @@ namespace wed_learn_e.Controllers
         {
             return View();
         }
-        public ActionResult _1000TuVung(int page = 1)
+
+        //Khóa học bổ sung 
+        public ActionResult _1000TuVung(int page = 1, string search = "")
         {
             List<Vocabulary> words = new List<Vocabulary>()
             {
@@ -103,15 +105,39 @@ namespace wed_learn_e.Controllers
                 new Vocabulary { Word="Support", Meaning="Hỗ trợ", Example="Friends support each other."},
                 new Vocabulary { Word="Understand", Meaning="Hiểu", Example="I understand the lesson."}
             };
+            if (!string.IsNullOrEmpty(search))
+            {
+                words = words.Where(x =>
+                    x.Word.ToLower().Contains(search.ToLower()) ||
+                    x.Meaning.ToLower().Contains(search.ToLower())
+                ).ToList();
 
+                page = 1;
+            }
             int pageSize = 16;
 
-            var data = words.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            int totalPage = (int)Math.Ceiling((double)words.Count / pageSize);
+
+            if (page > totalPage) page = 1;
+
+            var data = words
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
 
             ViewBag.Page = page;
             ViewBag.TotalPage = Math.Ceiling((double)words.Count / pageSize);
+            ViewBag.Search = search;
 
             return View(data);
+        }
+        public ActionResult _NguPhap()
+        {
+            return View();
+        }
+        public ActionResult _ThanhNgu()
+        {
+            return View();
         }
     }
 }
