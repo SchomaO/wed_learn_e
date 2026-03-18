@@ -1,0 +1,33 @@
+﻿
+    @{
+        ViewBag.Title = "ChiTiet_luyen_nghe";
+        Layout = "~/Views/Shared/_Layoutcauhoi.cshtml";
+    }
+
+    <h2>ChiTiet_luyen_nghe</h2>
+
+    @model wed_learn_e.Models.KhoaHoc
+
+
+    <h2>@Model.TenKhoaHoc</h2>
+
+    <img src="~/Images/@Model.HinhAnh" width="300" />
+
+    <p>@Model.MoTa</p>
+
+    <hr />
+
+    <h3>Danh sách bài học</h3>
+
+    @foreach (var item in ViewBag.BaiHoc)
+    {
+        <div style="margin-bottom:20px;">
+            <h4>@item.TenBaiHoc</h4>
+
+            <video width="300" controls>
+                <source src="~/Videos/@item.Video" type="video/mp4" />
+            </video>
+
+            <p>@item.CauHoi</p>
+        </div>
+    }

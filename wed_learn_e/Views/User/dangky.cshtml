@@ -1,98 +1,96 @@
-﻿@model wed_learn_e.Models.NGUOIDUNG
-
+﻿@model wed_learn_e.Models.nguoi_dung
 @{
-    ViewBag.Title = "dangky";
+    ViewBag.Title = "Đăng ký tài khoản";
     Layout = "~/Views/Shared/_LayoutUser.cshtml";
 }
+
 @section Scripts{
     @Scripts.Render("~/bundles/jqueryval")
 }
+
 <style>
+    /* Chữ báo lỗi đỏ bên dưới mỗi ô nhập liệu */
     .field-validation-error {
         color: red;
-        font-size: 14px;
+        font-size: 13px;
+        font-style: italic;
+    }
+
+    /* Thông báo lỗi tổng quát từ Server (ViewBag.error) */
+    .alert-danger {
+        color: white;
+        background-color: #e74c3c;
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 4px;
+        list-style-type: none;
     }
 </style>
+
 <div class="title">
     <button class="close-btn" onclick="location.href='@Url.Action("Index","User")'">
-        <span>></span>
+        <span>&times;</span>
     </button>
-
     <h2>Đăng ký</h2>
 </div>
 
 <div class="content">
-
-    <h2>Đăng ký tài khoản</h2>
+    <h2>Tạo tài khoản mới</h2>
 
     @using (Html.BeginForm())
     {
-        <table>
+        @Html.AntiForgeryToken()
 
+        @* 1. Hiển thị thông báo lỗi nếu trùng tên đăng nhập từ Controller *@
+        if (ViewBag.error != null)
+        {
+            <div class="alert-danger">
+                @ViewBag.error
+            </div>
+        }
+
+        <table>
             <tr>
                 <td>Họ tên:</td>
                 <td>
-                    @Html.TextBoxFor(m => m.HoTen)<br>
-                    @Html.ValidationMessageFor(m => m.HoTen)
+                    @Html.TextBoxFor(m => m.ho_va_ten, new { @placeholder = "Nhập họ và tên..." })<br>
+                    @Html.ValidationMessageFor(m => m.ho_va_ten)
                 </td>
             </tr>
 
             <tr>
                 <td>Tên đăng nhập:</td>
                 <td>
-                    @Html.TextBoxFor(m => m.TenDN) <br>
-                    @Html.ValidationMessageFor(m => m.TenDN)
+                    @Html.TextBoxFor(m => m.ten_dang_nhap, new { @placeholder = "Tên đăng nhập..." })<br>
+                    @Html.ValidationMessageFor(m => m.ten_dang_nhap)
                 </td>
             </tr>
 
             <tr>
                 <td>Mật khẩu:</td>
                 <td>
-                    @Html.PasswordFor(m => m.MatKhau)<br>
-                    @Html.ValidationMessageFor(m => m.MatKhau)
+                    @Html.PasswordFor(m => m.mat_khau, new { @placeholder = "Mật khẩu..." })<br>
+                    @Html.ValidationMessageFor(m => m.mat_khau)
                 </td>
             </tr>
+
             <tr>
                 <td>Nhập lại mật khẩu:</td>
                 <td>
-                    @Html.PasswordFor(m => m.MatKhauNL)<br>
+                    @Html.PasswordFor(m => m.MatKhauNL, new { @placeholder = "Nhập lại mật khẩu..." })<br>
                     @Html.ValidationMessageFor(m => m.MatKhauNL)
                 </td>
             </tr>
+
             <tr>
                 <td>Email:</td>
                 <td>
-                    @Html.TextBoxFor(m => m.Email)<br>
-                    @Html.ValidationMessageFor(m => m.Email)
+                    @Html.TextBoxFor(m => m.email, new { @placeholder = "Địa chỉ email...", @type = "email" })<br>
+                    @Html.ValidationMessageFor(m => m.email)
                 </td>
             </tr>
-
-            <tr>
-                <td>Điện thoại:</td>
-                <td>
-                    @Html.TextBoxFor(m => m.DienThoai)<br>
-                    @Html.ValidationMessageFor(m => m.DienThoai)
-                </td>
-            </tr>
-
-            <tr>
-                <td>Ngày sinh:</td>
-                <td>
-                    @Html.TextBoxFor(m => m.NgaySinh, new { type = "date" })<br>
-                    @Html.ValidationMessageFor(m => m.NgaySinh)
-                </td>
-            </tr>
-
-            <tr>
-                <td>Địa chỉ:</td>
-                <td>
-                    @Html.TextBoxFor(m => m.DiaChi)
-                </td>
-            </tr>
-
         </table>
 
-        <button type="submit">Đăng ký</button>
-
+        <button type="submit" class="btn-submit">Đăng ký ngay</button>
     }
 </div>

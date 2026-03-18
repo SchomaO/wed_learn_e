@@ -25,7 +25,17 @@ namespace wed_learn_e.Models
             throw new UnintentionalCodeFirstException();
         }
     
-        public DbSet<ADMIN> ADMINs { get; set; }
-        public DbSet<NGUOIDUNG> NGUOIDUNGs { get; set; }
+        public DbSet<bai_giang_video> bai_giang_video { get; set; }
+        public DbSet<bai_kiem_tra_dau_vao> bai_kiem_tra_dau_vao { get; set; }
+        public DbSet<bai_tap_thuc_hanh> bai_tap_thuc_hanh { get; set; }
+        public DbSet<cap_do> cap_do { get; set; }
+        public DbSet<cau_hoi_kiem_tra> cau_hoi_kiem_tra { get; set; }
+        public DbSet<ket_qua_kiem_tra> ket_qua_kiem_tra { get; set; }
+        public DbSet<khoa_hoc> khoa_hoc { get; set; }
+        public DbSet<nguoi_dung> nguoi_dung { get; set; }
+        public DbSet<nhat_ky_quan_tri> nhat_ky_quan_tri { get; set; }
+        public DbSet<sysdiagram> sysdiagrams { get; set; }
+        public DbSet<tien_do_hoc_tap> tien_do_hoc_tap { get; set; }
+        public DbSet<tu_vung> tu_vung { get; set; }
     }
 }

@@ -4,9 +4,36 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="2efaa71fc55b40a28f8dee917b53eb80" Name="Diagram1">
-        <EntityTypeShape EntityType="wed_learn_eModel.ADMIN" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="wed_learn_eModel.NGUOIDUNG" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+      <Diagram DiagramId="a0447b2e78c846688355d58ded414ff7" Name="Diagram1">
+        <EntityTypeShape EntityType="wed_learn_eModel.bai_giang_video" Width="1.5" PointX="7.5" PointY="16.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="wed_learn_eModel.bai_kiem_tra_dau_vao" Width="1.5" PointX="5.25" PointY="23.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="wed_learn_eModel.bai_tap_thuc_hanh" Width="1.5" PointX="7.5" PointY="12.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="wed_learn_eModel.cap_do" Width="1.5" PointX="0.75" PointY="12.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="wed_learn_eModel.cau_hoi_kiem_tra" Width="1.5" PointX="7.5" PointY="24.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="wed_learn_eModel.ket_qua_kiem_tra" Width="1.5" PointX="7.5" PointY="19.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="wed_learn_eModel.khoa_hoc" Width="1.5" PointX="5.25" PointY="18.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="wed_learn_eModel.nguoi_dung" Width="1.5" PointX="3" PointY="24.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="wed_learn_eModel.nhat_ky_quan_tri" Width="1.5" PointX="5.25" PointY="26.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="wed_learn_eModel.sysdiagram" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="wed_learn_eModel.tien_do_hoc_tap" Width="1.5" PointX="10.5" PointY="22.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="wed_learn_eModel.tu_vung" Width="1.5" PointX="7.5" PointY="29.75" IsExpanded="true" />
+        <AssociationConnector Association="wed_learn_eModel.FK__bai_giang__id_kh__0A9D95DB" ManuallyRouted="false" />
+        <AssociationConnector Association="wed_learn_eModel.FK__bai_kiem___nguoi__66603565" ManuallyRouted="false" />
+        <AssociationConnector Association="wed_learn_eModel.FK__cau_hoi_k__id_ba__693CA210" ManuallyRouted="false" />
+        <AssociationConnector Association="wed_learn_eModel.FK__ket_qua_k__id_ba__6E01572D" ManuallyRouted="false" />
+        <AssociationConnector Association="wed_learn_eModel.FK__bai_tap_t__id_kh__0E6E26BF" ManuallyRouted="false" />
+        <AssociationConnector Association="wed_learn_eModel.FK__ket_qua_k__id_ca__6EF57B66" ManuallyRouted="false" />
+        <AssociationConnector Association="wed_learn_eModel.FK__khoa_hoc__id_cap__72C60C4A" ManuallyRouted="false" />
+        <AssociationConnector Association="wed_learn_eModel.FK__nguoi_dun__id_ca__6383C8BA" ManuallyRouted="false" />
+        <AssociationConnector Association="wed_learn_eModel.FK__cau_hoi_k__nguoi__114A936A" ManuallyRouted="false" />
+        <AssociationConnector Association="wed_learn_eModel.FK__cau_hoi_k__nguoi__123EB7A3" ManuallyRouted="false" />
+        <AssociationConnector Association="wed_learn_eModel.FK__ket_qua_k__id_ng__6D0D32F4" ManuallyRouted="false" />
+        <AssociationConnector Association="wed_learn_eModel.FK__khoa_hoc__nguoi___0F624AF8" ManuallyRouted="false" />
+        <AssociationConnector Association="wed_learn_eModel.FK__khoa_hoc__nguoi___10566F31" ManuallyRouted="false" />
+        <AssociationConnector Association="wed_learn_eModel.FK__tien_do_h__id_kh__7A672E12" ManuallyRouted="false" />
+        <AssociationConnector Association="wed_learn_eModel.FK__tu_vung__id_khoa__07C12930" ManuallyRouted="false" />
+        <AssociationConnector Association="wed_learn_eModel.FK__nhat_ky_q__id_ad__160F4887" ManuallyRouted="false" />
+        <AssociationConnector Association="wed_learn_eModel.FK__tien_do_h__id_ng__797309D9" ManuallyRouted="false" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

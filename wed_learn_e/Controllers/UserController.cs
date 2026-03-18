@@ -19,27 +19,41 @@ namespace wed_learn_e.Controllers
         {
             return View();
         }
+
+
         [HttpPost]
-        public ActionResult dangky(NGUOIDUNG nd)
+
+        public ActionResult dangky(nguoi_dung model)
         {
-            var kt = db.NGUOIDUNGs.FirstOrDefault(x => x.TenDN == nd.TenDN);
-            if (kt != null)
-            {
-                ModelState.AddModelError("TenDN", "Tên đăng nhập đã tồn tại");
-            }
-            var ktEmail = db.NGUOIDUNGs.FirstOrDefault(x => x.Email == nd.Email);
-            if (ktEmail != null)
-            {
-                ModelState.AddModelError("Email", "Email đã được sử dụng");
-            }
+            // 1. Kiểm tra các điều kiện [Required], [Compare] trong file .cs
             if (ModelState.IsValid)
             {
-                db.NGUOIDUNGs.Add(nd);
-                db.SaveChanges();
-                return RedirectToAction("dangnhap");
+                // 2. Kiểm tra xem tên đăng nhập đã bị ai dùng chưa
+                var check = db.nguoi_dung.FirstOrDefault(s => s.ten_dang_nhap == model.ten_dang_nhap);
+
+                if (check == null)
+                {
+                    // 3. Gán các giá trị hệ thống tự sinh
+                    model.ngay_tao = DateTime.Now;
+                    model.vai_tro = "nguoi_dung"; // Mặc định đăng ký luôn là user thường
+
+                    // Lưu ý: Nếu cột MatKhauNL trong SQL cho phép NULL, code sẽ chạy rất êm.
+                    db.nguoi_dung.Add(model);
+                    db.SaveChanges();
+
+                    // 4. Thông báo và chuyển hướng sang trang đăng nhập
+                    TempData["Success"] = "Đăng ký thành công! Mời bạn đăng nhập.";
+                    return RedirectToAction("dangnhap", "User");
+                }
+                else
+                {
+                    // Nếu trùng tên đăng nhập, báo lỗi cụ thể
+                    ViewBag.error = "Tên đăng nhập này đã tồn tại, vui lòng chọn tên khác!";
+                }
             }
 
-            return View(nd);
+            // Nếu có lỗi (trùng tên hoặc gõ sai mật khẩu nhập lại), trả về lại trang đăng ký kèm dữ liệu đã nhập
+            return View(model);
         }
         // GET đăng nhập
         public ActionResult dangnhap()
@@ -51,19 +65,19 @@ namespace wed_learn_e.Controllers
         [HttpPost]
         public ActionResult dangnhap(string TenDN, string MatKhau, bool? RememberMe)
         {
-            var user = db.NGUOIDUNGs
-                         .FirstOrDefault(x => x.TenDN == TenDN && x.MatKhau == MatKhau);
+            var user = db.nguoi_dung
+                  .FirstOrDefault(x => x.ten_dang_nhap == TenDN && x.mat_khau == MatKhau);
 
             if (user != null)
             {
-                Session["TenDN"] = user.TenDN;
-                Session["HoTen"] = user.HoTen;
-                
+                Session["TenDN"] = user.ten_dang_nhap;
+                Session["HoTen"] = user.ho_va_ten;
+
                 if (RememberMe == true)
                 {
                     HttpCookie ck = new HttpCookie("UserLogin");
-                    ck["TenDN"] = user.TenDN;
-                 
+                    ck["TenDN"] = user.ten_dang_nhap;
+
                     ck.Expires = DateTime.Now.AddDays(7); // nhớ 7 ngày
                     Response.Cookies.Add(ck);
 
@@ -78,19 +92,19 @@ namespace wed_learn_e.Controllers
             }
         }
         public ActionResult DangXuat()
-         {
-             Session.Clear();
-             Session.Abandon();
+        {
+            Session.Clear();
+            Session.Abandon();
 
-             // Xóa cookie
-             if (Request.Cookies["UserLogin"] != null)
-             {
-                 HttpCookie ck = new HttpCookie("UserLogin");
-                 ck.Expires = DateTime.Now.AddDays(-1);
-                 Response.Cookies.Add(ck);
-             }
+            // Xóa cookie
+            if (Request.Cookies["UserLogin"] != null)
+            {
+                HttpCookie ck = new HttpCookie("UserLogin");
+                ck.Expires = DateTime.Now.AddDays(-1);
+                Response.Cookies.Add(ck);
+            }
 
-             return RedirectToAction("Index", "Trang_chu");
-         }
+            return RedirectToAction("Index", "Trang_chu");
+        }
     }
 }

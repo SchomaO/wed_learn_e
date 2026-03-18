@@ -12,12 +12,17 @@ namespace wed_learn_e.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class ADMIN
+    public partial class nhat_ky_quan_tri
     {
-        public int MaAdmin { get; set; }
-        public string TenDN { get; set; }
-        public string MatKhau { get; set; }
-        public string HoTen { get; set; }
-        public string Email { get; set; }
+        public int id_nhat_ky { get; set; }
+        public int id_admin { get; set; }
+        public string hanh_dong { get; set; }
+        public string ten_bang_tac_dong { get; set; }
+        public Nullable<int> id_ban_ghi_tac_dong { get; set; }
+        public string chi_tiet_cu { get; set; }
+        public string chi_tiet_moi { get; set; }
+        public Nullable<System.DateTime> ngay_thuc_hien { get; set; }
+    
+        public virtual nguoi_dung nguoi_dung { get; set; }
     }
 }

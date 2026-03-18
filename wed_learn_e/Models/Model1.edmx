@@ -5,64 +5,894 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
       <Schema Namespace="wed_learn_eModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="ADMIN">
+        <EntityType Name="bai_giang_video">
           <Key>
-            <PropertyRef Name="MaAdmin" />
+            <PropertyRef Name="id_video" />
           </Key>
-          <Property Name="MaAdmin" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="TenDN" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="MatKhau" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="HoTen" Type="nvarchar" MaxLength="100" />
-          <Property Name="Email" Type="nvarchar" MaxLength="100" />
+          <Property Name="id_video" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_khoa_hoc" Type="int" />
+          <Property Name="tieu_de" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="duong_dan_video" Type="varchar(max)" Nullable="false" />
+          <Property Name="thoi_luong_phut" Type="int" />
         </EntityType>
-        <EntityType Name="NGUOIDUNG">
+        <EntityType Name="bai_kiem_tra_dau_vao">
           <Key>
-            <PropertyRef Name="MaNguoiDung" />
+            <PropertyRef Name="id_bai_kiem_tra" />
           </Key>
-          <Property Name="MaNguoiDung" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="HoTen" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="TenDN" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="MatKhau" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Email" Type="nvarchar" MaxLength="100" />
-          <Property Name="DienThoai" Type="nvarchar" MaxLength="15" />
-          <Property Name="DiaChi" Type="nvarchar" MaxLength="200" />
-          <Property Name="NgaySinh" Type="date" />
+          <Property Name="id_bai_kiem_tra" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="tieu_de" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="mo_ta" Type="nvarchar(max)" />
+          <Property Name="nguoi_tao" Type="int" />
         </EntityType>
+        <EntityType Name="bai_tap_thuc_hanh">
+          <Key>
+            <PropertyRef Name="id_bai_tap" />
+          </Key>
+          <Property Name="id_bai_tap" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_khoa_hoc" Type="int" />
+          <Property Name="tieu_de" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="loai_bai_tap" Type="varchar" MaxLength="50" />
+          <Property Name="noi_dung_cau_hoi" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="dap_an_mau" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="cap_do">
+          <Key>
+            <PropertyRef Name="id_cap_do" />
+          </Key>
+          <Property Name="id_cap_do" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ten_cap_do" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="mo_ta" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="cau_hoi_kiem_tra">
+          <Key>
+            <PropertyRef Name="id_cau_hoi" />
+          </Key>
+          <Property Name="id_cau_hoi" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_bai_kiem_tra" Type="int" />
+          <Property Name="noi_dung_cau_hoi" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="dap_an_a" Type="nvarchar" MaxLength="255" />
+          <Property Name="dap_an_b" Type="nvarchar" MaxLength="255" />
+          <Property Name="dap_an_c" Type="nvarchar" MaxLength="255" />
+          <Property Name="dap_an_d" Type="nvarchar" MaxLength="255" />
+          <Property Name="dap_an_dung" Type="char" MaxLength="1" />
+          <Property Name="nguoi_tao" Type="int" />
+          <Property Name="nguoi_cap_nhat" Type="int" />
+          <Property Name="ngay_cap_nhat" Type="datetime" />
+        </EntityType>
+        <EntityType Name="ket_qua_kiem_tra">
+          <Key>
+            <PropertyRef Name="id_ket_qua" />
+          </Key>
+          <Property Name="id_ket_qua" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_nguoi_dung" Type="int" />
+          <Property Name="id_bai_kiem_tra" Type="int" />
+          <Property Name="diem_so" Type="int" Nullable="false" />
+          <Property Name="id_cap_do_dat_duoc" Type="int" />
+          <Property Name="ngay_lam_bai" Type="datetime" />
+        </EntityType>
+        <EntityType Name="khoa_hoc">
+          <Key>
+            <PropertyRef Name="id_khoa_hoc" />
+          </Key>
+          <Property Name="id_khoa_hoc" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_cap_do" Type="int" />
+          <Property Name="ten_khoa_hoc" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="duong_dan_icon" Type="varchar" MaxLength="255" />
+          <Property Name="mo_ta" Type="nvarchar(max)" />
+          <Property Name="trang_thai_hoat_dong" Type="bit" />
+          <Property Name="nguoi_tao" Type="int" />
+          <Property Name="nguoi_cap_nhat" Type="int" />
+          <Property Name="ngay_cap_nhat" Type="datetime" />
+        </EntityType>
+        <EntityType Name="nguoi_dung">
+          <Key>
+            <PropertyRef Name="id_nguoi_dung" />
+          </Key>
+          <Property Name="id_nguoi_dung" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ten_dang_nhap" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="mat_khau" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="ho_va_ten" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="email" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="vai_tro" Type="varchar" MaxLength="20" />
+          <Property Name="id_cap_do_hien_tai" Type="int" />
+          <Property Name="ngay_tao" Type="datetime" />
+          <Property Name="MatKhauNL" Type="varchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="nhat_ky_quan_tri">
+          <Key>
+            <PropertyRef Name="id_nhat_ky" />
+          </Key>
+          <Property Name="id_nhat_ky" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_admin" Type="int" Nullable="false" />
+          <Property Name="hanh_dong" Type="varchar" MaxLength="50" />
+          <Property Name="ten_bang_tac_dong" Type="varchar" MaxLength="50" />
+          <Property Name="id_ban_ghi_tac_dong" Type="int" />
+          <Property Name="chi_tiet_cu" Type="nvarchar(max)" />
+          <Property Name="chi_tiet_moi" Type="nvarchar(max)" />
+          <Property Name="ngay_thuc_hien" Type="datetime" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="tien_do_hoc_tap">
+          <Key>
+            <PropertyRef Name="id_tien_do" />
+          </Key>
+          <Property Name="id_tien_do" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_nguoi_dung" Type="int" />
+          <Property Name="id_khoa_hoc" Type="int" />
+          <Property Name="phan_tram_hoan_thanh" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="trang_thai" Type="varchar" MaxLength="20" />
+          <Property Name="lan_truy_cap_cuoi" Type="datetime" />
+        </EntityType>
+        <EntityType Name="tu_vung">
+          <Key>
+            <PropertyRef Name="id_tu_vung" />
+          </Key>
+          <Property Name="id_tu_vung" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_khoa_hoc" Type="int" />
+          <Property Name="tu_tieng_anh" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="loai_tu" Type="varchar" MaxLength="50" />
+          <Property Name="nghia_tieng_viet" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="phien_am" Type="nvarchar" MaxLength="100" />
+          <Property Name="vi_du" Type="nvarchar(max)" />
+        </EntityType>
+        <Association Name="FK__bai_giang__id_kh__0A9D95DB">
+          <End Role="khoa_hoc" Type="Self.khoa_hoc" Multiplicity="0..1" />
+          <End Role="bai_giang_video" Type="Self.bai_giang_video" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="khoa_hoc">
+              <PropertyRef Name="id_khoa_hoc" />
+            </Principal>
+            <Dependent Role="bai_giang_video">
+              <PropertyRef Name="id_khoa_hoc" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__bai_kiem___nguoi__66603565">
+          <End Role="nguoi_dung" Type="Self.nguoi_dung" Multiplicity="0..1" />
+          <End Role="bai_kiem_tra_dau_vao" Type="Self.bai_kiem_tra_dau_vao" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="nguoi_dung">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Principal>
+            <Dependent Role="bai_kiem_tra_dau_vao">
+              <PropertyRef Name="nguoi_tao" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__bai_tap_t__id_kh__0E6E26BF">
+          <End Role="khoa_hoc" Type="Self.khoa_hoc" Multiplicity="0..1" />
+          <End Role="bai_tap_thuc_hanh" Type="Self.bai_tap_thuc_hanh" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="khoa_hoc">
+              <PropertyRef Name="id_khoa_hoc" />
+            </Principal>
+            <Dependent Role="bai_tap_thuc_hanh">
+              <PropertyRef Name="id_khoa_hoc" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__cau_hoi_k__id_ba__693CA210">
+          <End Role="bai_kiem_tra_dau_vao" Type="Self.bai_kiem_tra_dau_vao" Multiplicity="0..1" />
+          <End Role="cau_hoi_kiem_tra" Type="Self.cau_hoi_kiem_tra" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bai_kiem_tra_dau_vao">
+              <PropertyRef Name="id_bai_kiem_tra" />
+            </Principal>
+            <Dependent Role="cau_hoi_kiem_tra">
+              <PropertyRef Name="id_bai_kiem_tra" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__cau_hoi_k__nguoi__114A936A">
+          <End Role="nguoi_dung" Type="Self.nguoi_dung" Multiplicity="0..1" />
+          <End Role="cau_hoi_kiem_tra" Type="Self.cau_hoi_kiem_tra" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="nguoi_dung">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Principal>
+            <Dependent Role="cau_hoi_kiem_tra">
+              <PropertyRef Name="nguoi_tao" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__cau_hoi_k__nguoi__123EB7A3">
+          <End Role="nguoi_dung" Type="Self.nguoi_dung" Multiplicity="0..1" />
+          <End Role="cau_hoi_kiem_tra" Type="Self.cau_hoi_kiem_tra" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="nguoi_dung">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Principal>
+            <Dependent Role="cau_hoi_kiem_tra">
+              <PropertyRef Name="nguoi_cap_nhat" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ket_qua_k__id_ba__6E01572D">
+          <End Role="bai_kiem_tra_dau_vao" Type="Self.bai_kiem_tra_dau_vao" Multiplicity="0..1" />
+          <End Role="ket_qua_kiem_tra" Type="Self.ket_qua_kiem_tra" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bai_kiem_tra_dau_vao">
+              <PropertyRef Name="id_bai_kiem_tra" />
+            </Principal>
+            <Dependent Role="ket_qua_kiem_tra">
+              <PropertyRef Name="id_bai_kiem_tra" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ket_qua_k__id_ca__6EF57B66">
+          <End Role="cap_do" Type="Self.cap_do" Multiplicity="0..1" />
+          <End Role="ket_qua_kiem_tra" Type="Self.ket_qua_kiem_tra" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="cap_do">
+              <PropertyRef Name="id_cap_do" />
+            </Principal>
+            <Dependent Role="ket_qua_kiem_tra">
+              <PropertyRef Name="id_cap_do_dat_duoc" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ket_qua_k__id_ng__6D0D32F4">
+          <End Role="nguoi_dung" Type="Self.nguoi_dung" Multiplicity="0..1" />
+          <End Role="ket_qua_kiem_tra" Type="Self.ket_qua_kiem_tra" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="nguoi_dung">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Principal>
+            <Dependent Role="ket_qua_kiem_tra">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__khoa_hoc__id_cap__72C60C4A">
+          <End Role="cap_do" Type="Self.cap_do" Multiplicity="0..1" />
+          <End Role="khoa_hoc" Type="Self.khoa_hoc" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="cap_do">
+              <PropertyRef Name="id_cap_do" />
+            </Principal>
+            <Dependent Role="khoa_hoc">
+              <PropertyRef Name="id_cap_do" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__khoa_hoc__nguoi___0F624AF8">
+          <End Role="nguoi_dung" Type="Self.nguoi_dung" Multiplicity="0..1" />
+          <End Role="khoa_hoc" Type="Self.khoa_hoc" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="nguoi_dung">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Principal>
+            <Dependent Role="khoa_hoc">
+              <PropertyRef Name="nguoi_tao" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__khoa_hoc__nguoi___10566F31">
+          <End Role="nguoi_dung" Type="Self.nguoi_dung" Multiplicity="0..1" />
+          <End Role="khoa_hoc" Type="Self.khoa_hoc" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="nguoi_dung">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Principal>
+            <Dependent Role="khoa_hoc">
+              <PropertyRef Name="nguoi_cap_nhat" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__nguoi_dun__id_ca__6383C8BA">
+          <End Role="cap_do" Type="Self.cap_do" Multiplicity="0..1" />
+          <End Role="nguoi_dung" Type="Self.nguoi_dung" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="cap_do">
+              <PropertyRef Name="id_cap_do" />
+            </Principal>
+            <Dependent Role="nguoi_dung">
+              <PropertyRef Name="id_cap_do_hien_tai" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__nhat_ky_q__id_ad__160F4887">
+          <End Role="nguoi_dung" Type="Self.nguoi_dung" Multiplicity="1" />
+          <End Role="nhat_ky_quan_tri" Type="Self.nhat_ky_quan_tri" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="nguoi_dung">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Principal>
+            <Dependent Role="nhat_ky_quan_tri">
+              <PropertyRef Name="id_admin" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tien_do_h__id_kh__7A672E12">
+          <End Role="khoa_hoc" Type="Self.khoa_hoc" Multiplicity="0..1" />
+          <End Role="tien_do_hoc_tap" Type="Self.tien_do_hoc_tap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="khoa_hoc">
+              <PropertyRef Name="id_khoa_hoc" />
+            </Principal>
+            <Dependent Role="tien_do_hoc_tap">
+              <PropertyRef Name="id_khoa_hoc" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tien_do_h__id_ng__797309D9">
+          <End Role="nguoi_dung" Type="Self.nguoi_dung" Multiplicity="0..1" />
+          <End Role="tien_do_hoc_tap" Type="Self.tien_do_hoc_tap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="nguoi_dung">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Principal>
+            <Dependent Role="tien_do_hoc_tap">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tu_vung__id_khoa__07C12930">
+          <End Role="khoa_hoc" Type="Self.khoa_hoc" Multiplicity="0..1" />
+          <End Role="tu_vung" Type="Self.tu_vung" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="khoa_hoc">
+              <PropertyRef Name="id_khoa_hoc" />
+            </Principal>
+            <Dependent Role="tu_vung">
+              <PropertyRef Name="id_khoa_hoc" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="wed_learn_eModelStoreContainer">
-          <EntitySet Name="ADMIN" EntityType="Self.ADMIN" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="NGUOIDUNG" EntityType="Self.NGUOIDUNG" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="bai_giang_video" EntityType="Self.bai_giang_video" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="bai_kiem_tra_dau_vao" EntityType="Self.bai_kiem_tra_dau_vao" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="bai_tap_thuc_hanh" EntityType="Self.bai_tap_thuc_hanh" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="cap_do" EntityType="Self.cap_do" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="cau_hoi_kiem_tra" EntityType="Self.cau_hoi_kiem_tra" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ket_qua_kiem_tra" EntityType="Self.ket_qua_kiem_tra" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="khoa_hoc" EntityType="Self.khoa_hoc" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="nguoi_dung" EntityType="Self.nguoi_dung" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="nhat_ky_quan_tri" EntityType="Self.nhat_ky_quan_tri" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tien_do_hoc_tap" EntityType="Self.tien_do_hoc_tap" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tu_vung" EntityType="Self.tu_vung" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__bai_giang__id_kh__0A9D95DB" Association="Self.FK__bai_giang__id_kh__0A9D95DB">
+            <End Role="khoa_hoc" EntitySet="khoa_hoc" />
+            <End Role="bai_giang_video" EntitySet="bai_giang_video" />
+          </AssociationSet>
+          <AssociationSet Name="FK__bai_kiem___nguoi__66603565" Association="Self.FK__bai_kiem___nguoi__66603565">
+            <End Role="nguoi_dung" EntitySet="nguoi_dung" />
+            <End Role="bai_kiem_tra_dau_vao" EntitySet="bai_kiem_tra_dau_vao" />
+          </AssociationSet>
+          <AssociationSet Name="FK__bai_tap_t__id_kh__0E6E26BF" Association="Self.FK__bai_tap_t__id_kh__0E6E26BF">
+            <End Role="khoa_hoc" EntitySet="khoa_hoc" />
+            <End Role="bai_tap_thuc_hanh" EntitySet="bai_tap_thuc_hanh" />
+          </AssociationSet>
+          <AssociationSet Name="FK__cau_hoi_k__id_ba__693CA210" Association="Self.FK__cau_hoi_k__id_ba__693CA210">
+            <End Role="bai_kiem_tra_dau_vao" EntitySet="bai_kiem_tra_dau_vao" />
+            <End Role="cau_hoi_kiem_tra" EntitySet="cau_hoi_kiem_tra" />
+          </AssociationSet>
+          <AssociationSet Name="FK__cau_hoi_k__nguoi__114A936A" Association="Self.FK__cau_hoi_k__nguoi__114A936A">
+            <End Role="nguoi_dung" EntitySet="nguoi_dung" />
+            <End Role="cau_hoi_kiem_tra" EntitySet="cau_hoi_kiem_tra" />
+          </AssociationSet>
+          <AssociationSet Name="FK__cau_hoi_k__nguoi__123EB7A3" Association="Self.FK__cau_hoi_k__nguoi__123EB7A3">
+            <End Role="nguoi_dung" EntitySet="nguoi_dung" />
+            <End Role="cau_hoi_kiem_tra" EntitySet="cau_hoi_kiem_tra" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ket_qua_k__id_ba__6E01572D" Association="Self.FK__ket_qua_k__id_ba__6E01572D">
+            <End Role="bai_kiem_tra_dau_vao" EntitySet="bai_kiem_tra_dau_vao" />
+            <End Role="ket_qua_kiem_tra" EntitySet="ket_qua_kiem_tra" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ket_qua_k__id_ca__6EF57B66" Association="Self.FK__ket_qua_k__id_ca__6EF57B66">
+            <End Role="cap_do" EntitySet="cap_do" />
+            <End Role="ket_qua_kiem_tra" EntitySet="ket_qua_kiem_tra" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ket_qua_k__id_ng__6D0D32F4" Association="Self.FK__ket_qua_k__id_ng__6D0D32F4">
+            <End Role="nguoi_dung" EntitySet="nguoi_dung" />
+            <End Role="ket_qua_kiem_tra" EntitySet="ket_qua_kiem_tra" />
+          </AssociationSet>
+          <AssociationSet Name="FK__khoa_hoc__id_cap__72C60C4A" Association="Self.FK__khoa_hoc__id_cap__72C60C4A">
+            <End Role="cap_do" EntitySet="cap_do" />
+            <End Role="khoa_hoc" EntitySet="khoa_hoc" />
+          </AssociationSet>
+          <AssociationSet Name="FK__khoa_hoc__nguoi___0F624AF8" Association="Self.FK__khoa_hoc__nguoi___0F624AF8">
+            <End Role="nguoi_dung" EntitySet="nguoi_dung" />
+            <End Role="khoa_hoc" EntitySet="khoa_hoc" />
+          </AssociationSet>
+          <AssociationSet Name="FK__khoa_hoc__nguoi___10566F31" Association="Self.FK__khoa_hoc__nguoi___10566F31">
+            <End Role="nguoi_dung" EntitySet="nguoi_dung" />
+            <End Role="khoa_hoc" EntitySet="khoa_hoc" />
+          </AssociationSet>
+          <AssociationSet Name="FK__nguoi_dun__id_ca__6383C8BA" Association="Self.FK__nguoi_dun__id_ca__6383C8BA">
+            <End Role="cap_do" EntitySet="cap_do" />
+            <End Role="nguoi_dung" EntitySet="nguoi_dung" />
+          </AssociationSet>
+          <AssociationSet Name="FK__nhat_ky_q__id_ad__160F4887" Association="Self.FK__nhat_ky_q__id_ad__160F4887">
+            <End Role="nguoi_dung" EntitySet="nguoi_dung" />
+            <End Role="nhat_ky_quan_tri" EntitySet="nhat_ky_quan_tri" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tien_do_h__id_kh__7A672E12" Association="Self.FK__tien_do_h__id_kh__7A672E12">
+            <End Role="khoa_hoc" EntitySet="khoa_hoc" />
+            <End Role="tien_do_hoc_tap" EntitySet="tien_do_hoc_tap" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tien_do_h__id_ng__797309D9" Association="Self.FK__tien_do_h__id_ng__797309D9">
+            <End Role="nguoi_dung" EntitySet="nguoi_dung" />
+            <End Role="tien_do_hoc_tap" EntitySet="tien_do_hoc_tap" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tu_vung__id_khoa__07C12930" Association="Self.FK__tu_vung__id_khoa__07C12930">
+            <End Role="khoa_hoc" EntitySet="khoa_hoc" />
+            <End Role="tu_vung" EntitySet="tu_vung" />
+          </AssociationSet>
         </EntityContainer>
       </Schema>
     </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="wed_learn_eModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityType Name="ADMIN">
+        <EntityType Name="bai_giang_video">
           <Key>
-            <PropertyRef Name="MaAdmin" />
+            <PropertyRef Name="id_video" />
           </Key>
-          <Property Name="MaAdmin" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="TenDN" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="MatKhau" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="HoTen" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="id_video" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_khoa_hoc" Type="Int32" />
+          <Property Name="tieu_de" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="duong_dan_video" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="thoi_luong_phut" Type="Int32" />
+          <NavigationProperty Name="khoa_hoc" Relationship="Self.FK__bai_giang__id_kh__0A9D95DB" FromRole="bai_giang_video" ToRole="khoa_hoc" />
         </EntityType>
-        <EntityType Name="NGUOIDUNG">
+        <EntityType Name="bai_kiem_tra_dau_vao">
           <Key>
-            <PropertyRef Name="MaNguoiDung" />
+            <PropertyRef Name="id_bai_kiem_tra" />
           </Key>
-          <Property Name="MaNguoiDung" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="HoTen" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="TenDN" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="MatKhau" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="DienThoai" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
-          <Property Name="DiaChi" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="NgaySinh" Type="DateTime" Precision="0" />
+          <Property Name="id_bai_kiem_tra" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="tieu_de" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="mo_ta" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="nguoi_tao" Type="Int32" />
+          <NavigationProperty Name="nguoi_dung" Relationship="Self.FK__bai_kiem___nguoi__66603565" FromRole="bai_kiem_tra_dau_vao" ToRole="nguoi_dung" />
+          <NavigationProperty Name="cau_hoi_kiem_tra" Relationship="Self.FK__cau_hoi_k__id_ba__693CA210" FromRole="bai_kiem_tra_dau_vao" ToRole="cau_hoi_kiem_tra" />
+          <NavigationProperty Name="ket_qua_kiem_tra" Relationship="Self.FK__ket_qua_k__id_ba__6E01572D" FromRole="bai_kiem_tra_dau_vao" ToRole="ket_qua_kiem_tra" />
         </EntityType>
+        <EntityType Name="bai_tap_thuc_hanh">
+          <Key>
+            <PropertyRef Name="id_bai_tap" />
+          </Key>
+          <Property Name="id_bai_tap" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_khoa_hoc" Type="Int32" />
+          <Property Name="tieu_de" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="loai_bai_tap" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="noi_dung_cau_hoi" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="dap_an_mau" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="khoa_hoc" Relationship="Self.FK__bai_tap_t__id_kh__0E6E26BF" FromRole="bai_tap_thuc_hanh" ToRole="khoa_hoc" />
+        </EntityType>
+        <EntityType Name="cap_do">
+          <Key>
+            <PropertyRef Name="id_cap_do" />
+          </Key>
+          <Property Name="id_cap_do" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ten_cap_do" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="mo_ta" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ket_qua_kiem_tra" Relationship="Self.FK__ket_qua_k__id_ca__6EF57B66" FromRole="cap_do" ToRole="ket_qua_kiem_tra" />
+          <NavigationProperty Name="khoa_hoc" Relationship="Self.FK__khoa_hoc__id_cap__72C60C4A" FromRole="cap_do" ToRole="khoa_hoc" />
+          <NavigationProperty Name="nguoi_dung" Relationship="Self.FK__nguoi_dun__id_ca__6383C8BA" FromRole="cap_do" ToRole="nguoi_dung" />
+        </EntityType>
+        <EntityType Name="cau_hoi_kiem_tra">
+          <Key>
+            <PropertyRef Name="id_cau_hoi" />
+          </Key>
+          <Property Name="id_cau_hoi" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_bai_kiem_tra" Type="Int32" />
+          <Property Name="noi_dung_cau_hoi" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="dap_an_a" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="dap_an_b" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="dap_an_c" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="dap_an_d" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="dap_an_dung" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="nguoi_tao" Type="Int32" />
+          <Property Name="nguoi_cap_nhat" Type="Int32" />
+          <Property Name="ngay_cap_nhat" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="bai_kiem_tra_dau_vao" Relationship="Self.FK__cau_hoi_k__id_ba__693CA210" FromRole="cau_hoi_kiem_tra" ToRole="bai_kiem_tra_dau_vao" />
+          <NavigationProperty Name="nguoi_dung" Relationship="Self.FK__cau_hoi_k__nguoi__114A936A" FromRole="cau_hoi_kiem_tra" ToRole="nguoi_dung" />
+          <NavigationProperty Name="nguoi_dung1" Relationship="Self.FK__cau_hoi_k__nguoi__123EB7A3" FromRole="cau_hoi_kiem_tra" ToRole="nguoi_dung" />
+        </EntityType>
+        <EntityType Name="ket_qua_kiem_tra">
+          <Key>
+            <PropertyRef Name="id_ket_qua" />
+          </Key>
+          <Property Name="id_ket_qua" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_nguoi_dung" Type="Int32" />
+          <Property Name="id_bai_kiem_tra" Type="Int32" />
+          <Property Name="diem_so" Type="Int32" Nullable="false" />
+          <Property Name="id_cap_do_dat_duoc" Type="Int32" />
+          <Property Name="ngay_lam_bai" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="bai_kiem_tra_dau_vao" Relationship="Self.FK__ket_qua_k__id_ba__6E01572D" FromRole="ket_qua_kiem_tra" ToRole="bai_kiem_tra_dau_vao" />
+          <NavigationProperty Name="cap_do" Relationship="Self.FK__ket_qua_k__id_ca__6EF57B66" FromRole="ket_qua_kiem_tra" ToRole="cap_do" />
+          <NavigationProperty Name="nguoi_dung" Relationship="Self.FK__ket_qua_k__id_ng__6D0D32F4" FromRole="ket_qua_kiem_tra" ToRole="nguoi_dung" />
+        </EntityType>
+        <EntityType Name="khoa_hoc">
+          <Key>
+            <PropertyRef Name="id_khoa_hoc" />
+          </Key>
+          <Property Name="id_khoa_hoc" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_cap_do" Type="Int32" />
+          <Property Name="ten_khoa_hoc" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="duong_dan_icon" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="mo_ta" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="trang_thai_hoat_dong" Type="Boolean" />
+          <Property Name="nguoi_tao" Type="Int32" />
+          <Property Name="nguoi_cap_nhat" Type="Int32" />
+          <Property Name="ngay_cap_nhat" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="bai_giang_video" Relationship="Self.FK__bai_giang__id_kh__0A9D95DB" FromRole="khoa_hoc" ToRole="bai_giang_video" />
+          <NavigationProperty Name="bai_tap_thuc_hanh" Relationship="Self.FK__bai_tap_t__id_kh__0E6E26BF" FromRole="khoa_hoc" ToRole="bai_tap_thuc_hanh" />
+          <NavigationProperty Name="cap_do" Relationship="Self.FK__khoa_hoc__id_cap__72C60C4A" FromRole="khoa_hoc" ToRole="cap_do" />
+          <NavigationProperty Name="nguoi_dung" Relationship="Self.FK__khoa_hoc__nguoi___0F624AF8" FromRole="khoa_hoc" ToRole="nguoi_dung" />
+          <NavigationProperty Name="nguoi_dung1" Relationship="Self.FK__khoa_hoc__nguoi___10566F31" FromRole="khoa_hoc" ToRole="nguoi_dung" />
+          <NavigationProperty Name="tien_do_hoc_tap" Relationship="Self.FK__tien_do_h__id_kh__7A672E12" FromRole="khoa_hoc" ToRole="tien_do_hoc_tap" />
+          <NavigationProperty Name="tu_vung" Relationship="Self.FK__tu_vung__id_khoa__07C12930" FromRole="khoa_hoc" ToRole="tu_vung" />
+        </EntityType>
+        <EntityType Name="nguoi_dung">
+          <Key>
+            <PropertyRef Name="id_nguoi_dung" />
+          </Key>
+          <Property Name="id_nguoi_dung" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ten_dang_nhap" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="mat_khau" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ho_va_ten" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="vai_tro" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="id_cap_do_hien_tai" Type="Int32" />
+          <Property Name="ngay_tao" Type="DateTime" Precision="3" />
+          <Property Name="MatKhauNL" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="bai_kiem_tra_dau_vao" Relationship="Self.FK__bai_kiem___nguoi__66603565" FromRole="nguoi_dung" ToRole="bai_kiem_tra_dau_vao" />
+          <NavigationProperty Name="cap_do" Relationship="Self.FK__nguoi_dun__id_ca__6383C8BA" FromRole="nguoi_dung" ToRole="cap_do" />
+          <NavigationProperty Name="cau_hoi_kiem_tra" Relationship="Self.FK__cau_hoi_k__nguoi__114A936A" FromRole="nguoi_dung" ToRole="cau_hoi_kiem_tra" />
+          <NavigationProperty Name="cau_hoi_kiem_tra1" Relationship="Self.FK__cau_hoi_k__nguoi__123EB7A3" FromRole="nguoi_dung" ToRole="cau_hoi_kiem_tra" />
+          <NavigationProperty Name="ket_qua_kiem_tra" Relationship="Self.FK__ket_qua_k__id_ng__6D0D32F4" FromRole="nguoi_dung" ToRole="ket_qua_kiem_tra" />
+          <NavigationProperty Name="khoa_hoc" Relationship="Self.FK__khoa_hoc__nguoi___0F624AF8" FromRole="nguoi_dung" ToRole="khoa_hoc" />
+          <NavigationProperty Name="khoa_hoc1" Relationship="Self.FK__khoa_hoc__nguoi___10566F31" FromRole="nguoi_dung" ToRole="khoa_hoc" />
+          <NavigationProperty Name="nhat_ky_quan_tri" Relationship="Self.FK__nhat_ky_q__id_ad__160F4887" FromRole="nguoi_dung" ToRole="nhat_ky_quan_tri" />
+          <NavigationProperty Name="tien_do_hoc_tap" Relationship="Self.FK__tien_do_h__id_ng__797309D9" FromRole="nguoi_dung" ToRole="tien_do_hoc_tap" />
+        </EntityType>
+        <EntityType Name="nhat_ky_quan_tri">
+          <Key>
+            <PropertyRef Name="id_nhat_ky" />
+          </Key>
+          <Property Name="id_nhat_ky" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_admin" Type="Int32" Nullable="false" />
+          <Property Name="hanh_dong" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ten_bang_tac_dong" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="id_ban_ghi_tac_dong" Type="Int32" />
+          <Property Name="chi_tiet_cu" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="chi_tiet_moi" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ngay_thuc_hien" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="nguoi_dung" Relationship="Self.FK__nhat_ky_q__id_ad__160F4887" FromRole="nhat_ky_quan_tri" ToRole="nguoi_dung" />
+        </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="tien_do_hoc_tap">
+          <Key>
+            <PropertyRef Name="id_tien_do" />
+          </Key>
+          <Property Name="id_tien_do" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_nguoi_dung" Type="Int32" />
+          <Property Name="id_khoa_hoc" Type="Int32" />
+          <Property Name="phan_tram_hoan_thanh" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="trang_thai" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="lan_truy_cap_cuoi" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="khoa_hoc" Relationship="Self.FK__tien_do_h__id_kh__7A672E12" FromRole="tien_do_hoc_tap" ToRole="khoa_hoc" />
+          <NavigationProperty Name="nguoi_dung" Relationship="Self.FK__tien_do_h__id_ng__797309D9" FromRole="tien_do_hoc_tap" ToRole="nguoi_dung" />
+        </EntityType>
+        <EntityType Name="tu_vung">
+          <Key>
+            <PropertyRef Name="id_tu_vung" />
+          </Key>
+          <Property Name="id_tu_vung" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_khoa_hoc" Type="Int32" />
+          <Property Name="tu_tieng_anh" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="loai_tu" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="nghia_tieng_viet" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="phien_am" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="vi_du" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="khoa_hoc" Relationship="Self.FK__tu_vung__id_khoa__07C12930" FromRole="tu_vung" ToRole="khoa_hoc" />
+        </EntityType>
+        <Association Name="FK__bai_giang__id_kh__0A9D95DB">
+          <End Role="khoa_hoc" Type="Self.khoa_hoc" Multiplicity="0..1" />
+          <End Role="bai_giang_video" Type="Self.bai_giang_video" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="khoa_hoc">
+              <PropertyRef Name="id_khoa_hoc" />
+            </Principal>
+            <Dependent Role="bai_giang_video">
+              <PropertyRef Name="id_khoa_hoc" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__bai_kiem___nguoi__66603565">
+          <End Role="nguoi_dung" Type="Self.nguoi_dung" Multiplicity="0..1" />
+          <End Role="bai_kiem_tra_dau_vao" Type="Self.bai_kiem_tra_dau_vao" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="nguoi_dung">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Principal>
+            <Dependent Role="bai_kiem_tra_dau_vao">
+              <PropertyRef Name="nguoi_tao" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__cau_hoi_k__id_ba__693CA210">
+          <End Role="bai_kiem_tra_dau_vao" Type="Self.bai_kiem_tra_dau_vao" Multiplicity="0..1" />
+          <End Role="cau_hoi_kiem_tra" Type="Self.cau_hoi_kiem_tra" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bai_kiem_tra_dau_vao">
+              <PropertyRef Name="id_bai_kiem_tra" />
+            </Principal>
+            <Dependent Role="cau_hoi_kiem_tra">
+              <PropertyRef Name="id_bai_kiem_tra" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ket_qua_k__id_ba__6E01572D">
+          <End Role="bai_kiem_tra_dau_vao" Type="Self.bai_kiem_tra_dau_vao" Multiplicity="0..1" />
+          <End Role="ket_qua_kiem_tra" Type="Self.ket_qua_kiem_tra" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bai_kiem_tra_dau_vao">
+              <PropertyRef Name="id_bai_kiem_tra" />
+            </Principal>
+            <Dependent Role="ket_qua_kiem_tra">
+              <PropertyRef Name="id_bai_kiem_tra" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__bai_tap_t__id_kh__0E6E26BF">
+          <End Role="khoa_hoc" Type="Self.khoa_hoc" Multiplicity="0..1" />
+          <End Role="bai_tap_thuc_hanh" Type="Self.bai_tap_thuc_hanh" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="khoa_hoc">
+              <PropertyRef Name="id_khoa_hoc" />
+            </Principal>
+            <Dependent Role="bai_tap_thuc_hanh">
+              <PropertyRef Name="id_khoa_hoc" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ket_qua_k__id_ca__6EF57B66">
+          <End Role="cap_do" Type="Self.cap_do" Multiplicity="0..1" />
+          <End Role="ket_qua_kiem_tra" Type="Self.ket_qua_kiem_tra" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="cap_do">
+              <PropertyRef Name="id_cap_do" />
+            </Principal>
+            <Dependent Role="ket_qua_kiem_tra">
+              <PropertyRef Name="id_cap_do_dat_duoc" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__khoa_hoc__id_cap__72C60C4A">
+          <End Role="cap_do" Type="Self.cap_do" Multiplicity="0..1" />
+          <End Role="khoa_hoc" Type="Self.khoa_hoc" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="cap_do">
+              <PropertyRef Name="id_cap_do" />
+            </Principal>
+            <Dependent Role="khoa_hoc">
+              <PropertyRef Name="id_cap_do" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__nguoi_dun__id_ca__6383C8BA">
+          <End Role="cap_do" Type="Self.cap_do" Multiplicity="0..1" />
+          <End Role="nguoi_dung" Type="Self.nguoi_dung" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="cap_do">
+              <PropertyRef Name="id_cap_do" />
+            </Principal>
+            <Dependent Role="nguoi_dung">
+              <PropertyRef Name="id_cap_do_hien_tai" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__cau_hoi_k__nguoi__114A936A">
+          <End Role="nguoi_dung" Type="Self.nguoi_dung" Multiplicity="0..1" />
+          <End Role="cau_hoi_kiem_tra" Type="Self.cau_hoi_kiem_tra" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="nguoi_dung">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Principal>
+            <Dependent Role="cau_hoi_kiem_tra">
+              <PropertyRef Name="nguoi_tao" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__cau_hoi_k__nguoi__123EB7A3">
+          <End Role="nguoi_dung" Type="Self.nguoi_dung" Multiplicity="0..1" />
+          <End Role="cau_hoi_kiem_tra" Type="Self.cau_hoi_kiem_tra" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="nguoi_dung">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Principal>
+            <Dependent Role="cau_hoi_kiem_tra">
+              <PropertyRef Name="nguoi_cap_nhat" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ket_qua_k__id_ng__6D0D32F4">
+          <End Role="nguoi_dung" Type="Self.nguoi_dung" Multiplicity="0..1" />
+          <End Role="ket_qua_kiem_tra" Type="Self.ket_qua_kiem_tra" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="nguoi_dung">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Principal>
+            <Dependent Role="ket_qua_kiem_tra">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__khoa_hoc__nguoi___0F624AF8">
+          <End Role="nguoi_dung" Type="Self.nguoi_dung" Multiplicity="0..1" />
+          <End Role="khoa_hoc" Type="Self.khoa_hoc" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="nguoi_dung">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Principal>
+            <Dependent Role="khoa_hoc">
+              <PropertyRef Name="nguoi_tao" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__khoa_hoc__nguoi___10566F31">
+          <End Role="nguoi_dung" Type="Self.nguoi_dung" Multiplicity="0..1" />
+          <End Role="khoa_hoc" Type="Self.khoa_hoc" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="nguoi_dung">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Principal>
+            <Dependent Role="khoa_hoc">
+              <PropertyRef Name="nguoi_cap_nhat" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tien_do_h__id_kh__7A672E12">
+          <End Role="khoa_hoc" Type="Self.khoa_hoc" Multiplicity="0..1" />
+          <End Role="tien_do_hoc_tap" Type="Self.tien_do_hoc_tap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="khoa_hoc">
+              <PropertyRef Name="id_khoa_hoc" />
+            </Principal>
+            <Dependent Role="tien_do_hoc_tap">
+              <PropertyRef Name="id_khoa_hoc" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tu_vung__id_khoa__07C12930">
+          <End Role="khoa_hoc" Type="Self.khoa_hoc" Multiplicity="0..1" />
+          <End Role="tu_vung" Type="Self.tu_vung" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="khoa_hoc">
+              <PropertyRef Name="id_khoa_hoc" />
+            </Principal>
+            <Dependent Role="tu_vung">
+              <PropertyRef Name="id_khoa_hoc" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__nhat_ky_q__id_ad__160F4887">
+          <End Role="nguoi_dung" Type="Self.nguoi_dung" Multiplicity="1" />
+          <End Role="nhat_ky_quan_tri" Type="Self.nhat_ky_quan_tri" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="nguoi_dung">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Principal>
+            <Dependent Role="nhat_ky_quan_tri">
+              <PropertyRef Name="id_admin" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tien_do_h__id_ng__797309D9">
+          <End Role="nguoi_dung" Type="Self.nguoi_dung" Multiplicity="0..1" />
+          <End Role="tien_do_hoc_tap" Type="Self.tien_do_hoc_tap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="nguoi_dung">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Principal>
+            <Dependent Role="tien_do_hoc_tap">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="wed_learn_eEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="ADMINs" EntityType="Self.ADMIN" />
-          <EntitySet Name="NGUOIDUNGs" EntityType="Self.NGUOIDUNG" />
+          <EntitySet Name="bai_giang_video" EntityType="Self.bai_giang_video" />
+          <EntitySet Name="bai_kiem_tra_dau_vao" EntityType="Self.bai_kiem_tra_dau_vao" />
+          <EntitySet Name="bai_tap_thuc_hanh" EntityType="Self.bai_tap_thuc_hanh" />
+          <EntitySet Name="cap_do" EntityType="Self.cap_do" />
+          <EntitySet Name="cau_hoi_kiem_tra" EntityType="Self.cau_hoi_kiem_tra" />
+          <EntitySet Name="ket_qua_kiem_tra" EntityType="Self.ket_qua_kiem_tra" />
+          <EntitySet Name="khoa_hoc" EntityType="Self.khoa_hoc" />
+          <EntitySet Name="nguoi_dung" EntityType="Self.nguoi_dung" />
+          <EntitySet Name="nhat_ky_quan_tri" EntityType="Self.nhat_ky_quan_tri" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+          <EntitySet Name="tien_do_hoc_tap" EntityType="Self.tien_do_hoc_tap" />
+          <EntitySet Name="tu_vung" EntityType="Self.tu_vung" />
+          <AssociationSet Name="FK__bai_giang__id_kh__0A9D95DB" Association="Self.FK__bai_giang__id_kh__0A9D95DB">
+            <End Role="khoa_hoc" EntitySet="khoa_hoc" />
+            <End Role="bai_giang_video" EntitySet="bai_giang_video" />
+          </AssociationSet>
+          <AssociationSet Name="FK__bai_kiem___nguoi__66603565" Association="Self.FK__bai_kiem___nguoi__66603565">
+            <End Role="nguoi_dung" EntitySet="nguoi_dung" />
+            <End Role="bai_kiem_tra_dau_vao" EntitySet="bai_kiem_tra_dau_vao" />
+          </AssociationSet>
+          <AssociationSet Name="FK__cau_hoi_k__id_ba__693CA210" Association="Self.FK__cau_hoi_k__id_ba__693CA210">
+            <End Role="bai_kiem_tra_dau_vao" EntitySet="bai_kiem_tra_dau_vao" />
+            <End Role="cau_hoi_kiem_tra" EntitySet="cau_hoi_kiem_tra" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ket_qua_k__id_ba__6E01572D" Association="Self.FK__ket_qua_k__id_ba__6E01572D">
+            <End Role="bai_kiem_tra_dau_vao" EntitySet="bai_kiem_tra_dau_vao" />
+            <End Role="ket_qua_kiem_tra" EntitySet="ket_qua_kiem_tra" />
+          </AssociationSet>
+          <AssociationSet Name="FK__bai_tap_t__id_kh__0E6E26BF" Association="Self.FK__bai_tap_t__id_kh__0E6E26BF">
+            <End Role="khoa_hoc" EntitySet="khoa_hoc" />
+            <End Role="bai_tap_thuc_hanh" EntitySet="bai_tap_thuc_hanh" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ket_qua_k__id_ca__6EF57B66" Association="Self.FK__ket_qua_k__id_ca__6EF57B66">
+            <End Role="cap_do" EntitySet="cap_do" />
+            <End Role="ket_qua_kiem_tra" EntitySet="ket_qua_kiem_tra" />
+          </AssociationSet>
+          <AssociationSet Name="FK__khoa_hoc__id_cap__72C60C4A" Association="Self.FK__khoa_hoc__id_cap__72C60C4A">
+            <End Role="cap_do" EntitySet="cap_do" />
+            <End Role="khoa_hoc" EntitySet="khoa_hoc" />
+          </AssociationSet>
+          <AssociationSet Name="FK__nguoi_dun__id_ca__6383C8BA" Association="Self.FK__nguoi_dun__id_ca__6383C8BA">
+            <End Role="cap_do" EntitySet="cap_do" />
+            <End Role="nguoi_dung" EntitySet="nguoi_dung" />
+          </AssociationSet>
+          <AssociationSet Name="FK__cau_hoi_k__nguoi__114A936A" Association="Self.FK__cau_hoi_k__nguoi__114A936A">
+            <End Role="nguoi_dung" EntitySet="nguoi_dung" />
+            <End Role="cau_hoi_kiem_tra" EntitySet="cau_hoi_kiem_tra" />
+          </AssociationSet>
+          <AssociationSet Name="FK__cau_hoi_k__nguoi__123EB7A3" Association="Self.FK__cau_hoi_k__nguoi__123EB7A3">
+            <End Role="nguoi_dung" EntitySet="nguoi_dung" />
+            <End Role="cau_hoi_kiem_tra" EntitySet="cau_hoi_kiem_tra" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ket_qua_k__id_ng__6D0D32F4" Association="Self.FK__ket_qua_k__id_ng__6D0D32F4">
+            <End Role="nguoi_dung" EntitySet="nguoi_dung" />
+            <End Role="ket_qua_kiem_tra" EntitySet="ket_qua_kiem_tra" />
+          </AssociationSet>
+          <AssociationSet Name="FK__khoa_hoc__nguoi___0F624AF8" Association="Self.FK__khoa_hoc__nguoi___0F624AF8">
+            <End Role="nguoi_dung" EntitySet="nguoi_dung" />
+            <End Role="khoa_hoc" EntitySet="khoa_hoc" />
+          </AssociationSet>
+          <AssociationSet Name="FK__khoa_hoc__nguoi___10566F31" Association="Self.FK__khoa_hoc__nguoi___10566F31">
+            <End Role="nguoi_dung" EntitySet="nguoi_dung" />
+            <End Role="khoa_hoc" EntitySet="khoa_hoc" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tien_do_h__id_kh__7A672E12" Association="Self.FK__tien_do_h__id_kh__7A672E12">
+            <End Role="khoa_hoc" EntitySet="khoa_hoc" />
+            <End Role="tien_do_hoc_tap" EntitySet="tien_do_hoc_tap" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tu_vung__id_khoa__07C12930" Association="Self.FK__tu_vung__id_khoa__07C12930">
+            <End Role="khoa_hoc" EntitySet="khoa_hoc" />
+            <End Role="tu_vung" EntitySet="tu_vung" />
+          </AssociationSet>
+          <AssociationSet Name="FK__nhat_ky_q__id_ad__160F4887" Association="Self.FK__nhat_ky_q__id_ad__160F4887">
+            <End Role="nguoi_dung" EntitySet="nguoi_dung" />
+            <End Role="nhat_ky_quan_tri" EntitySet="nhat_ky_quan_tri" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tien_do_h__id_ng__797309D9" Association="Self.FK__tien_do_h__id_ng__797309D9">
+            <End Role="nguoi_dung" EntitySet="nguoi_dung" />
+            <End Role="tien_do_hoc_tap" EntitySet="tien_do_hoc_tap" />
+          </AssociationSet>
         </EntityContainer>
       </Schema>
     </edmx:ConceptualModels>
@@ -70,28 +900,154 @@
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="wed_learn_eModelStoreContainer" CdmEntityContainer="wed_learn_eEntities">
-          <EntitySetMapping Name="ADMINs">
-            <EntityTypeMapping TypeName="wed_learn_eModel.ADMIN">
-              <MappingFragment StoreEntitySet="ADMIN">
-                <ScalarProperty Name="MaAdmin" ColumnName="MaAdmin" />
-                <ScalarProperty Name="TenDN" ColumnName="TenDN" />
-                <ScalarProperty Name="MatKhau" ColumnName="MatKhau" />
-                <ScalarProperty Name="HoTen" ColumnName="HoTen" />
-                <ScalarProperty Name="Email" ColumnName="Email" />
+          <EntitySetMapping Name="bai_giang_video">
+            <EntityTypeMapping TypeName="wed_learn_eModel.bai_giang_video">
+              <MappingFragment StoreEntitySet="bai_giang_video">
+                <ScalarProperty Name="id_video" ColumnName="id_video" />
+                <ScalarProperty Name="id_khoa_hoc" ColumnName="id_khoa_hoc" />
+                <ScalarProperty Name="tieu_de" ColumnName="tieu_de" />
+                <ScalarProperty Name="duong_dan_video" ColumnName="duong_dan_video" />
+                <ScalarProperty Name="thoi_luong_phut" ColumnName="thoi_luong_phut" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="NGUOIDUNGs">
-            <EntityTypeMapping TypeName="wed_learn_eModel.NGUOIDUNG">
-              <MappingFragment StoreEntitySet="NGUOIDUNG">
-                <ScalarProperty Name="MaNguoiDung" ColumnName="MaNguoiDung" />
-                <ScalarProperty Name="HoTen" ColumnName="HoTen" />
-                <ScalarProperty Name="TenDN" ColumnName="TenDN" />
-                <ScalarProperty Name="MatKhau" ColumnName="MatKhau" />
-                <ScalarProperty Name="Email" ColumnName="Email" />
-                <ScalarProperty Name="DienThoai" ColumnName="DienThoai" />
-                <ScalarProperty Name="DiaChi" ColumnName="DiaChi" />
-                <ScalarProperty Name="NgaySinh" ColumnName="NgaySinh" />
+          <EntitySetMapping Name="bai_kiem_tra_dau_vao">
+            <EntityTypeMapping TypeName="wed_learn_eModel.bai_kiem_tra_dau_vao">
+              <MappingFragment StoreEntitySet="bai_kiem_tra_dau_vao">
+                <ScalarProperty Name="id_bai_kiem_tra" ColumnName="id_bai_kiem_tra" />
+                <ScalarProperty Name="tieu_de" ColumnName="tieu_de" />
+                <ScalarProperty Name="mo_ta" ColumnName="mo_ta" />
+                <ScalarProperty Name="nguoi_tao" ColumnName="nguoi_tao" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="bai_tap_thuc_hanh">
+            <EntityTypeMapping TypeName="wed_learn_eModel.bai_tap_thuc_hanh">
+              <MappingFragment StoreEntitySet="bai_tap_thuc_hanh">
+                <ScalarProperty Name="id_bai_tap" ColumnName="id_bai_tap" />
+                <ScalarProperty Name="id_khoa_hoc" ColumnName="id_khoa_hoc" />
+                <ScalarProperty Name="tieu_de" ColumnName="tieu_de" />
+                <ScalarProperty Name="loai_bai_tap" ColumnName="loai_bai_tap" />
+                <ScalarProperty Name="noi_dung_cau_hoi" ColumnName="noi_dung_cau_hoi" />
+                <ScalarProperty Name="dap_an_mau" ColumnName="dap_an_mau" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="cap_do">
+            <EntityTypeMapping TypeName="wed_learn_eModel.cap_do">
+              <MappingFragment StoreEntitySet="cap_do">
+                <ScalarProperty Name="id_cap_do" ColumnName="id_cap_do" />
+                <ScalarProperty Name="ten_cap_do" ColumnName="ten_cap_do" />
+                <ScalarProperty Name="mo_ta" ColumnName="mo_ta" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="cau_hoi_kiem_tra">
+            <EntityTypeMapping TypeName="wed_learn_eModel.cau_hoi_kiem_tra">
+              <MappingFragment StoreEntitySet="cau_hoi_kiem_tra">
+                <ScalarProperty Name="id_cau_hoi" ColumnName="id_cau_hoi" />
+                <ScalarProperty Name="id_bai_kiem_tra" ColumnName="id_bai_kiem_tra" />
+                <ScalarProperty Name="noi_dung_cau_hoi" ColumnName="noi_dung_cau_hoi" />
+                <ScalarProperty Name="dap_an_a" ColumnName="dap_an_a" />
+                <ScalarProperty Name="dap_an_b" ColumnName="dap_an_b" />
+                <ScalarProperty Name="dap_an_c" ColumnName="dap_an_c" />
+                <ScalarProperty Name="dap_an_d" ColumnName="dap_an_d" />
+                <ScalarProperty Name="dap_an_dung" ColumnName="dap_an_dung" />
+                <ScalarProperty Name="nguoi_tao" ColumnName="nguoi_tao" />
+                <ScalarProperty Name="nguoi_cap_nhat" ColumnName="nguoi_cap_nhat" />
+                <ScalarProperty Name="ngay_cap_nhat" ColumnName="ngay_cap_nhat" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ket_qua_kiem_tra">
+            <EntityTypeMapping TypeName="wed_learn_eModel.ket_qua_kiem_tra">
+              <MappingFragment StoreEntitySet="ket_qua_kiem_tra">
+                <ScalarProperty Name="id_ket_qua" ColumnName="id_ket_qua" />
+                <ScalarProperty Name="id_nguoi_dung" ColumnName="id_nguoi_dung" />
+                <ScalarProperty Name="id_bai_kiem_tra" ColumnName="id_bai_kiem_tra" />
+                <ScalarProperty Name="diem_so" ColumnName="diem_so" />
+                <ScalarProperty Name="id_cap_do_dat_duoc" ColumnName="id_cap_do_dat_duoc" />
+                <ScalarProperty Name="ngay_lam_bai" ColumnName="ngay_lam_bai" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="khoa_hoc">
+            <EntityTypeMapping TypeName="wed_learn_eModel.khoa_hoc">
+              <MappingFragment StoreEntitySet="khoa_hoc">
+                <ScalarProperty Name="id_khoa_hoc" ColumnName="id_khoa_hoc" />
+                <ScalarProperty Name="id_cap_do" ColumnName="id_cap_do" />
+                <ScalarProperty Name="ten_khoa_hoc" ColumnName="ten_khoa_hoc" />
+                <ScalarProperty Name="duong_dan_icon" ColumnName="duong_dan_icon" />
+                <ScalarProperty Name="mo_ta" ColumnName="mo_ta" />
+                <ScalarProperty Name="trang_thai_hoat_dong" ColumnName="trang_thai_hoat_dong" />
+                <ScalarProperty Name="nguoi_tao" ColumnName="nguoi_tao" />
+                <ScalarProperty Name="nguoi_cap_nhat" ColumnName="nguoi_cap_nhat" />
+                <ScalarProperty Name="ngay_cap_nhat" ColumnName="ngay_cap_nhat" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="nguoi_dung">
+            <EntityTypeMapping TypeName="wed_learn_eModel.nguoi_dung">
+              <MappingFragment StoreEntitySet="nguoi_dung">
+                <ScalarProperty Name="id_nguoi_dung" ColumnName="id_nguoi_dung" />
+                <ScalarProperty Name="ten_dang_nhap" ColumnName="ten_dang_nhap" />
+                <ScalarProperty Name="mat_khau" ColumnName="mat_khau" />
+                <ScalarProperty Name="ho_va_ten" ColumnName="ho_va_ten" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="vai_tro" ColumnName="vai_tro" />
+                <ScalarProperty Name="id_cap_do_hien_tai" ColumnName="id_cap_do_hien_tai" />
+                <ScalarProperty Name="ngay_tao" ColumnName="ngay_tao" />
+                <ScalarProperty Name="MatKhauNL" ColumnName="MatKhauNL" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="nhat_ky_quan_tri">
+            <EntityTypeMapping TypeName="wed_learn_eModel.nhat_ky_quan_tri">
+              <MappingFragment StoreEntitySet="nhat_ky_quan_tri">
+                <ScalarProperty Name="id_nhat_ky" ColumnName="id_nhat_ky" />
+                <ScalarProperty Name="id_admin" ColumnName="id_admin" />
+                <ScalarProperty Name="hanh_dong" ColumnName="hanh_dong" />
+                <ScalarProperty Name="ten_bang_tac_dong" ColumnName="ten_bang_tac_dong" />
+                <ScalarProperty Name="id_ban_ghi_tac_dong" ColumnName="id_ban_ghi_tac_dong" />
+                <ScalarProperty Name="chi_tiet_cu" ColumnName="chi_tiet_cu" />
+                <ScalarProperty Name="chi_tiet_moi" ColumnName="chi_tiet_moi" />
+                <ScalarProperty Name="ngay_thuc_hien" ColumnName="ngay_thuc_hien" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="wed_learn_eModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tien_do_hoc_tap">
+            <EntityTypeMapping TypeName="wed_learn_eModel.tien_do_hoc_tap">
+              <MappingFragment StoreEntitySet="tien_do_hoc_tap">
+                <ScalarProperty Name="id_tien_do" ColumnName="id_tien_do" />
+                <ScalarProperty Name="id_nguoi_dung" ColumnName="id_nguoi_dung" />
+                <ScalarProperty Name="id_khoa_hoc" ColumnName="id_khoa_hoc" />
+                <ScalarProperty Name="phan_tram_hoan_thanh" ColumnName="phan_tram_hoan_thanh" />
+                <ScalarProperty Name="trang_thai" ColumnName="trang_thai" />
+                <ScalarProperty Name="lan_truy_cap_cuoi" ColumnName="lan_truy_cap_cuoi" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tu_vung">
+            <EntityTypeMapping TypeName="wed_learn_eModel.tu_vung">
+              <MappingFragment StoreEntitySet="tu_vung">
+                <ScalarProperty Name="id_tu_vung" ColumnName="id_tu_vung" />
+                <ScalarProperty Name="id_khoa_hoc" ColumnName="id_khoa_hoc" />
+                <ScalarProperty Name="tu_tieng_anh" ColumnName="tu_tieng_anh" />
+                <ScalarProperty Name="loai_tu" ColumnName="loai_tu" />
+                <ScalarProperty Name="nghia_tieng_viet" ColumnName="nghia_tieng_viet" />
+                <ScalarProperty Name="phien_am" ColumnName="phien_am" />
+                <ScalarProperty Name="vi_du" ColumnName="vi_du" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
