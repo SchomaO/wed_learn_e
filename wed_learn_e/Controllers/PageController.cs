@@ -139,5 +139,10 @@ namespace wed_learn_e.Controllers
         {
             return View();
         }
+        public ActionResult _LuyenViet()
+        {
+            return View();
+        }
+
     }
 }
