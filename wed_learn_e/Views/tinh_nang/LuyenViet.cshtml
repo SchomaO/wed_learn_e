@@ -1,0 +1,198 @@
+﻿@model wed_learn_e.Models.bai_luyen_viet
+
+@{
+    ViewBag.Title = Model.tieu_de;
+    Layout = "~/Views/Shared/_Layoutcauhoi.cshtml";
+    var cauHois = ViewBag.DanhSachCauHoi as List<wed_learn_e.Models.cau_hoi_luyen_viet>;
+}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<style>
+    body {
+        background: #f4f9ff;
+        font-family: Arial;
+    }
+
+    .write-wrapper {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+
+    .header-box {
+        background: white;
+        border-radius: 16px;
+        padding: 30px;
+        text-align: center;
+        margin-bottom: 30px;
+        border-top: 5px solid #0d6efd;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    .header-title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .question-card {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        margin-bottom: 20px;
+        border-left: 5px solid #ff9800;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        transition: 0.3s;
+    }
+
+        .question-card.success {
+            border-left-color: #28a745;
+            background: #f4fff6;
+        }
+
+        .question-card.error {
+            border-left-color: #dc3545;
+            background: #fff4f4;
+        }
+
+    .vietnamese-text {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+
+    .english-input {
+        width: 100%;
+        padding: 15px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+        outline: none;
+        box-sizing: border-box;
+    }
+
+        .english-input:focus {
+            border-color: #0d6efd;
+        }
+
+    .feedback {
+        font-size: 14px;
+        font-weight: bold;
+        margin-top: 10px;
+        display: none;
+    }
+
+        .feedback.correct {
+            color: #28a745;
+            display: block;
+        }
+
+        .feedback.wrong {
+            color: #dc3545;
+            display: block;
+        }
+
+    .btn-submit {
+        width: 100%;
+        background: #0d6efd;
+        color: white;
+        padding: 15px;
+        font-size: 18px;
+        font-weight: bold;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-top: 20px;
+        transition: 0.3s;
+    }
+
+        .btn-submit:hover {
+            background: #0b5ed7;
+        }
+</style>
+
+<div class="write-wrapper">
+    <div class="header-box">
+        <div class="header-title">✍️ @Model.tieu_de</div>
+        <div style="color: #666;">@Model.mo_ta</div>
+    </div>
+
+    <div id="exerciseForm">
+        @{ int i = 1; }
+        @foreach (var q in cauHois)
+        {
+            <div class="question-card">
+                <div class="vietnamese-text">Câu @i: @q.cau_tieng_viet</div>
+
+                <input type="text" class="english-input" data-answer="@q.dap_an_tieng_anh" placeholder="Gõ tiếng Anh vào đây..." autocomplete="off">
+
+                <div class="feedback"></div>
+            </div>
+            i++;
+        }
+
+        <button type="button" class="btn-submit" id="btnNopBai" onclick="kiemTraDapAn()">Kiểm tra kết quả</button>
+    </div>
+</div>
+
+<script>
+    function kiemTraDapAn() {
+        let inputs = document.querySelectorAll('.english-input');
+        let allCorrect = true;
+
+        inputs.forEach(function (input) {
+            let card = input.closest('.question-card');
+            let feedback = card.querySelector('.feedback');
+
+            // Xóa dấu câu, viết thường, loại bỏ khoảng trắng thừa
+            let cleanStr = (str) => str.toLowerCase().replace(/[.,!?]/g, "").trim().replace(/\s+/g, " ");
+
+            let userAns = cleanStr(input.value);
+            let correctAns = cleanStr(input.getAttribute('data-answer'));
+
+            if (userAns === correctAns) {
+                card.classList.remove('error');
+                card.classList.add('success');
+                feedback.className = 'feedback correct';
+                feedback.innerHTML = '✔ Chính xác!';
+            } else {
+                card.classList.remove('success');
+                card.classList.add('error');
+                feedback.className = 'feedback wrong';
+                feedback.innerHTML = '✘ Chưa đúng (Đáp án: ' + input.getAttribute('data-answer') + ')';
+                allCorrect = false;
+            }
+        });
+
+        // NẾU LÀM ĐÚNG HẾT 100% CÁC CÂU
+        if (allCorrect) {
+            // Đổi giao diện nút bấm
+            let btn = document.getElementById('btnNopBai');
+            btn.innerHTML = "Đang lưu kết quả...";
+            btn.style.background = "#28a745";
+            btn.disabled = true;
+
+            // GỌI AJAX VỀ SERVER ĐỂ LƯU VÀO DATABASE
+            $.ajax({
+                url: '@Url.Action("LuuKetQuaViet", "tinh_nang")', // Tên Controller của bạn
+                type: 'POST',
+                data: { id_bai_viet: @Model.id_bai_viet },
+                success: function (res) {
+                    if (res.success) {
+                        alert("Tuyệt vời! Bạn đã hoàn thành bài tập.");
+                        // Đá người dùng về lại danh sách để chiêm ngưỡng viền xanh
+                        window.location.href = '@Url.Action("list_luyen_viet", "tinh_nang")';
+                    } else {
+                        alert("Lỗi: " + res.message);
+                        btn.disabled = false;
+                    }
+                },
+                error: function () {
+                    alert("Có lỗi xảy ra khi lưu kết nối tới máy chủ.");
+                    btn.disabled = false;
+                }
+            });
+        }
+    }
+</script>

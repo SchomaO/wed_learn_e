@@ -1,0 +1,202 @@
+﻿@model wed_learn_e.Models.cau_hoi_kiem_tra
+@{
+    ViewBag.Title = "Xem lại bài làm";
+    Layout = "~/Views/Shared/_Layoutcauhoi.cshtml";
+
+    string userAnswer = ViewBag.UserAnswer as string;
+    // Đảm bảo so sánh không bị lỗi khoảng trắng hoặc chữ hoa/chữ thường
+    string correctAnswer = Model.dap_an_dung?.Trim().ToUpper();
+}
+
+<style>
+    body {
+        background: linear-gradient(177deg, #dcdcdc, #ffffff, #bfe7ff, #d6f4ff, #006c97);
+        font-family: Arial;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding-top: 90px;
+        margin: 0;
+        min-height: 100vh;
+    }
+
+    .container {
+        display: flex;
+        gap: 30px;
+    }
+
+    .quiz-box {
+        background: white;
+        width: 520px;
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    .question {
+        font-size: 22px;
+        font-weight: bold;
+        margin-bottom: 25px;
+        color: #2b4a5a;
+    }
+
+    .answers {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .answer {
+        padding: 15px;
+        border-radius: 12px;
+        border: 2px solid #ddd;
+        background: #fdfdfd;
+        color: #555;
+    }
+
+        /* CSS RIÊNG CHO TRẠNG THÁI ĐÚNG / SAI */
+        .answer.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+            font-weight: bold;
+        }
+
+        .answer.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+    /* Mục lục */
+    .question-list {
+        background: white;
+        width: 220px;
+        padding: 20px;
+        border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+        .question-list h3 {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #2b4a5a;
+        }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(5,1fr);
+        gap: 10px;
+    }
+
+    .q-number {
+        background: #eef8ff;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-decoration: none;
+        color: #333;
+        font-weight: bold;
+    }
+
+        .q-number:hover {
+            background: #dff3ff;
+        }
+
+    .nav-question {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 25px;
+    }
+
+    .btn-nav {
+        text-decoration: none;
+        background: #bfe9ff;
+        padding: 10px 18px;
+        border-radius: 10px;
+        color: #1b4d63;
+        font-weight: bold;
+    }
+
+        .btn-nav:hover {
+            background: #9edcff;
+        }
+
+    .btn-finish {
+        display: block;
+        text-align: center;
+        margin-top: 20px;
+        background: #28a745;
+        color: white;
+        padding: 12px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: bold;
+    }
+</style>
+
+<div class="container">
+
+    <div class="quiz-box">
+        <div class="question">
+            Câu @(ViewBag.Index + 1): @Model.noi_dung_cau_hoi
+        </div>
+
+        <div class="answers">
+            <div class="answer @(correctAnswer == "A" ? "correct" : (userAnswer == "A" ? "wrong" : ""))">
+                A. @Model.dap_an_a
+                @(correctAnswer == "A" ? " ✔️ (Đáp án đúng)" : (userAnswer == "A" ? " ❌ (Bạn chọn sai)" : ""))
+            </div>
+
+            <div class="answer @(correctAnswer == "B" ? "correct" : (userAnswer == "B" ? "wrong" : ""))">
+                B. @Model.dap_an_b
+                @(correctAnswer == "B" ? " ✔️ (Đáp án đúng)" : (userAnswer == "B" ? " ❌ (Bạn chọn sai)" : ""))
+            </div>
+
+            <div class="answer @(correctAnswer == "C" ? "correct" : (userAnswer == "C" ? "wrong" : ""))">
+                C. @Model.dap_an_c
+                @(correctAnswer == "C" ? " ✔️ (Đáp án đúng)" : (userAnswer == "C" ? " ❌ (Bạn chọn sai)" : ""))
+            </div>
+
+            <div class="answer @(correctAnswer == "D" ? "correct" : (userAnswer == "D" ? "wrong" : ""))">
+                D. @Model.dap_an_d
+                @(correctAnswer == "D" ? " ✔️ (Đáp án đúng)" : (userAnswer == "D" ? " ❌ (Bạn chọn sai)" : ""))
+            </div>
+        </div>
+
+        <div class="nav-question">
+            @if (ViewBag.Index > 0)
+            {
+                <a href="@Url.Action("review", "bai_test", new { index = ViewBag.Index - 1 })" class="btn-nav">← Câu trước</a>
+            }
+            else
+            {
+                <div></div>}
+
+            @if (ViewBag.Index < ViewBag.Total - 1)
+            {
+                <a href="@Url.Action("review", "bai_test", new { index = ViewBag.Index + 1 })" class="btn-nav">Câu sau →</a>
+            }
+        </div>
+
+        <a href="@Url.Action("khoadaotao", "Page")" class="btn-finish">Kết thúc xem lại</a>
+
+    </div>
+
+    <div class="question-list">
+        <h3>Danh sách câu hỏi</h3>
+        <div class="grid">
+            @for (int j = 0; j < ViewBag.Total; j++)
+            {
+                <a href="@Url.Action("review", "bai_test", new { index = j })"
+                   class="q-number"
+                   style="@(ViewBag.Index == j ? "background:#6ec8ff; color:white;" : "")">
+                    @(j + 1)
+                </a>
+            }
+        </div>
+    </div>
+
+</div>

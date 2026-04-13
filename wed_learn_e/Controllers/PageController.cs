@@ -11,6 +11,22 @@ namespace wed_learn_e.Controllers
     public class PageController : Controller
     {
         // GET: bai_test
+        wed_learn_eEntities db = new wed_learn_eEntities();
+        public ActionResult thong_tin_khoa_hoc(int? id)
+        {
+            // Nếu không có id truyền vào thì đuổi về trang chọn cấp độ
+            if (id == null) return RedirectToAction("khoadaotao");
+
+            // Lưu lại id_cap_do_hien_tai vào Session để các trang sau (Từ vựng, Luyện nghe...) biết đường lấy bài
+            Session["id_cap_do_hien_tai"] = id;
+
+            // Lấy tên cấp độ để hiển thị ra View cho đẹp (Ví dụ: Khóa Học: Beginner (A1))
+            var capDo = db.cap_do.FirstOrDefault(x => x.id_cap_do == id);
+            ViewBag.TenCapDo = capDo != null ? capDo.ten_cap_do : "Khóa Học";
+            ViewBag.IdCapDo = id; // Truyền ID sang View để gắp vào link
+
+            return View(); // Không cần truyền List<khoa_hoc> sang nữa
+        }
         public ActionResult Index()
         {
             return View();
@@ -25,7 +41,11 @@ namespace wed_learn_e.Controllers
         }
         public ActionResult khoadaotao()
         {
-            return View();
+            // Lấy toàn bộ danh sách 6 cấp độ từ database (A1 -> C2)
+            var danhSachCapDo = db.cap_do.ToList();
+
+            // Truyền danh sách này ra View
+            return View(danhSachCapDo);
         }
 
         //Khóa học bổ sung 

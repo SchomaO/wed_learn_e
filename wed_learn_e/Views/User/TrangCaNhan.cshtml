@@ -1,0 +1,398 @@
+﻿@model wed_learn_e.Models.nguoi_dung
+
+@{
+    ViewBag.Title = "Trang Cá Nhân";
+    Layout = "~/Views/Shared/_Layoutcauhoi.cshtml";
+    var danhSachTienDo = ViewBag.DanhSachTienDo as List<wed_learn_e.Models.tien_do_hoc_tap> ?? new List<wed_learn_e.Models.tien_do_hoc_tap>();
+
+    
+        
+}
+
+<style>
+    body {
+        background: #f4f9ff;
+        font-family: Arial;
+    }
+
+    .profile-container {
+        display: flex;
+        max-width: 1100px; /* Tăng chiều rộng một chút để chứa 3 cột cho đẹp */
+        margin: 40px auto;
+        gap: 20px;
+    }
+
+    /* MENU BÊN TRÁI */
+    .sidebar {
+        width: 250px;
+        background: white;
+        border-radius: 12px;
+        padding: 20px 0;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        height: fit-content;
+    }
+
+    .user-avatar {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+        .user-avatar img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #e9ecef;
+        }
+
+        .user-avatar h3 {
+            margin: 10px 0 0 0;
+            color: #333;
+            font-size: 18px;
+        }
+
+    .menu-item {
+        display: block;
+        padding: 15px 20px;
+        color: #555;
+        text-decoration: none;
+        font-weight: bold;
+        border-left: 4px solid transparent;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+        .menu-item:hover, .menu-item.active {
+            background: #f4f9ff;
+            color: #1a73e8;
+            border-left-color: #1a73e8;
+        }
+
+    /* NỘI DUNG BÊN PHẢI */
+    .content-area {
+        flex: 1;
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    .tab-content {
+        display: none;
+    }
+
+        .tab-content.active {
+            display: block;
+        }
+
+    /* ==========================================
+       CSS CHO BẢNG KANBAN (3 CỘT KHÓA HỌC)
+       ========================================== */
+    .kanban-board {
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+    }
+
+    .kanban-col {
+        flex: 1;
+        background: #f4f5f7;
+        border-radius: 12px;
+        padding: 15px;
+        min-height: 400px;
+    }
+
+    .col-header {
+        text-align: center;
+        font-weight: bold;
+        padding: 10px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        color: white;
+    }
+
+    .header-chua {
+        background: #6c757d;
+    }
+
+    .header-dang {
+        background: #f39c12;
+    }
+
+    .header-xong {
+        background: #28a745;
+    }
+
+    .kanban-card {
+        background: white;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        cursor: pointer;
+        transition: 0.2s;
+        border-left: 5px solid transparent;
+    }
+
+        .kanban-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+    .card-chua {
+        border-left-color: #6c757d;
+    }
+
+    .card-dang {
+        border-left-color: #f39c12;
+    }
+
+    .card-xong {
+        border-left-color: #28a745;
+    }
+
+    .card-title {
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 8px;
+        font-size: 16px;
+    }
+
+    .progress-bar-bg {
+        background: #e9ecef;
+        width: 100%;
+        height: 8px;
+        border-radius: 4px;
+        overflow: hidden;
+        margin: 10px 0;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: #1a73e8;
+    }
+
+    /* Chi tiết ẩn */
+    .card-details {
+        display: none;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px dashed #ddd;
+        font-size: 14px;
+    }
+
+    .list-done {
+        color: #28a745;
+        margin-bottom: 10px;
+    }
+
+    .list-pending {
+        color: #dc3545;
+    }
+
+    .detail-item {
+        margin-bottom: 5px;
+        padding-left: 10px;
+        position: relative;
+    }
+
+        .detail-item::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+        }
+</style>
+
+<div class="profile-container">
+    <div class="sidebar">
+        <div class="user-avatar">
+            <img src="https://ui-avatars.com/api/?name=@Model.ho_va_ten&background=0D8ABC&color=fff" alt="Avatar">
+            <h3>@Model.ho_va_ten</h3>
+        </div>
+        <div class="menu-item active" onclick="switchTab('thong-tin', this)">👤 Thông tin cá nhân</div>
+        <div class="menu-item" onclick="switchTab('doi-mat-khau', this)">🔑 Đổi mật khẩu</div>
+        <div class="menu-item" onclick="switchTab('khoa-hoc', this)">📚 Lộ trình học tập</div>
+    </div>
+
+    <div class="content-area">
+
+        <div id="thong-tin" class="tab-content active">
+            <h2 style="color:#1a73e8; margin-top:0;">Thông Tin Cá Nhân</h2>
+            <p><b>Họ và tên:</b> @Model.ho_va_ten</p>
+            <p><b>Tài khoản:</b> @Model.ten_dang_nhap</p>
+            <p><b>Ngày tham gia:</b> @Model.ngay_tao</p>
+        </div>
+
+        <div id="doi-mat-khau" class="tab-content @(TempData["ActiveTab"] != null && TempData["ActiveTab"].ToString() == "doi-mat-khau" ? "active" : "")">
+            <h2 style="color:#1a73e8; margin-top:0;">Đổi Mật Khẩu</h2>
+
+            @if (TempData["LoiDoiMK"] != null)
+            {
+                <div style="color: #dc3545; background: #f8d7da; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-weight: bold;">
+                    ❌ @TempData["LoiDoiMK"]
+                </div>
+            }
+            @if (TempData["ThanhCongMK"] != null)
+            {
+                <div style="color: #155724; background: #d4edda; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-weight: bold;">
+                    ✔ @TempData["ThanhCongMK"]
+                </div>
+            }
+
+            <form action="@Url.Action("DoiMatKhau", "User")" method="post" onsubmit="return kiemTraSubmit()">
+                <div style="margin-bottom:15px;">
+                    <label>Mật khẩu cũ:</label><br>
+                    <input type="password" name="mat_khau_cu" class="form-control" style="width:100%; padding:10px; border: 1px solid #ccc; border-radius: 5px;" required>
+                </div>
+
+                <div style="margin-bottom:15px;">
+                    <label>Mật khẩu mới (Ít nhất 6 ký tự):</label><br>
+                    <input type="password" id="mat_khau_moi" name="mat_khau_moi" class="form-control" style="width:100%; padding:10px; border: 1px solid #ccc; border-radius: 5px;" required minlength="6" onkeyup="kiemTraKhopMK()">
+                </div>
+
+                <div style="margin-bottom:15px;">
+                    <label>Xác nhận lại mật khẩu mới:</label><br>
+                    <input type="password" id="xac_nhan_mk" name="xac_nhan_mk" class="form-control" style="width:100%; padding:10px; border: 1px solid #ccc; border-radius: 5px;" required minlength="6" onkeyup="kiemTraKhopMK()">
+
+                    <div id="loi-xac-nhan" style="color:red; font-size: 13px; display:none; margin-top: 5px; font-weight: bold;">
+                        ❌ Mật khẩu xác nhận chưa khớp!
+                    </div>
+                </div>
+
+                <button type="submit" id="btn-luu-mk" style="background:#1a73e8; color:white; padding:10px 20px; border:none; border-radius:5px; font-weight:bold; cursor:pointer; transition: 0.3s;">
+                    Lưu thay đổi
+                </button>
+            </form>
+        </div>
+
+        <script>
+            // Hàm này chạy liên tục mỗi khi người dùng gõ phím
+            function kiemTraKhopMK() {
+                var mkMoi = document.getElementById("mat_khau_moi").value;
+                var mkXacNhan = document.getElementById("xac_nhan_mk").value;
+                var thongBaoLoi = document.getElementById("loi-xac-nhan");
+                var btnLuu = document.getElementById("btn-luu-mk");
+
+                // Chỉ báo lỗi khi ô xác nhận đã được gõ ký tự nào đó
+                if (mkXacNhan.length > 0) {
+                    if (mkMoi !== mkXacNhan) {
+                        thongBaoLoi.style.display = "block"; // Hiện chữ đỏ
+                        btnLuu.style.opacity = "0.5"; // Làm mờ nút
+                        btnLuu.style.pointerEvents = "none"; // Khóa nút bấm
+                    } else {
+                        thongBaoLoi.style.display = "none"; // Ẩn chữ đỏ
+                        btnLuu.style.opacity = "1"; // Nút sáng lại
+                        btnLuu.style.pointerEvents = "auto"; // Mở khóa nút bấm
+                    }
+                } else {
+                    thongBaoLoi.style.display = "none";
+                    btnLuu.style.opacity = "1";
+                    btnLuu.style.pointerEvents = "auto";
+                }
+            }
+
+            // Hàm chốt chặn cuối cùng khi bấm nút Submit
+            function kiemTraSubmit() {
+                var mkMoi = document.getElementById("mat_khau_moi").value;
+                var mkXacNhan = document.getElementById("xac_nhan_mk").value;
+
+                if (mkMoi !== mkXacNhan) {
+                    document.getElementById("xac_nhan_mk").focus();
+                    return false; // Chặn form không cho gửi đi
+                }
+                return true; // Hợp lệ thì cho đi
+            }
+        </script>
+
+        <div id="khoa-hoc" class="tab-content">
+            <h2 style="color:#1a73e8; margin-top:0;">Lộ Trình Học Tập Của Bạn</h2>
+            <p style="color:#666; margin-bottom:20px;">Theo dõi và quản lý các khóa học. Bấm vào từng thẻ để xem chi tiết bài học.</p>
+
+            <div class="kanban-board">
+                @{
+                    // Gọi dữ liệu Cấp độ ra
+                    var danhSachCapDo = ViewBag.DanhSachCapDo as List<wed_learn_e.Models.cap_do> ?? new List<wed_learn_e.Models.cap_do>();
+
+                    var dictTrangThai = ViewBag.DictTrangThai as Dictionary<int, string> ?? new Dictionary<int, string>();
+                    var dictPhanTram = ViewBag.DictPhanTram as Dictionary<int, decimal> ?? new Dictionary<int, decimal>();
+                    var dictTongBai = ViewBag.DictTongBai as Dictionary<int, int> ?? new Dictionary<int, int>();
+                    var dictDaLam = ViewBag.DictDaLam as Dictionary<int, int> ?? new Dictionary<int, int>();
+                    var dictChiTietDaLam = ViewBag.DictChiTietDaLam as Dictionary<int, List<string>> ?? new Dictionary<int, List<string>>();
+                    var dictChiTietChuaLam = ViewBag.DictChiTietChuaLam as Dictionary<int, List<string>> ?? new Dictionary<int, List<string>>();
+
+                    string[] trangThais = { "chua_bat_dau", "dang_hoc", "da_hoan_thanh" };
+                    string[] tieuDes = { "CHƯA BẮT ĐẦU", "ĐANG HỌC", "ĐÃ HOÀN THÀNH" };
+                    string[] classHeaders = { "header-chua", "header-dang", "header-xong" };
+                    string[] classCards = { "card-chua", "card-dang", "card-xong" };
+                }
+
+                @for (int i = 0; i < 3; i++)
+                {
+                    <div class="kanban-col">
+                        <div class="col-header @classHeaders[i]">@tieuDes[i]</div>
+
+                        @foreach (var cap in danhSachCapDo.Where(c => dictTrangThai.ContainsKey(c.id_cap_do) && dictTrangThai[c.id_cap_do] == trangThais[i]))
+                        {
+                            int idCap = cap.id_cap_do;
+
+                            <div class="kanban-card @classCards[i]" onclick="toggleDetails(@idCap)">
+                                <div class="card-title">@cap.ten_cap_do</div>
+
+                                <div style="font-size: 12px; color: #777;">Tiến độ: @dictDaLam[idCap] / @dictTongBai[idCap] bài (@dictPhanTram[idCap]%)</div>
+
+                                <div class="progress-bar-bg">
+                                    <div class="progress-fill @(dictTrangThai[idCap] == "da_hoan_thanh" ? "header-xong" : "")" style="width: @dictPhanTram[idCap].ToString().Replace(',','.')%;"></div>
+                                </div>
+
+                                <div class="card-details" id="details_@idCap">
+
+                                    @if (dictChiTietDaLam[idCap].Count > 0)
+                                    {
+                                        <div class="list-done">
+                                            <strong>✔ Bài tập Đã làm:</strong>
+                                            @foreach (var b in dictChiTietDaLam[idCap])
+                                            {<div class="detail-item">@b</div>}
+                                        </div>
+                                    }
+
+                                    @if (dictChiTietChuaLam[idCap].Count > 0)
+                                    {
+                                        <div class="list-pending">
+                                            <strong>⏳ Bài tập Chưa làm:</strong>
+                                            @foreach (var b in dictChiTietChuaLam[idCap])
+                                            {<div class="detail-item">@b</div>}
+                                        </div>
+                                    }
+
+                                    <a href="@Url.Action("khoadaotao", "Page")" style="display:block; text-align:center; background:#1a73e8; color:white; padding:8px; border-radius:5px; text-decoration:none; margin-top:15px; font-weight:bold;">Tới cấp độ này</a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // Chuyển Tab bên trái
+    function switchTab(tabId, element) {
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        element.classList.add('active');
+    }
+
+    // Ẩn/Hiện chi tiết bài tập của Khóa học
+    function toggleDetails(idKhoa) {
+        var detailDiv = document.getElementById("details_" + idKhoa);
+        if (detailDiv.style.display === "block") {
+            detailDiv.style.display = "none";
+        } else {
+            // Đóng các thẻ khác đang mở
+            document.querySelectorAll('.card-details').forEach(el => el.style.display = 'none');
+            detailDiv.style.display = "block";
+        }
+    }
+</script>

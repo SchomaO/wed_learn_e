@@ -1,0 +1,255 @@
+﻿@{
+    ViewBag.Title = "Mini Test Ngày " + ViewBag.NgayTest;
+    Layout = "~/Views/Shared/_Layoutcauhoi.cshtml";
+
+    bool isSubmitted = ViewBag.IsSubmitted != null && ViewBag.IsSubmitted;
+
+    var tracNghiem = ViewBag.TracNghiem as List<wed_learn_e.Models.cau_hoi_kiem_tra>;
+    var sapXep = ViewBag.SapXep as List<wed_learn_e.Models.cau_hoi_sap_xep>;
+    var scrambledWords = ViewBag.ScrambledWords as Dictionary<int, List<string>>;
+
+    var uAnswersTN = ViewBag.UserAnswersTN as Dictionary<int, string>;
+    var uAnswersSX = ViewBag.UserAnswersSX as Dictionary<int, string>;
+
+    int cauSo = 1; // Biến đếm thứ tự câu chung cho toàn bài
+}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+
+<style>
+    body {
+        background: #f4f9ff;
+        font-family: Arial;
+    }
+
+    .test-wrapper {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+
+    .header-box {
+        background: white;
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        text-align: center;
+        margin-bottom: 30px;
+        border-top: 5px solid #ff9800;
+    }
+
+    .header-title {
+        font-size: 28px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    /* Box dùng chung cho cả 2 loại câu hỏi */
+    .question-block {
+        background: white;
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        margin-bottom: 25px;
+        transition: 0.3s;
+    }
+
+    .question-title {
+        font-size: 18px;
+        font-weight: bold;
+        color: #1a73e8;
+        margin-bottom: 15px;
+    }
+
+    /* CSS Trắc Nghiệm */
+    .answer-label {
+        display: block;
+        background: #f8f9fa;
+        padding: 12px 15px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        border: 1px solid #e9ecef;
+    }
+
+    /* CSS Kéo Thả */
+    .word-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        min-height: 50px;
+        padding: 15px;
+        background: rgba(0,0,0,0.03);
+        border-radius: 8px;
+    }
+
+    .word-block {
+        background: white;
+        padding: 10px 18px;
+        border-radius: 6px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #333;
+        box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+        cursor: grab;
+        user-select: none;
+        position: relative;
+    }
+
+    /* CSS Báo đúng sai (C# điều khiển) */
+    .correct-answer {
+        background: #d4edda !important;
+        border-color: #28a745 !important;
+        color: #155724;
+        font-weight: bold;
+    }
+
+    .wrong-answer {
+        background: #f8d7da !important;
+        border-color: #dc3545 !important;
+        color: #721c24;
+    }
+
+    .box-success {
+        border-left: 6px solid #28a745;
+        background: #f4fff6;
+    }
+
+    .box-error {
+        border-left: 6px solid #dc3545;
+        background: #fff4f4;
+    }
+
+    .feedback {
+        font-weight: bold;
+        margin-top: 15px;
+        display: none;
+    }
+
+    .box-success .feedback {
+        color: #28a745;
+        display: block;
+    }
+
+    .box-error .feedback {
+        color: #dc3545;
+        display: block;
+    }
+
+    .btn-submit {
+        display: block;
+        width: 100%;
+        background: #ff9800;
+        color: white;
+        padding: 15px;
+        font-size: 18px;
+        font-weight: bold;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    .result-board {
+        background: #e6f4ff;
+        border: 2px solid #1a73e8;
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .score-text {
+        font-size: 24px;
+        font-weight: bold;
+        color: #1a73e8;
+    }
+</style>
+
+<div class="test-wrapper">
+    <div class="header-box">
+        <div class="header-title">🏆 Mini Test Hàng Ngày</div>
+        <div style="display: inline-block; background: #fff4e6; color: #ff9800; padding: 5px 15px; border-radius: 20px; font-weight: bold;">📅 Ngày: @ViewBag.NgayTest</div>
+    </div>
+
+    @if (isSubmitted)
+    {
+        <div class="result-board">
+            <div class="score-text">🎉 Điểm của bạn: @ViewBag.Score / @ViewBag.Total</div>
+            <a href="@Url.Action("MiniTestHangNgay", "tinh_nang", new { id_cap_do = ViewBag.IdCapDo })" class="btn-submit" style="width: 200px; margin: 15px auto 0; background: #1a73e8;">Làm lại bài này</a>
+        </div>
+    }
+
+    <form action="@Url.Action("MiniTestHangNgay", "tinh_nang")" method="post" onsubmit="gatherAnswers()">
+        <input type="hidden" name="id_cap_do" value="@ViewBag.IdCapDo" />
+
+        
+
+        @if (sapXep != null)
+        {
+            foreach (var q in sapXep)
+            {
+                var words = scrambledWords[q.id_cau_hoi];
+
+                string cssClass = "";
+                string feedbackMsg = "";
+                if (isSubmitted)
+                {
+                    string uAns = uAnswersSX[q.id_cau_hoi];
+                    string cleanUser = System.Text.RegularExpressions.Regex.Replace(uAns.ToLower(), @"\s+", " ").Trim();
+                    string cleanCorrect = System.Text.RegularExpressions.Regex.Replace(q.dap_an_dung.ToLower(), @"\s+", " ").Trim();
+
+                    if (cleanUser == cleanCorrect) { cssClass = "box-success"; feedbackMsg = "✔ Chính xác!"; }
+                    else { cssClass = "box-error"; feedbackMsg = "✘ Sai (Đáp án: " + q.dap_an_dung + ")"; }
+                }
+
+                <div class="question-block @cssClass">
+                    <div class="question-title" style="color:#ff9800">Câu @cauSo: @q.cau_tieng_viet</div>
+                    <div style="font-size: 14px; margin-bottom: 10px;">Sắp xếp lại các từ bên dưới:</div>
+
+                    <div class="word-container" id="container_@q.id_cau_hoi">
+                        @foreach (var word in words)
+                        {
+                            if (!string.IsNullOrWhiteSpace(word))
+                            {
+                                <div class="word-block">@word</div>
+                            }
+                        }
+                    </div>
+
+                    <input type="hidden" id="input_@q.id_cau_hoi" name="sapxep_@q.id_cau_hoi" value="" />
+                    <div class="feedback">@feedbackMsg</div>
+                </div>
+                cauSo++;
+            }
+        }
+
+        @if (!isSubmitted)
+        {
+            <button type="submit" class="btn-submit">Nộp Bài Bằng C#</button>
+        }
+    </form>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Khởi tạo hiệu ứng kéo thả cho các khối từ
+        var containers = document.querySelectorAll('.word-container');
+        containers.forEach(function (container) {
+            new Sortable(container, { animation: 150 });
+        });
+    });
+
+    // Gom dữ liệu kéo thả ném vào C# trước khi Form gửi đi
+    function gatherAnswers() {
+        var containers = document.querySelectorAll('.word-container');
+        containers.forEach(function (container) {
+            var qId = container.id.split('_')[1];
+            var words = [];
+            container.querySelectorAll('.word-block').forEach(function (block) {
+                words.push(block.innerText.trim());
+            });
+            document.getElementById('input_' + qId).value = words.join(' ');
+        });
+    }
+</script>

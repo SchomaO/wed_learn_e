@@ -1,0 +1,184 @@
+﻿@model wed_learn_e.Models.game_kho_bau
+@{
+    ViewBag.Title = "Bản Đồ Kho Báu";
+    Layout = "~/Views/Shared/_Layoutcauhoi.cshtml";
+    var cauHois = ViewBag.CauHois as List<wed_learn_e.Models.cau_hoi_kho_bau>;
+    var daHoanThanh = ViewBag.DaHoanThanh as List<int?> ?? new List<int?>();
+    int soCauDaGiai = ViewBag.SoCauDaGiai;
+}
+<style>
+    body {
+        background: #2c3e50;
+        font-family: Arial;
+    }
+
+    .map-container {
+        max-width: 800px;
+        margin: 40px auto;
+        background: #fdf6e3;
+        padding: 40px;
+        border-radius: 20px;
+        border: 8px solid #8b5a2b;
+        position: relative;
+    }
+
+    .map-title {
+        text-align: center;
+        color: #8b5a2b;
+        font-size: 32px;
+        font-weight: bold;
+        margin-bottom: 30px;
+    }
+
+    .nodes-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+        position: relative;
+        margin-bottom: 50px;
+    }
+
+        .nodes-wrapper::before {
+            content: "";
+            position: absolute;
+            width: 4px;
+            height: 100%;
+            background: repeating-linear-gradient(to bottom, #8b5a2b 0, #8b5a2b 10px, transparent 10px, transparent 20px);
+            z-index: 1;
+        }
+
+    .map-node {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        width: 300px;
+        background: white;
+        padding: 15px;
+        border-radius: 50px;
+        border: 3px solid #8b5a2b;
+        text-decoration: none;
+        color: #333;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+
+        .map-node:hover {
+            transform: scale(1.05);
+        }
+
+        .map-node.locked {
+            background: #e0e0e0;
+            border-color: #999;
+            color: #777;
+            pointer-events: none;
+        }
+
+        .map-node.completed {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+
+    .node-icon {
+        width: 40px;
+        height: 40px;
+        background: #8b5a2b;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        margin-right: 15px;
+    }
+
+    .completed .node-icon {
+        background: #28a745;
+    }
+
+    .puzzle-piece {
+        margin-left: auto;
+        font-size: 24px;
+        font-weight: 900;
+        color: #d35400;
+        background: #ffeaa7;
+        width: 40px;
+        height: 40px;
+        text-align: center;
+        line-height: 40px;
+        border-radius: 8px;
+        border: 2px dashed #d35400;
+    }
+
+    .treasure-chest {
+        text-align: center;
+        padding: 30px;
+        background: #fff3cd;
+        border: 3px dashed #ffc107;
+        border-radius: 15px;
+    }
+
+    .chest-input {
+        font-size: 24px;
+        padding: 10px;
+        text-align: center;
+        text-transform: uppercase;
+        width: 200px;
+        border: 2px solid #8b5a2b;
+        border-radius: 8px;
+    }
+
+    .btn-open {
+        background: #e67e22;
+        color: white;
+        padding: 12px 30px;
+        font-size: 20px;
+        font-weight: bold;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-top: 15px;
+    }
+</style>
+
+<div class="map-container">
+    <div class="map-title">🗺️ @Model.tieu_de</div>
+
+    @if (TempData["Message"] != null)
+    {<div style="color:#28a745; text-align:center; font-weight:bold; font-size:18px; margin-bottom:20px;">@TempData["Message"]</div>}
+    @if (TempData["GameOver"] != null)
+    {<div style="background: #ffcccc; color:#c0392b; text-align:center; font-weight:bold; font-size:18px; padding: 15px; border: 2px solid #c0392b; border-radius: 10px; margin-bottom:20px;">@TempData["GameOver"]</div>}
+    @if (TempData["WinGame"] != null)
+    {<div style="color:#e74c3c; text-align:center; font-weight:bold; font-size:24px; margin-bottom:20px;">@TempData["WinGame"]</div>}
+    @if (TempData["ErrorGame"] != null)
+    {<div style="color:#dc3545; text-align:center; font-weight:bold; font-size:18px; margin-bottom:20px;">@TempData["ErrorGame"]</div>}
+
+    <div class="nodes-wrapper">
+        @{ bool isLockedNext = false; }
+        @foreach (var c in cauHois)
+        {
+            bool daXong = daHoanThanh.Contains(c.id_cau_hoi);
+            <a href="@(daXong || isLockedNext ? "javascript:void(0)" : Url.Action("GiaiMaCauHoi", new { id_cau_hoi = c.id_cau_hoi }))"
+               class="map-node @(daXong ? "completed" : (isLockedNext ? "locked" : ""))">
+                <div class="node-icon">@(daXong ? "✔" : (isLockedNext ? "🔒" : "❓"))</div>
+                <div>Trạm @c.thu_tu</div>
+                @if (daXong)
+                {<div class="puzzle-piece">@c.manh_ghep</div>}
+            </a>
+            if (!daXong) { isLockedNext = true; }
+        }
+    </div>
+
+    @if (soCauDaGiai == 7)
+    {
+        <div class="treasure-chest">
+            <h2>📦 RƯƠNG KHO BÁU ĐÃ HIỆN RA!</h2>
+            <form action="@Url.Action("MoRuongKhoBau", "tinh_nang")" method="post">
+                <input type="hidden" name="id_game" value="@Model.id_game" />
+                <input type="text" name="keyword" class="chest-input" placeholder="MẬT KHẨU..." required autocomplete="off" />
+                <br><button type="submit" class="btn-open">MỞ RƯƠNG NGAY!</button>
+            </form>
+        </div>
+    }
+</div>

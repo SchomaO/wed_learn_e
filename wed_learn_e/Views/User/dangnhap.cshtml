@@ -17,25 +17,23 @@
     @using (Html.BeginForm("dangnhap", "User", FormMethod.Post))
     {
         <table>
-
             <tr>
                 <td class="canle_dk_noidung">Tên đăng nhập:</td>
-                <td><input type="text" name="TenDN"></td>
+                <td><input type="text" name="ten_dang_nhap" required></td>
             </tr>
 
             <tr>
                 <td class="canle_dk_noidung">Mật khẩu:</td>
-                <td><input type="password" name="MatKhau"></td>
+                <td><input type="password" name="mat_khau" required></td>
             </tr>
-
-
         </table>
-    <p style="color:red">@ViewBag.ThongBao</p>
-        <div style="height: 30px; text-align: justify; margin-left: 21px; ">
-            <input type="checkbox" name="RememberMe" style=" padding: 0px 0px 5px 5px; width: 40px; margin-top: 10px; " > <span>Lưu đăng nhập </span>
-        </div>
 
-        
+        <p style="color:red">@ViewBag.ThongBao</p>
+
+        <div style="height: 30px; text-align: justify; margin-left: 21px; ">
+            <input type="checkbox" name="RememberMe" style="padding: 0px 0px 5px 5px; width: 40px; margin-top: 10px;">
+            <span>Lưu đăng nhập </span>
+        </div>
 
         <button type="submit">Đăng nhập</button>
     }

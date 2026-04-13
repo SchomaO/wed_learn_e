@@ -1,18 +1,19 @@
 ﻿@using PagedList.Mvc;
-@model PagedList.IPagedList<wed_learn_e.Models.bai_luyen_nghe>
-
+@model PagedList.IPagedList<wed_learn_e.Models.bai_luyen_viet>
 @{
-    ViewBag.Title = "Danh Sách Bài Luyện Nghe";
+    ViewBag.Title = "Danh Sách Bài Luyện Viết";
     Layout = "~/Views/Shared/_Layoutcauhoi.cshtml";
+    // Lấy ra danh sách ID các bài user đã làm xong
+    var listDaHoanThanh = ViewBag.ListDaHoanThanh as List<int?> ?? new List<int?>();
 }
 
 <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 <style>
     body {
-        margin: 0;
-        font-family: Arial, sans-serif;
         background: #f4f9ff;
+        font-family: Arial;
+        margin: 0;
     }
 
     .list-container {
@@ -75,7 +76,7 @@
     .lesson-card {
         background: white;
         border-radius: 12px;
-        padding: 20px 25px;
+        padding: 20px;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -86,10 +87,20 @@
     }
 
         .lesson-card:hover {
-            transform: translateX(10px);
+            transform: translateX(5px);
             box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-            border-left-color: #ff9800;
         }
+
+        /* CSS RIÊNG CHO BÀI ĐÃ HOÀN THÀNH */
+        .lesson-card.completed {
+            border-left-color: #28a745;
+            background: #f4fff6;
+        }
+
+            .lesson-card.completed .lesson-icon {
+                background: #d4edda;
+                color: #155724;
+            }
 
     .lesson-info {
         display: flex;
@@ -99,7 +110,7 @@
     }
 
     .lesson-icon {
-        font-size: 35px;
+        font-size: 30px;
         background: #eef7ff;
         min-width: 60px;
         height: 60px;
@@ -121,7 +132,7 @@
         font-size: 14px;
     }
 
-    .btn-play {
+    .btn-action {
         background: #1a73e8;
         color: white;
         padding: 10px 20px;
@@ -132,35 +143,18 @@
         white-space: nowrap;
     }
 
-        .btn-play:hover {
+        .btn-action:hover {
             background: #1557b0;
         }
 
-    .empty-msg {
-        text-align: center;
-        color: #dc3545;
-        font-size: 18px;
-        background: white;
-        padding: 30px;
-        border-radius: 12px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        font-weight: bold;
-    }
-
-    /* CSS RIÊNG CHO BÀI ĐÃ HOÀN THÀNH */
-    .lesson-card.completed {
-        border-left-color: #28a745;
-        background: #f4fff6;
-    }
-
-        .lesson-card.completed .lesson-icon {
-            background: #d4edda;
-            color: #155724;
+        /* Nút khi đã hoàn thành */
+        .btn-action.btn-success {
+            background: #28a745;
         }
 
-    .btn-play.btn-success {
-        background: #28a745;
-    }
+            .btn-action.btn-success:hover {
+                background: #218838;
+            }
 
     /* CSS PHÂN TRANG */
     .pagination-container {
@@ -177,52 +171,48 @@
 </style>
 
 <div class="list-container">
-    <div class="page-title">
-        🎧 Luyện Nghe: @ViewBag.TenCapDo
-    </div>
+    <div class="page-title">✍️ Luyện Viết: @ViewBag.TenCapDo</div>
 
-    @using (Html.BeginForm("list_luyen_nghe", "tinh_nang", FormMethod.Get))
+    @using (Html.BeginForm("list_luyen_viet", "tinh_nang", FormMethod.Get))
     {
         <div class="search-box">
             <input type="hidden" name="id_cap_do" value="@ViewBag.IdCapDo" />
 
-            <input type="text" name="searchString" value="@ViewBag.CurrentFilter" class="search-input" placeholder="Nhập tên bài luyện nghe bạn muốn tìm kiếm..." />
+            <input type="text" name="searchString" value="@ViewBag.CurrentFilter" class="search-input" placeholder="Nhập tên bài luyện viết bạn muốn tìm kiếm..." />
             <button type="submit" class="btn-search">🔍 Tìm Kiếm</button>
         </div>
     }
 
     @if (Model == null || Model.Count == 0)
     {
-        <div class="empty-msg">
-            Hiện tại chưa có bài nghe nào phù hợp với tìm kiếm của bạn. Hãy kiểm tra lại nhé!
+        <div style="text-align: center; color: #dc3545; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); font-weight: bold;">
+            Chưa có bài tập viết nào phù hợp với tìm kiếm của bạn.
         </div>
     }
     else
     {
-        var listDaHoanThanh = ViewBag.ListDaHoanThanh as List<int?> ?? new List<int?>();
-
-        // Thuật toán để số thứ tự tiếp nối khi sang trang mới
+        // Thuật toán để số thứ tự không bị reset về 1 khi sang trang 2
         int stt = (Model.PageNumber - 1) * Model.PageSize + 1;
 
         foreach (var item in Model)
         {
-            bool daXong = listDaHoanThanh.Contains(item.id_bai_nghe);
+            // Kiểm tra xem ID bài này có nằm trong danh sách hoàn thành chưa?
+            bool daXong = listDaHoanThanh.Contains(item.id_bai_viet);
 
             <div class="lesson-card @(daXong ? "completed" : "")">
                 <div class="lesson-info">
-                    <div class="lesson-icon">@(daXong ? "✔" : "▶️")</div>
+                    <div class="lesson-icon">@(daXong ? "✔" : "📝")</div>
                     <div class="lesson-details">
                         <h3>Bài @stt: @item.tieu_de</h3>
                         <p>@item.mo_ta</p>
                     </div>
                 </div>
 
-                <a href="@Url.Action("LuyenNghe", "tinh_nang", new { id_bai_nghe = item.id_bai_nghe })"
-                   class="btn-play @(daXong ? "btn-success" : "")">
-                    @(daXong ? "Nghe lại" : "Vào học")
+                <a href="@Url.Action("LuyenViet", "tinh_nang", new { id_bai_viet = item.id_bai_viet })"
+                   class="btn-action @(daXong ? "btn-success" : "")">
+                    @(daXong ? "Ôn tập lại" : "Bắt đầu viết")
                 </a>
             </div>
-
             stt++;
         }
     }
@@ -232,7 +222,7 @@
             Trang @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) / @Model.PageCount
         </div>
 
-        @Html.PagedListPager(Model, page => Url.Action("list_luyen_nghe",
+        @Html.PagedListPager(Model, page => Url.Action("list_luyen_viet",
             new { page, searchString = ViewBag.CurrentFilter, id_cap_do = ViewBag.IdCapDo }))
     </div>
 </div>

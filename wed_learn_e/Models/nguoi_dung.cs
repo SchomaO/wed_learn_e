@@ -24,6 +24,11 @@ namespace wed_learn_e.Models
             this.khoa_hoc1 = new HashSet<khoa_hoc>();
             this.nhat_ky_quan_tri = new HashSet<nhat_ky_quan_tri>();
             this.tien_do_hoc_tap = new HashSet<tien_do_hoc_tap>();
+            this.lich_su_luyen_viet = new HashSet<lich_su_luyen_viet>();
+            this.lich_su_luyen_nghe = new HashSet<lich_su_luyen_nghe>();
+            this.lich_su_luyen_noi = new HashSet<lich_su_luyen_noi>();
+            this.lich_su_video = new HashSet<lich_su_video>();
+            this.lich_su_sap_xep = new HashSet<lich_su_sap_xep>();
         }
     
         public int id_nguoi_dung { get; set; }
@@ -45,5 +50,10 @@ namespace wed_learn_e.Models
         public virtual ICollection<khoa_hoc> khoa_hoc1 { get; set; }
         public virtual ICollection<nhat_ky_quan_tri> nhat_ky_quan_tri { get; set; }
         public virtual ICollection<tien_do_hoc_tap> tien_do_hoc_tap { get; set; }
+        public virtual ICollection<lich_su_luyen_viet> lich_su_luyen_viet { get; set; }
+        public virtual ICollection<lich_su_luyen_nghe> lich_su_luyen_nghe { get; set; }
+        public virtual ICollection<lich_su_luyen_noi> lich_su_luyen_noi { get; set; }
+        public virtual ICollection<lich_su_video> lich_su_video { get; set; }
+        public virtual ICollection<lich_su_sap_xep> lich_su_sap_xep { get; set; }
     }
 }

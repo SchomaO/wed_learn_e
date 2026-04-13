@@ -1,117 +1,11 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "kq_bai_test";
     Layout = "~/Views/Shared/_Layoutcauhoi.cshtml";
+
+    // Đã xóa dấu ``` bao quanh dòng code này
+    double diem10 = Math.Round((double)ViewBag.Diem / ViewBag.Tong * 10, 1);
 }
 
-<style>
-    /* container */
-    .course-container {
-        width: 90%;
-        margin: auto;
-        display: grid;
-        grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
-        gap: 25px;
-        padding-bottom: 50px;
-    }
-
-    /* box */
-    .course-box {
-        background: white;
-        border-radius: 12px;
-        padding: 25px;
-        text-align: center;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        transition: 0.3s;
-    }
-
-        .course-box:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-        }
-
-    /* icon */
-    .course-icon {
-        font-size: 40px;
-        margin-bottom: 15px;
-    }
-
-    /* title */
-    .course-title {
-        font-size: 20px;
-        font-weight: bold;
-        margin-bottom: 10px;
-        color: #007bff;
-    }
-
-    /* description */
-    .course-desc {
-        font-size: 14px;
-        color: #555;
-        margin-bottom: 20px;
-    }
-    /* button */
-    .btn-course {
-        background: #0d6efd;
-        color: white;
-        padding: 10px 18px;
-        border-radius: 6px;
-        text-decoration: none;
-    }
-
-        .btn-course:hover {
-            background: #0b5ed7;
-        }
-</style>
-<div class="result-container">
-
-    <div class="result-box">
-
-        <h2>Kết quả bài kiểm tra</h2>
-
-        <div class="score">
-            Bạn trả lời đúng: <b>8 / 10</b>
-        </div>
-
-        <div class="score">
-            Điểm của bạn: <b>8.0</b>
-        </div>
-
-        <button class="review-btn">
-            Xem lại bài làm
-        </button>
-
-    </div>
-
-
-    <div class="course-box">
-
-        <h3>Khóa học gợi ý</h3>
-
-        
-            <div class="course-container">
-
-                <div class="course-box">
-                    <div class="course-icon">📘</div>
-                    <div class="course-title">Beginner</div>
-                    <div class="course-desc">
-                        Khóa học tiếng Anh cơ bản dành cho người mới bắt đầu.
-                    </div>
-                    <a class="btn-course" href="#">Chọn khóa học</a>
-                </div>
-
-                <a href="@Url.Action("khoadaotao","Page")">
-                    <button class="course-btn">
-                        Tham gia khóa học khác
-                    </button>
-                </a>
-
-    </div>
-
-
-  
-
-</div>
 <style>
     body {
         background: linear-gradient(120deg,#dff5ff,#c7efff,#bfe7ff);
@@ -119,7 +13,7 @@
     }
 
     .result-container {
-        width: 600px;
+        width: 650px;
         margin: auto;
         margin-top: 120px;
         display: flex;
@@ -127,8 +21,7 @@
         gap: 25px;
     }
 
-    .result-box,
-    .course-box {
+    .box {
         background: white;
         padding: 30px;
         border-radius: 20px;
@@ -152,36 +45,160 @@
         cursor: pointer;
     }
 
-    .course-box ul {
-        list-style: none;
-        padding: 0;
-    }
-
-    .course-box li {
-        background: #eef8ff;
-        margin: 8px 0;
-        padding: 10px;
-        border-radius: 10px;
-    }
-
-    .course-btn {
+    .course-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+        gap: 20px;
         margin-top: 15px;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 10px;
-        background: #4bbcff;
-        color: white;
-        font-weight: bold;
-        cursor: pointer;
     }
 
-    .skip-box {
+    .course-box {
+        background: #f7fbff;
+        border-radius: 12px;
+        padding: 20px;
         text-align: center;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
 
-    .skip-btn {
-        text-decoration: none;
-        color: #2b4a5a;
-        font-weight: bold;
+    .course-icon {
+        font-size: 35px;
+        margin-bottom: 10px;
     }
+
+    .course-title {
+        font-size: 18px;
+        font-weight: bold;
+        color: #007bff;
+        margin-bottom: 8px;
+    }
+
+    .course-desc {
+        font-size: 14px;
+        color: #555;
+        margin-bottom: 15px;
+    }
+
+    .btn-course {
+        background: #0d6efd;
+        color: white;
+        padding: 8px 15px;
+        border-radius: 6px;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+        .btn-course:hover {
+            background: #0b5ed7;
+        }
 </style>
+
+<div class="result-container">
+
+    <div class="box">
+
+        <h2>Kết quả bài kiểm tra</h2>
+
+        <div class="score">
+            Bạn trả lời đúng: <b>@ViewBag.Diem / @ViewBag.Tong</b>
+        </div>
+
+        <div class="score">
+            Điểm của bạn: <b>@diem10</b>
+        </div>
+
+        <div class="score">
+            Cấp độ: <b>@ViewBag.CapDo</b>
+        </div>
+
+        <a href="@Url.Action("review","bai_test")">
+            <button class="review-btn">Xem lại bài làm</button>
+        </a>
+
+    </div>
+
+    <div class="box">
+
+        <h3>Khóa học gợi ý</h3>
+
+        <div class="course-container">
+
+            <div class="course-container">
+
+                @if (ViewBag.CapDo == 1)
+                {
+                    <div class="course-box">
+                        <div class="course-icon">📘</div>
+                        <div class="course-title">Beginner (A1)</div>
+                        <div class="course-desc">
+                            Khóa học cơ bản dành cho người mới bắt đầu.
+                        </div>
+                        <a class="btn-course" href="@Url.Action("thong_tin_khoa_hoc", "Page", new { id = 1 })">Bắt đầu học</a>
+                    </div>
+                }
+                else if (ViewBag.CapDo == 2)
+                {
+                    <div class="course-box">
+                        <div class="course-icon">📗</div>
+                        <div class="course-title">Elementary (A2)</div>
+                        <div class="course-desc">
+                            Nâng cao kỹ năng giao tiếp và ngữ pháp.
+                        </div>
+                        <a class="btn-course" href="@Url.Action("thong_tin_khoa_hoc", "Page", new { id = 2 })">Bắt đầu học</a>
+                    </div>
+                }
+                else if (ViewBag.CapDo == 3)
+                {
+                    <div class="course-box">
+                        <div class="course-icon">📙</div>
+                        <div class="course-title">Intermediate (B1)</div>
+                        <div class="course-desc">
+                            Thành thạo tiếng Anh giao tiếp văn phòng.
+                        </div>
+                        <a class="btn-course" href="@Url.Action("thong_tin_khoa_hoc", "Page", new { id = 3 })">Bắt đầu học</a>
+                    </div>
+                }
+                else if (ViewBag.CapDo == 4)
+                {
+                    <div class="course-box">
+                        <div class="course-icon">📕</div>
+                        <div class="course-title">Upper-Intermediate (B2)</div>
+                        <div class="course-desc">
+                            Rèn luyện phong thái và kỹ năng thuyết trình.
+                        </div>
+                        <a class="btn-course" href="@Url.Action("thong_tin_khoa_hoc", "Page", new { id = 4 })">Bắt đầu học</a>
+                    </div>
+                }
+                else if (ViewBag.CapDo == 5)
+                {
+                    <div class="course-box">
+                        <div class="course-icon">📓</div>
+                        <div class="course-title">Advanced (C1)</div>
+                        <div class="course-desc">
+                            Học cách viết luận học thuật chuyên sâu.
+                        </div>
+                        <a class="btn-course" href="@Url.Action("thong_tin_khoa_hoc", "Page", new { id = 5 })">Bắt đầu học</a>
+                    </div>
+                }
+                else if (ViewBag.CapDo == 6)
+                {
+                    <div class="course-box">
+                        <div class="course-icon">👑</div>
+                        <div class="course-title">Proficient (C2)</div>
+                        <div class="course-desc">
+                            Giao tiếp tự nhiên như người bản xứ.
+                        </div>
+                        <a class="btn-course" href="@Url.Action("thong_tin_khoa_hoc", "Page", new { id = 6 })">Bắt đầu học</a>
+                    </div>
+                }
+
+            </div>
+        </div>
+
+        <div style="margin-top:20px;">
+            <a href="@Url.Action("khoadaotao","Page")" class="btn-course">
+                Tham gia khóa học khác
+            </a>
+        </div>
+
+    </div>
+</div>

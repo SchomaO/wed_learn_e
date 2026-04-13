@@ -1,0 +1,139 @@
+﻿@model wed_learn_e.Models.bai_giang_video
+
+@{
+    ViewBag.Title = "Luyện Nghe: " + Model.tieu_de;
+    Layout = "~/Views/Shared/_Layoutcauhoi.cshtml";
+
+    // Xử lý link Youtube: Chuyển dạng watch?v= thành dạng embed/ để có thể nhúng iframe
+    string embedUrl = Model.duong_dan_video;
+    if (!string.IsNullOrEmpty(embedUrl) && embedUrl.Contains("watch?v="))
+    {
+        embedUrl = embedUrl.Replace("watch?v=", "embed/");
+    }
+}
+
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f4f9ff;
+    }
+
+    .listen-wrapper {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+
+    /* Khung chứa Video */
+    .player-box {
+        background: #fff;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        margin-bottom: 30px;
+    }
+
+    .player-title {
+        font-size: 24px;
+        font-weight: bold;
+        color: #1a73e8;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .video-container {
+        position: relative;
+        padding-bottom: 56.25%; /* Tỷ lệ chuẩn 16:9 của video */
+        height: 0;
+        overflow: hidden;
+        border-radius: 12px;
+        background: #000;
+    }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+    .video-info {
+        margin-top: 15px;
+        color: #555;
+        font-size: 15px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    /* Khung bài tập bên dưới */
+    .exercise-box {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        text-align: center;
+        border-top: 5px solid #28a745;
+    }
+
+        .exercise-box h3 {
+            color: #333;
+            margin-top: 0;
+            font-size: 22px;
+        }
+
+        .exercise-box p {
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+    .btn-start-quiz {
+        background: #28a745;
+        color: white;
+        padding: 12px 30px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 16px;
+        display: inline-block;
+        transition: 0.3s;
+    }
+
+        .btn-start-quiz:hover {
+            background: #218838;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(40,167,69,0.3);
+        }
+</style>
+
+<div class="listen-wrapper">
+
+    <div class="player-box">
+        <div class="player-title">
+            🎬 @Model.tieu_de
+        </div>
+
+        <div class="video-container">
+            <iframe src="@embedUrl" allowfullscreen></iframe>
+        </div>
+
+        <div class="video-info">
+            <span><b>Thời lượng:</b> @Model.thoi_luong_phut phút</span>
+            <span><b>Gợi ý:</b> Hãy chuẩn bị giấy bút để note lại từ vựng nhé!</span>
+        </div>
+    </div>
+
+    <div class="exercise-box">
+        <h3>Bài Tập Áp Dụng</h3>
+        <p>Sau khi nghe xong đoạn hội thoại ở trên, hãy làm bài test nhỏ để kiểm tra mức độ nghe hiểu của bạn nhé.</p>
+
+        <a href="@Url.Action("bai_test", "bai_test")" class="btn-start-quiz">
+            📝 Làm bài trắc nghiệm ngay
+        </a>
+    </div>
+
+</div>

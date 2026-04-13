@@ -20,6 +20,10 @@ namespace wed_learn_e.Models
             this.bai_tap_thuc_hanh = new HashSet<bai_tap_thuc_hanh>();
             this.tien_do_hoc_tap = new HashSet<tien_do_hoc_tap>();
             this.tu_vung = new HashSet<tu_vung>();
+            this.bai_luyen_noi = new HashSet<bai_luyen_noi>();
+            this.bai_luyen_nghe = new HashSet<bai_luyen_nghe>();
+            this.bai_luyen_viet = new HashSet<bai_luyen_viet>();
+            this.bai_sap_xep = new HashSet<bai_sap_xep>();
         }
     
         public int id_khoa_hoc { get; set; }
@@ -39,5 +43,9 @@ namespace wed_learn_e.Models
         public virtual nguoi_dung nguoi_dung1 { get; set; }
         public virtual ICollection<tien_do_hoc_tap> tien_do_hoc_tap { get; set; }
         public virtual ICollection<tu_vung> tu_vung { get; set; }
+        public virtual ICollection<bai_luyen_noi> bai_luyen_noi { get; set; }
+        public virtual ICollection<bai_luyen_nghe> bai_luyen_nghe { get; set; }
+        public virtual ICollection<bai_luyen_viet> bai_luyen_viet { get; set; }
+        public virtual ICollection<bai_sap_xep> bai_sap_xep { get; set; }
     }
 }

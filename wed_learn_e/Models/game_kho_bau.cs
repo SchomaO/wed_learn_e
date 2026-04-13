@@ -12,20 +12,19 @@ namespace wed_learn_e.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class bai_giang_video
+    public partial class game_kho_bau
     {
-        public bai_giang_video()
+        public game_kho_bau()
         {
-            this.lich_su_video = new HashSet<lich_su_video>();
+            this.cau_hoi_kho_bau = new HashSet<cau_hoi_kho_bau>();
         }
     
-        public int id_video { get; set; }
-        public Nullable<int> id_khoa_hoc { get; set; }
+        public int id_game { get; set; }
+        public Nullable<int> id_cap_do { get; set; }
         public string tieu_de { get; set; }
-        public string duong_dan_video { get; set; }
-        public Nullable<int> thoi_luong_phut { get; set; }
+        public string tu_khoa_cuoi { get; set; }
+        public string mo_ta { get; set; }
     
-        public virtual khoa_hoc khoa_hoc { get; set; }
-        public virtual ICollection<lich_su_video> lich_su_video { get; set; }
+        public virtual ICollection<cau_hoi_kho_bau> cau_hoi_kho_bau { get; set; }
     }
 }

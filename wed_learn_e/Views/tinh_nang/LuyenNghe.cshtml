@@ -1,0 +1,203 @@
+﻿@model wed_learn_e.Models.bai_luyen_nghe
+
+@{
+    ViewBag.Title = Model.tieu_de;
+    Layout = "~/Views/Shared/_Layoutcauhoi.cshtml";
+    var cauHois = ViewBag.DanhSachCauHoi as List<wed_learn_e.Models.cau_hoi_luyen_nghe>;
+}
+
+<style>
+    body {
+        background: #f4f9ff;
+        font-family: Arial;
+    }
+
+    .listen-wrapper {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+
+    /* Khu vực trình phát Audio */
+    .audio-box {
+        background: white;
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        text-align: center;
+        margin-bottom: 30px;
+        border-top: 5px solid #1a73e8;
+    }
+
+    .audio-title {
+        font-size: 24px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .audio-desc {
+        color: #666;
+        margin-bottom: 20px;
+    }
+
+    audio {
+        width: 100%;
+        outline: none;
+    }
+
+    /* Khu vực câu hỏi */
+    .quiz-box {
+        background: white;
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    }
+
+    .question-block {
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 1px dashed #ddd;
+    }
+
+    .question-title {
+        font-size: 18px;
+        font-weight: bold;
+        color: #1a73e8;
+        margin-bottom: 15px;
+    }
+
+    .answer-label {
+        display: block;
+        background: #f8f9fa;
+        padding: 12px 15px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        border: 1px solid #e9ecef;
+        transition: 0.2s;
+    }
+
+        .answer-label:hover {
+            background: #eef7ff;
+            border-color: #b8daff;
+        }
+
+        .answer-label input {
+            margin-right: 10px;
+        }
+
+    /* Nút nộp bài */
+    .btn-submit {
+        display: block;
+        width: 100%;
+        background: #28a745;
+        color: white;
+        padding: 15px;
+        font-size: 18px;
+        font-weight: bold;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+        .btn-submit:hover {
+            background: #218838;
+        }
+
+    /* CSS báo đúng sai */
+    .correct-answer {
+        background: #d4edda !important;
+        border-color: #28a745 !important;
+        color: #155724;
+        font-weight: bold;
+    }
+
+    .wrong-answer {
+        background: #f8d7da !important;
+        border-color: #dc3545 !important;
+        color: #721c24;
+    }
+
+    .result-text {
+        font-size: 20px;
+        font-weight: bold;
+        text-align: center;
+        margin-top: 20px;
+        color: #1a73e8;
+        display: none;
+    }
+</style>
+
+<div class="listen-wrapper">
+
+    <div class="audio-box">
+        <div class="audio-title">🎧 @Model.tieu_de</div>
+        <div class="audio-desc">@Model.mo_ta</div>
+
+        <audio controls controlsList="nodownload">
+            <source src="@Model.file_am_thanh" type="audio/mpeg">
+            Trình duyệt của bạn không hỗ trợ file âm thanh này.
+        </audio>
+    </div>
+
+    <div class="quiz-box">
+        <h3 style="margin-top:0; color:#333; text-align:center; margin-bottom:25px;">Bài Tập Trắc Nghiệm</h3>
+
+        <form action="@Url.Action("LuyenNghe", "tinh_nang")" method="post">
+            <input type="hidden" name="id_bai_nghe" value="@Model.id_bai_nghe" />
+
+            @{
+                int i = 1;
+                bool isSubmitted = ViewBag.UserAnswers != null; // Kiểm tra xem đã bấm nộp bài chưa
+                var uAnswers = ViewBag.UserAnswers as Dictionary<int, string>;
+            }
+
+            @foreach (var q in cauHois)
+            {
+                // Lấy đáp án user vừa chọn và đáp án đúng ra để xử lý màu sắc
+                string uAns = isSubmitted && uAnswers.ContainsKey(q.id_cau_hoi) ? uAnswers[q.id_cau_hoi] : "";
+                string cAns = q.dap_an_dung.Trim();
+
+                <div class="question-block">
+                    <div class="question-title">Câu @i: @q.noi_dung_cau_hoi</div>
+
+                    <label class="answer-label @(isSubmitted && cAns == "A" ? "correct-answer" : (isSubmitted && uAns == "A" ? "wrong-answer" : ""))">
+                        <input type="radio" name="q_@q.id_cau_hoi" value="A" @(uAns == "A" ? "checked" : "")> A. @q.dap_an_a
+                    </label>
+                    <label class="answer-label @(isSubmitted && cAns == "B" ? "correct-answer" : (isSubmitted && uAns == "B" ? "wrong-answer" : ""))">
+                        <input type="radio" name="q_@q.id_cau_hoi" value="B" @(uAns == "B" ? "checked" : "")> B. @q.dap_an_b
+                    </label>
+                    <label class="answer-label @(isSubmitted && cAns == "C" ? "correct-answer" : (isSubmitted && uAns == "C" ? "wrong-answer" : ""))">
+                        <input type="radio" name="q_@q.id_cau_hoi" value="C" @(uAns == "C" ? "checked" : "")> C. @q.dap_an_c
+                    </label>
+                    <label class="answer-label @(isSubmitted && cAns == "D" ? "correct-answer" : (isSubmitted && uAns == "D" ? "wrong-answer" : ""))">
+                        <input type="radio" name="q_@q.id_cau_hoi" value="D" @(uAns == "D" ? "checked" : "")> D. @q.dap_an_d
+                    </label>
+                </div>
+                i++;
+            }
+
+            <button type="submit" class="btn-submit">Nộp Bài Bằng C#</button>
+
+            @if (isSubmitted)
+            {
+                <div class="result-text" style="display: block;">
+                    🎉 Bạn làm đúng: @ViewBag.Score / @ViewBag.Total câu!
+                </div>
+
+                if (ViewBag.IsPerfect == true)
+                {
+                    <script>
+                        setTimeout(function() {
+                            alert("Hoàn thành xuất sắc bài nghe!");
+                            // Thay 'tinh_nang' bằng tên Controller của bạn
+                            window.location.href = '@Url.Action("list_luyen_nghe", "tinh_nang")';
+                        }, 1500);
+                    </script>
+                }
+            }
+        </form>
+    </div>
+</div>>

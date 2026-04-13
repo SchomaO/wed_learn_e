@@ -37,5 +37,20 @@ namespace wed_learn_e.Models
         public DbSet<sysdiagram> sysdiagrams { get; set; }
         public DbSet<tien_do_hoc_tap> tien_do_hoc_tap { get; set; }
         public DbSet<tu_vung> tu_vung { get; set; }
+        public DbSet<bai_luyen_noi> bai_luyen_noi { get; set; }
+        public DbSet<bai_luyen_nghe> bai_luyen_nghe { get; set; }
+        public DbSet<cau_hoi_luyen_nghe> cau_hoi_luyen_nghe { get; set; }
+        public DbSet<bai_luyen_viet> bai_luyen_viet { get; set; }
+        public DbSet<cau_hoi_luyen_viet> cau_hoi_luyen_viet { get; set; }
+        public DbSet<lich_su_luyen_viet> lich_su_luyen_viet { get; set; }
+        public DbSet<lich_su_luyen_nghe> lich_su_luyen_nghe { get; set; }
+        public DbSet<lich_su_luyen_noi> lich_su_luyen_noi { get; set; }
+        public DbSet<lich_su_video> lich_su_video { get; set; }
+        public DbSet<bai_sap_xep> bai_sap_xep { get; set; }
+        public DbSet<cau_hoi_sap_xep> cau_hoi_sap_xep { get; set; }
+        public DbSet<lich_su_sap_xep> lich_su_sap_xep { get; set; }
+        public DbSet<cau_hoi_kho_bau> cau_hoi_kho_bau { get; set; }
+        public DbSet<game_kho_bau> game_kho_bau { get; set; }
+        public DbSet<lich_su_kho_bau> lich_su_kho_bau { get; set; }
     }
 }

@@ -1,8 +1,8 @@
 ﻿@using PagedList.Mvc;
-@model PagedList.IPagedList<wed_learn_e.Models.bai_luyen_nghe>
+@model PagedList.IPagedList<wed_learn_e.Models.bai_giang_video>
 
 @{
-    ViewBag.Title = "Danh Sách Bài Luyện Nghe";
+    ViewBag.Title = "Danh Sách Bài Luyện Nghe Video";
     Layout = "~/Views/Shared/_Layoutcauhoi.cshtml";
 }
 
@@ -95,13 +95,12 @@
         display: flex;
         align-items: center;
         gap: 20px;
-        width: 75%;
     }
 
     .lesson-icon {
         font-size: 35px;
         background: #eef7ff;
-        min-width: 60px;
+        width: 60px;
         height: 60px;
         display: flex;
         justify-content: center;
@@ -147,21 +146,6 @@
         font-weight: bold;
     }
 
-    /* CSS RIÊNG CHO BÀI ĐÃ HOÀN THÀNH */
-    .lesson-card.completed {
-        border-left-color: #28a745;
-        background: #f4fff6;
-    }
-
-        .lesson-card.completed .lesson-icon {
-            background: #d4edda;
-            color: #155724;
-        }
-
-    .btn-play.btn-success {
-        background: #28a745;
-    }
-
     /* CSS PHÂN TRANG */
     .pagination-container {
         text-align: center;
@@ -178,15 +162,15 @@
 
 <div class="list-container">
     <div class="page-title">
-        🎧 Luyện Nghe: @ViewBag.TenCapDo
+        🎬 Luyện học qua video: @ViewBag.TenCapDo
     </div>
 
-    @using (Html.BeginForm("list_luyen_nghe", "tinh_nang", FormMethod.Get))
+    @using (Html.BeginForm("list_hoc_video", "tinh_nang", FormMethod.Get))
     {
         <div class="search-box">
             <input type="hidden" name="id_cap_do" value="@ViewBag.IdCapDo" />
 
-            <input type="text" name="searchString" value="@ViewBag.CurrentFilter" class="search-input" placeholder="Nhập tên bài luyện nghe bạn muốn tìm kiếm..." />
+            <input type="text" name="searchString" value="@ViewBag.CurrentFilter" class="search-input" placeholder="Nhập tên bài video bạn muốn tìm kiếm..." />
             <button type="submit" class="btn-search">🔍 Tìm Kiếm</button>
         </div>
     }
@@ -194,35 +178,31 @@
     @if (Model == null || Model.Count == 0)
     {
         <div class="empty-msg">
-            Hiện tại chưa có bài nghe nào phù hợp với tìm kiếm của bạn. Hãy kiểm tra lại nhé!
+            Hiện tại chưa có bài video nào phù hợp với tìm kiếm của bạn.
         </div>
     }
     else
     {
-        var listDaHoanThanh = ViewBag.ListDaHoanThanh as List<int?> ?? new List<int?>();
-
-        // Thuật toán để số thứ tự tiếp nối khi sang trang mới
+        // Thuật toán để số thứ tự tiếp nối khi sang trang 2, 3...
         int stt = (Model.PageNumber - 1) * Model.PageSize + 1;
 
         foreach (var item in Model)
         {
-            bool daXong = listDaHoanThanh.Contains(item.id_bai_nghe);
-
-            <div class="lesson-card @(daXong ? "completed" : "")">
+            <div class="lesson-card">
                 <div class="lesson-info">
-                    <div class="lesson-icon">@(daXong ? "✔" : "▶️")</div>
+                    <div class="lesson-icon">
+                        ▶️
+                    </div>
                     <div class="lesson-details">
                         <h3>Bài @stt: @item.tieu_de</h3>
-                        <p>@item.mo_ta</p>
+                        <p>⏱ Thời lượng: @item.thoi_luong_phut phút</p>
                     </div>
                 </div>
 
-                <a href="@Url.Action("LuyenNghe", "tinh_nang", new { id_bai_nghe = item.id_bai_nghe })"
-                   class="btn-play @(daXong ? "btn-success" : "")">
-                    @(daXong ? "Nghe lại" : "Vào học")
+                <a href="@Url.Action("bai_video", "tinh_nang", new { id_video = item.id_video })" class="btn-play">
+                    Vào học
                 </a>
             </div>
-
             stt++;
         }
     }
@@ -232,7 +212,7 @@
             Trang @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) / @Model.PageCount
         </div>
 
-        @Html.PagedListPager(Model, page => Url.Action("list_luyen_nghe",
+        @Html.PagedListPager(Model, page => Url.Action("list_hoc_video",
             new { page, searchString = ViewBag.CurrentFilter, id_cap_do = ViewBag.IdCapDo }))
     </div>
 </div>

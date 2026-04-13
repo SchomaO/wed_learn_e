@@ -1,0 +1,176 @@
+﻿@{
+    ViewBag.Title = "Thông tin khóa học";
+    Layout = "~/Views/Shared/_Layoutcauhoi.cshtml";
+}
+
+<style>
+    body {
+        margin: 0;
+        font-family: Arial;
+        background: #e9f5ff;
+    }
+
+    .title {
+        text-align: center;
+        padding: 40px;
+        font-size: 32px;
+        font-weight: bold;
+        color: #0d6efd;
+    }
+
+    .course-container {
+        width: 90%;
+        margin: auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+        gap: 25px;
+        padding-bottom: 50px;
+    }
+
+    .course-box {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        text-align: center;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        transition: 0.3s;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+        .course-box:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+    .course-icon {
+        font-size: 40px;
+        margin-bottom: 15px;
+    }
+
+    .course-title {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #007bff;
+    }
+
+    .course-desc {
+        font-size: 14px;
+        color: #555;
+        margin-bottom: 20px;
+        flex-grow: 1;
+    }
+
+    .btn-course {
+        background: #0d6efd;
+        color: white;
+        padding: 10px 18px;
+        border-radius: 6px;
+        text-decoration: none;
+        align-self: center;
+    }
+
+        .btn-course:hover {
+            background: #0b5ed7;
+        }
+
+    .extra-title {
+        text-align: center;
+        margin-top: 40px;
+        margin-bottom: 20px;
+        font-size: 28px;
+        font-weight: bold;
+        color: #0b5ed7;
+        position: relative;
+    }
+
+        .extra-title:after {
+            content: "";
+            width: 120px;
+            height: 3px;
+            background: #0d6efd;
+            display: block;
+            margin: 10px auto;
+            border-radius: 3px;
+        }
+</style>
+
+<div class="extra-title">
+    Khóa Học: @(ViewBag.TenCapDo)
+</div>
+
+<div class="course-container">
+
+    <div class="course-box" style="background:#ffffff">
+        <div class="course-icon">📖</div>
+        <div class="course-title">1000 Từ Vựng Thông Dụng</div>
+        <div class="course-desc">Học từ vựng cấp độ @ViewBag.TenCapDo.</div>
+        <a class="btn-course" href="@Url.Action("_1000TuVung", "Page", new { id_cap_do = ViewBag.IdCapDo })">Bắt đầu học</a>
+    </div>
+
+    <div class="course-box" style="background:#eef7ff">
+        <div class="course-icon">📝</div>
+        <div class="course-title">Bài Kiểm Tra Trình Độ</div>
+        <div class="course-desc">Kiểm tra năng lực tại cấp độ này.</div>
+        <a class="btn-course" href="@Url.Action("bai_test", "bai_test")">Làm bài test</a>
+    </div>
+
+    <div class="course-box" style="background:#f5fbff">
+        <div class="course-icon">🎧</div>
+        <div class="course-title">Luyện Nghe</div>
+        <div class="course-desc">Các bài nghe chuẩn của @ViewBag.TenCapDo.</div>
+        <a class="btn-course" href="@Url.Action("list_luyen_nghe", "tinh_nang", new { id_cap_do = ViewBag.IdCapDo })">Bắt đầu</a>
+    </div>
+
+    <div class="course-box" style="background:#f0f8ff">
+        <div class="course-icon">🗣</div>
+        <div class="course-title">Luyện Nói</div>
+        <div class="course-desc">Thực hành giao tiếp tiếng Anh hàng ngày.</div>
+        <a class="btn-course" href="@Url.Action("LuyenNoi", "tinh_nang", new { id_cap_do = ViewBag.IdCapDo })">Thực hành</a>
+    </div>
+
+    <div class="course-box" style="background:#e6f4ff">
+        <div class="course-icon">📚</div>
+        <div class="course-title">Ngữ Pháp Cơ Bản</div>
+        <div class="course-desc">Ôn tập ngữ pháp trọng tâm.</div>
+        <a class="btn-course" href="@Url.Action("_NguPhap", "Page", new { id_cap_do = ViewBag.IdCapDo })">Học ngay</a>
+    </div>
+
+    <div class="course-box" style="background:#f2f9ff">
+        <div class="course-icon">🏅</div>
+        <div class="course-title">Mini Test Hàng Ngày</div>
+        <div class="course-desc">Các bài test nhỏ giúp ôn tập.</div>
+        <a class="btn-course" href="@Url.Action("MiniTestHangNgay", "tinh_nang", new { id_cap_do = ViewBag.IdCapDo })">Làm bài</a>
+    </div>
+
+    <div class="course-box" style="background:#f2f9ff">
+        <div class="course-icon">🎮</div>
+        <div class="course-title">Game Từ Vựng</div>
+        <div class="course-desc">Vừa học vừa chơi với trò chơi giải đố.</div>
+        <a class="btn-course" href="@Url.Action("BanDoKhoBau", "tinh_nang", new { id_cap_do = ViewBag.IdCapDo })">Chơi ngay</a>
+    </div>
+
+    <div class="course-box" style="background:#e6f4ff">
+        <div class="course-icon">🎬</div>
+        <div class="course-title">Học Qua Video</div>
+        <div class="course-desc">Học tiếng Anh qua phim ảnh và tình huống.</div>
+        <a class="btn-course" href="@Url.Action("list_hoc_video", "tinh_nang", new { id_cap_do = ViewBag.IdCapDo })">Xem bài học</a>
+    </div>
+
+    <div class="course-box" style="background:#f0f8ff">
+        <div class="course-icon">✍</div>
+        <div class="course-title">Luyện Viết</div>
+        <div class="course-desc">Luyện viết câu và đoạn văn.</div>
+        <a class="btn-course" href="@Url.Action("list_luyen_viet", "tinh_nang", new { id_cap_do = ViewBag.IdCapDo })">Thực hành</a>
+    </div>
+
+    <div class="course-box" style="background:#f5fbff">
+        <div class="course-icon">💡</div>
+        <div class="course-title">Thành Ngữ Tiếng Anh</div>
+        <div class="course-desc">Học các idioms thông dụng.</div>
+        <a class="btn-course" href="@Url.Action("_ThanhNgu", "Page", new { id_cap_do = ViewBag.IdCapDo })">Xem ngay</a>
+    </div>
+
+</div>

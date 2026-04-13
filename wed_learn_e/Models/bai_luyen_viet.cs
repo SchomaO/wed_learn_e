@@ -12,18 +12,22 @@ namespace wed_learn_e.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class tien_do_hoc_tap
+    public partial class bai_luyen_viet
     {
-        public int id_tien_do { get; set; }
-        public Nullable<int> id_nguoi_dung { get; set; }
+        public bai_luyen_viet()
+        {
+            this.cau_hoi_luyen_viet = new HashSet<cau_hoi_luyen_viet>();
+            this.lich_su_luyen_viet = new HashSet<lich_su_luyen_viet>();
+        }
+    
+        public int id_bai_viet { get; set; }
         public Nullable<int> id_khoa_hoc { get; set; }
-        public Nullable<decimal> phan_tram_hoan_thanh { get; set; }
-        public string trang_thai { get; set; }
-        public Nullable<System.DateTime> lan_truy_cap_cuoi { get; set; }
-        public Nullable<int> tong_bai_tap { get; set; }
-        public Nullable<int> bai_tap_da_lam { get; set; }
+        public string tieu_de { get; set; }
+        public string mo_ta { get; set; }
+        public Nullable<System.DateTime> ngay_tao { get; set; }
     
         public virtual khoa_hoc khoa_hoc { get; set; }
-        public virtual nguoi_dung nguoi_dung { get; set; }
+        public virtual ICollection<cau_hoi_luyen_viet> cau_hoi_luyen_viet { get; set; }
+        public virtual ICollection<lich_su_luyen_viet> lich_su_luyen_viet { get; set; }
     }
 }

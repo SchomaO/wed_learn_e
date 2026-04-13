@@ -1,0 +1,195 @@
+﻿@model wed_learn_e.Models.cau_hoi_kho_bau
+@{
+    ViewBag.Title = "Giải Mã Trạm " + Model.thu_tu;
+    Layout = "~/Views/Shared/_Layoutcauhoi.cshtml";
+    int soLanSai = ViewBag.SoLanSai != null ? (int)ViewBag.SoLanSai : 0;
+}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+<style>
+    body {
+        background: #2c3e50;
+        font-family: Arial;
+    }
+
+    .quiz-card {
+        max-width: 700px;
+        margin: 50px auto;
+        background: #fff;
+        padding: 40px;
+        border-radius: 15px;
+        text-align: center;
+        border-top: 6px solid #e67e22;
+    }
+
+    .lives-box {
+        background: #ffeaa7;
+        padding: 10px;
+        border-radius: 20px;
+        font-size: 24px;
+        letter-spacing: 5px;
+        border: 2px solid #e1b12c;
+        margin-bottom: 20px;
+        display: inline-block;
+    }
+
+    .ans-btn {
+        display: block;
+        width: 100%;
+        padding: 15px;
+        margin-bottom: 15px;
+        border: 2px solid #ddd;
+        background: #f9f9f9;
+        font-size: 18px;
+        border-radius: 10px;
+        cursor: pointer;
+        text-align: left;
+    }
+
+        .ans-btn:hover {
+            border-color: #e67e22;
+        }
+
+        .ans-btn input {
+            margin-right: 15px;
+            transform: scale(1.5);
+        }
+
+    .error-finder-box {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+    }
+
+    .error-word {
+        background: #ecf0f1;
+        padding: 10px 20px;
+        border-radius: 8px;
+        border: 2px solid #bdc3c7;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+        .error-word input {
+            display: none;
+        }
+
+            .error-word input:checked + span {
+                color: #e74c3c;
+                text-decoration: underline;
+            }
+
+        .error-word:has(input:checked) {
+            border-color: #e74c3c;
+            background: #fdeaea;
+        }
+
+    .text-input {
+        width: 100%;
+        padding: 15px;
+        font-size: 20px;
+        border: 2px solid #bdc3c7;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .word-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        padding: 20px;
+        background: #f8f9fa;
+        border: 2px dashed #bdc3c7;
+        margin-bottom: 20px;
+    }
+
+    .word-block {
+        background: white;
+        padding: 12px 20px;
+        border-radius: 6px;
+        font-size: 18px;
+        font-weight: bold;
+        border: 1px solid #ddd;
+        cursor: grab;
+    }
+
+    .btn-submit {
+        background: #e67e22;
+        color: white;
+        padding: 15px 40px;
+        font-size: 20px;
+        font-weight: bold;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        width: 100%;
+    }
+</style>
+
+<div class="quiz-card">
+    <h2 style="color:#e67e22; margin-top:0;">Trạm @Model.thu_tu</h2>
+
+    <div class="lives-box">
+        @for (int i = 0; i < (3 - soLanSai); i++)
+        {<span>❤️</span>}
+        @for (int i = 0; i < soLanSai; i++)
+        {<span>🖤</span>}
+    </div>
+
+    <div style="font-size:24px; font-weight:bold; margin-bottom:25px;">@Model.noi_dung</div>
+    @if (ViewBag.Error != null)
+    {<p style="color:red; font-weight:bold; font-size:18px;">@ViewBag.Error</p>}
+
+    <form action="@Url.Action("GiaiMaCauHoi", "tinh_nang")" method="post">
+        <input type="hidden" name="id_cau_hoi" value="@Model.id_cau_hoi" />
+
+        @if (Model.loai_cau_hoi == "trac_nghiem")
+        {
+            <label class="ans-btn"><input type="radio" name="dap_an" value="A" required> A. @Model.dap_an_a</label>
+            <label class="ans-btn"><input type="radio" name="dap_an" value="B" required> B. @Model.dap_an_b</label>
+            <label class="ans-btn"><input type="radio" name="dap_an" value="C" required> C. @Model.dap_an_c</label>
+            <label class="ans-btn"><input type="radio" name="dap_an" value="D" required> D. @Model.dap_an_d</label>
+        }
+        else if (Model.loai_cau_hoi == "tim_loi")
+        {
+            <div class="error-finder-box">
+                <label class="error-word"><input type="radio" name="dap_an" value="A" required> <span>@Model.dap_an_a</span></label>
+                <label class="error-word"><input type="radio" name="dap_an" value="B" required> <span>@Model.dap_an_b</span></label>
+                <label class="error-word"><input type="radio" name="dap_an" value="C" required> <span>@Model.dap_an_c</span></label>
+                <label class="error-word"><input type="radio" name="dap_an" value="D" required> <span>@Model.dap_an_d</span></label>
+            </div>
+        }
+        else if (Model.loai_cau_hoi == "viet_anh" || Model.loai_cau_hoi == "viet_viet" || Model.loai_cau_hoi == "dien_tu")
+        {
+            <input type="text" name="dap_an" class="text-input" placeholder="Nhập đáp án..." required autocomplete="off" />
+        }
+        else if (Model.loai_cau_hoi == "sap_xep")
+        {
+            <div class="word-container" id="sortableContainer">
+                @foreach (var word in ViewBag.ScrambledWords as List<string>)
+                {<div class="word-block">@word</div>}
+            </div>
+            <input type="hidden" id="dap_an_sap_xep" name="dap_an_sap_xep" value="" />
+        }
+
+        <button type="submit" class="btn-submit" onclick="prepareSubmit()">Chốt Đáp Án!</button>
+        <br><br>
+        <a href="@Url.Action("BanDoKhoBau", new { id_cap_do = Model.game_kho_bau.id_cap_do })" style="color:#95a5a6; font-weight:bold; text-decoration:none;">⬅ Trở về bản đồ</a>
+    </form>
+</div>
+
+<script>
+    var container = document.getElementById('sortableContainer');
+    if (container) new Sortable(container, { animation: 150 });
+    function prepareSubmit() {
+        if (container) {
+            var words = [];
+            container.querySelectorAll('.word-block').forEach(b => words.push(b.innerText.trim()));
+            document.getElementById('dap_an_sap_xep').value = words.join(' ');
+        }
+    }
+</script>

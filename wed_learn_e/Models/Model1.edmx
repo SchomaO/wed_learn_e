@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="wed_learn_eModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="wed_learn_eModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="bai_giang_video">
           <Key>
             <PropertyRef Name="id_video" />
@@ -23,6 +23,50 @@
           <Property Name="tieu_de" Type="nvarchar" MaxLength="200" Nullable="false" />
           <Property Name="mo_ta" Type="nvarchar(max)" />
           <Property Name="nguoi_tao" Type="int" />
+        </EntityType>
+        <EntityType Name="bai_luyen_nghe">
+          <Key>
+            <PropertyRef Name="id_bai_nghe" />
+          </Key>
+          <Property Name="id_bai_nghe" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_khoa_hoc" Type="int" />
+          <Property Name="tieu_de" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="mo_ta" Type="nvarchar(max)" />
+          <Property Name="file_am_thanh" Type="varchar(max)" Nullable="false" />
+          <Property Name="ngay_tao" Type="datetime" />
+        </EntityType>
+        <EntityType Name="bai_luyen_noi">
+          <Key>
+            <PropertyRef Name="id_bai_noi" />
+          </Key>
+          <Property Name="id_bai_noi" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_khoa_hoc" Type="int" />
+          <Property Name="loai_bai_noi" Type="varchar" MaxLength="20" />
+          <Property Name="noi_dung_goc" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="nghia_tieng_viet" Type="nvarchar(max)" />
+          <Property Name="phien_am" Type="nvarchar" MaxLength="100" />
+          <Property Name="file_am_thanh_mau" Type="varchar" MaxLength="255" />
+          <Property Name="ngay_tao" Type="datetime" />
+        </EntityType>
+        <EntityType Name="bai_luyen_viet">
+          <Key>
+            <PropertyRef Name="id_bai_viet" />
+          </Key>
+          <Property Name="id_bai_viet" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_khoa_hoc" Type="int" />
+          <Property Name="tieu_de" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="mo_ta" Type="nvarchar(max)" />
+          <Property Name="ngay_tao" Type="datetime" />
+        </EntityType>
+        <EntityType Name="bai_sap_xep">
+          <Key>
+            <PropertyRef Name="id_bai_sap_xep" />
+          </Key>
+          <Property Name="id_bai_sap_xep" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_khoa_hoc" Type="int" />
+          <Property Name="tieu_de" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="mo_ta" Type="nvarchar(max)" />
+          <Property Name="ngay_tao" Type="datetime" />
         </EntityType>
         <EntityType Name="bai_tap_thuc_hanh">
           <Key>
@@ -43,6 +87,22 @@
           <Property Name="ten_cap_do" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="mo_ta" Type="nvarchar(max)" />
         </EntityType>
+        <EntityType Name="cau_hoi_kho_bau">
+          <Key>
+            <PropertyRef Name="id_cau_hoi" />
+          </Key>
+          <Property Name="id_cau_hoi" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_game" Type="int" />
+          <Property Name="thu_tu" Type="int" />
+          <Property Name="loai_cau_hoi" Type="varchar" MaxLength="50" />
+          <Property Name="noi_dung" Type="nvarchar(max)" />
+          <Property Name="dap_an_a" Type="nvarchar" MaxLength="200" />
+          <Property Name="dap_an_b" Type="nvarchar" MaxLength="200" />
+          <Property Name="dap_an_c" Type="nvarchar" MaxLength="200" />
+          <Property Name="dap_an_d" Type="nvarchar" MaxLength="200" />
+          <Property Name="dap_an_dung" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="manh_ghep" Type="nvarchar" MaxLength="50" />
+        </EntityType>
         <EntityType Name="cau_hoi_kiem_tra">
           <Key>
             <PropertyRef Name="id_cau_hoi" />
@@ -58,6 +118,47 @@
           <Property Name="nguoi_tao" Type="int" />
           <Property Name="nguoi_cap_nhat" Type="int" />
           <Property Name="ngay_cap_nhat" Type="datetime" />
+        </EntityType>
+        <EntityType Name="cau_hoi_luyen_nghe">
+          <Key>
+            <PropertyRef Name="id_cau_hoi" />
+          </Key>
+          <Property Name="id_cau_hoi" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_bai_nghe" Type="int" />
+          <Property Name="noi_dung_cau_hoi" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="dap_an_a" Type="nvarchar" MaxLength="255" />
+          <Property Name="dap_an_b" Type="nvarchar" MaxLength="255" />
+          <Property Name="dap_an_c" Type="nvarchar" MaxLength="255" />
+          <Property Name="dap_an_d" Type="nvarchar" MaxLength="255" />
+          <Property Name="dap_an_dung" Type="char" MaxLength="1" />
+        </EntityType>
+        <EntityType Name="cau_hoi_luyen_viet">
+          <Key>
+            <PropertyRef Name="id_cau_hoi_viet" />
+          </Key>
+          <Property Name="id_cau_hoi_viet" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_bai_viet" Type="int" />
+          <Property Name="cau_tieng_viet" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="dap_an_tieng_anh" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="cau_hoi_sap_xep">
+          <Key>
+            <PropertyRef Name="id_cau_hoi" />
+          </Key>
+          <Property Name="id_cau_hoi" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_bai_sap_xep" Type="int" />
+          <Property Name="cau_tieng_viet" Type="nvarchar(max)" />
+          <Property Name="dap_an_dung" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="game_kho_bau">
+          <Key>
+            <PropertyRef Name="id_game" />
+          </Key>
+          <Property Name="id_game" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_cap_do" Type="int" />
+          <Property Name="tieu_de" Type="nvarchar" MaxLength="200" />
+          <Property Name="tu_khoa_cuoi" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="mo_ta" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="ket_qua_kiem_tra">
           <Key>
@@ -83,6 +184,60 @@
           <Property Name="nguoi_tao" Type="int" />
           <Property Name="nguoi_cap_nhat" Type="int" />
           <Property Name="ngay_cap_nhat" Type="datetime" />
+        </EntityType>
+        <EntityType Name="lich_su_kho_bau">
+          <Key>
+            <PropertyRef Name="id_lich_su" />
+          </Key>
+          <Property Name="id_lich_su" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_nguoi_dung" Type="int" />
+          <Property Name="id_cau_hoi" Type="int" />
+          <Property Name="ngay_giai_ma" Type="datetime" />
+        </EntityType>
+        <EntityType Name="lich_su_luyen_nghe">
+          <Key>
+            <PropertyRef Name="id_lich_su" />
+          </Key>
+          <Property Name="id_lich_su" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_nguoi_dung" Type="int" />
+          <Property Name="id_bai_nghe" Type="int" />
+          <Property Name="ngay_hoan_thanh" Type="datetime" />
+        </EntityType>
+        <EntityType Name="lich_su_luyen_noi">
+          <Key>
+            <PropertyRef Name="id_lich_su" />
+          </Key>
+          <Property Name="id_lich_su" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_nguoi_dung" Type="int" />
+          <Property Name="id_bai_noi" Type="int" />
+          <Property Name="ngay_hoan_thanh" Type="datetime" />
+        </EntityType>
+        <EntityType Name="lich_su_luyen_viet">
+          <Key>
+            <PropertyRef Name="id_lich_su" />
+          </Key>
+          <Property Name="id_lich_su" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_nguoi_dung" Type="int" />
+          <Property Name="id_bai_viet" Type="int" />
+          <Property Name="ngay_hoan_thanh" Type="datetime" />
+        </EntityType>
+        <EntityType Name="lich_su_sap_xep">
+          <Key>
+            <PropertyRef Name="id_lich_su" />
+          </Key>
+          <Property Name="id_lich_su" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_nguoi_dung" Type="int" />
+          <Property Name="id_bai_sap_xep" Type="int" />
+          <Property Name="ngay_hoan_thanh" Type="datetime" />
+        </EntityType>
+        <EntityType Name="lich_su_video">
+          <Key>
+            <PropertyRef Name="id_lich_su" />
+          </Key>
+          <Property Name="id_lich_su" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_nguoi_dung" Type="int" />
+          <Property Name="id_video" Type="int" />
+          <Property Name="ngay_hoan_thanh" Type="datetime" />
         </EntityType>
         <EntityType Name="nguoi_dung">
           <Key>
@@ -131,6 +286,8 @@
           <Property Name="phan_tram_hoan_thanh" Type="decimal" Precision="5" Scale="2" />
           <Property Name="trang_thai" Type="varchar" MaxLength="20" />
           <Property Name="lan_truy_cap_cuoi" Type="datetime" />
+          <Property Name="tong_bai_tap" Type="int" />
+          <Property Name="bai_tap_da_lam" Type="int" />
         </EntityType>
         <EntityType Name="tu_vung">
           <Key>
@@ -168,6 +325,54 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__bai_luyen__id_kh__2B0A656D">
+          <End Role="khoa_hoc" Type="Self.khoa_hoc" Multiplicity="0..1" />
+          <End Role="bai_luyen_noi" Type="Self.bai_luyen_noi" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="khoa_hoc">
+              <PropertyRef Name="id_khoa_hoc" />
+            </Principal>
+            <Dependent Role="bai_luyen_noi">
+              <PropertyRef Name="id_khoa_hoc" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__bai_luyen__id_kh__2EDAF651">
+          <End Role="khoa_hoc" Type="Self.khoa_hoc" Multiplicity="0..1" />
+          <End Role="bai_luyen_nghe" Type="Self.bai_luyen_nghe" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="khoa_hoc">
+              <PropertyRef Name="id_khoa_hoc" />
+            </Principal>
+            <Dependent Role="bai_luyen_nghe">
+              <PropertyRef Name="id_khoa_hoc" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__bai_luyen__id_kh__3D2915A8">
+          <End Role="khoa_hoc" Type="Self.khoa_hoc" Multiplicity="0..1" />
+          <End Role="bai_luyen_viet" Type="Self.bai_luyen_viet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="khoa_hoc">
+              <PropertyRef Name="id_khoa_hoc" />
+            </Principal>
+            <Dependent Role="bai_luyen_viet">
+              <PropertyRef Name="id_khoa_hoc" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__bai_sap_x__id_kh__56E8E7AB">
+          <End Role="khoa_hoc" Type="Self.khoa_hoc" Multiplicity="0..1" />
+          <End Role="bai_sap_xep" Type="Self.bai_sap_xep" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="khoa_hoc">
+              <PropertyRef Name="id_khoa_hoc" />
+            </Principal>
+            <Dependent Role="bai_sap_xep">
+              <PropertyRef Name="id_khoa_hoc" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK__bai_tap_t__id_kh__0E6E26BF">
           <End Role="khoa_hoc" Type="Self.khoa_hoc" Multiplicity="0..1" />
           <End Role="bai_tap_thuc_hanh" Type="Self.bai_tap_thuc_hanh" Multiplicity="*" />
@@ -192,6 +397,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__cau_hoi_k__id_ga__6442E2C9">
+          <End Role="game_kho_bau" Type="Self.game_kho_bau" Multiplicity="0..1" />
+          <End Role="cau_hoi_kho_bau" Type="Self.cau_hoi_kho_bau" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="game_kho_bau">
+              <PropertyRef Name="id_game" />
+            </Principal>
+            <Dependent Role="cau_hoi_kho_bau">
+              <PropertyRef Name="id_game" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK__cau_hoi_k__nguoi__114A936A">
           <End Role="nguoi_dung" Type="Self.nguoi_dung" Multiplicity="0..1" />
           <End Role="cau_hoi_kiem_tra" Type="Self.cau_hoi_kiem_tra" Multiplicity="*" />
@@ -213,6 +430,42 @@
             </Principal>
             <Dependent Role="cau_hoi_kiem_tra">
               <PropertyRef Name="nguoi_cap_nhat" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__cau_hoi_l__id_ba__31B762FC">
+          <End Role="bai_luyen_nghe" Type="Self.bai_luyen_nghe" Multiplicity="0..1" />
+          <End Role="cau_hoi_luyen_nghe" Type="Self.cau_hoi_luyen_nghe" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bai_luyen_nghe">
+              <PropertyRef Name="id_bai_nghe" />
+            </Principal>
+            <Dependent Role="cau_hoi_luyen_nghe">
+              <PropertyRef Name="id_bai_nghe" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__cau_hoi_l__id_ba__40058253">
+          <End Role="bai_luyen_viet" Type="Self.bai_luyen_viet" Multiplicity="0..1" />
+          <End Role="cau_hoi_luyen_viet" Type="Self.cau_hoi_luyen_viet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bai_luyen_viet">
+              <PropertyRef Name="id_bai_viet" />
+            </Principal>
+            <Dependent Role="cau_hoi_luyen_viet">
+              <PropertyRef Name="id_bai_viet" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__cau_hoi_s__id_ba__59C55456">
+          <End Role="bai_sap_xep" Type="Self.bai_sap_xep" Multiplicity="0..1" />
+          <End Role="cau_hoi_sap_xep" Type="Self.cau_hoi_sap_xep" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bai_sap_xep">
+              <PropertyRef Name="id_bai_sap_xep" />
+            </Principal>
+            <Dependent Role="cau_hoi_sap_xep">
+              <PropertyRef Name="id_bai_sap_xep" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -288,6 +541,138 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__lich_su_k__id_ca__671F4F74">
+          <End Role="cau_hoi_kho_bau" Type="Self.cau_hoi_kho_bau" Multiplicity="0..1" />
+          <End Role="lich_su_kho_bau" Type="Self.lich_su_kho_bau" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="cau_hoi_kho_bau">
+              <PropertyRef Name="id_cau_hoi" />
+            </Principal>
+            <Dependent Role="lich_su_kho_bau">
+              <PropertyRef Name="id_cau_hoi" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__lich_su_l__id_ba__44CA3770">
+          <End Role="bai_luyen_viet" Type="Self.bai_luyen_viet" Multiplicity="0..1" />
+          <End Role="lich_su_luyen_viet" Type="Self.lich_su_luyen_viet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bai_luyen_viet">
+              <PropertyRef Name="id_bai_viet" />
+            </Principal>
+            <Dependent Role="lich_su_luyen_viet">
+              <PropertyRef Name="id_bai_viet" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__lich_su_l__id_ba__498EEC8D">
+          <End Role="bai_luyen_nghe" Type="Self.bai_luyen_nghe" Multiplicity="0..1" />
+          <End Role="lich_su_luyen_nghe" Type="Self.lich_su_luyen_nghe" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bai_luyen_nghe">
+              <PropertyRef Name="id_bai_nghe" />
+            </Principal>
+            <Dependent Role="lich_su_luyen_nghe">
+              <PropertyRef Name="id_bai_nghe" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__lich_su_l__id_ba__4E53A1AA">
+          <End Role="bai_luyen_noi" Type="Self.bai_luyen_noi" Multiplicity="0..1" />
+          <End Role="lich_su_luyen_noi" Type="Self.lich_su_luyen_noi" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bai_luyen_noi">
+              <PropertyRef Name="id_bai_noi" />
+            </Principal>
+            <Dependent Role="lich_su_luyen_noi">
+              <PropertyRef Name="id_bai_noi" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__lich_su_l__id_ng__43D61337">
+          <End Role="nguoi_dung" Type="Self.nguoi_dung" Multiplicity="0..1" />
+          <End Role="lich_su_luyen_viet" Type="Self.lich_su_luyen_viet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="nguoi_dung">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Principal>
+            <Dependent Role="lich_su_luyen_viet">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__lich_su_l__id_ng__489AC854">
+          <End Role="nguoi_dung" Type="Self.nguoi_dung" Multiplicity="0..1" />
+          <End Role="lich_su_luyen_nghe" Type="Self.lich_su_luyen_nghe" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="nguoi_dung">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Principal>
+            <Dependent Role="lich_su_luyen_nghe">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__lich_su_l__id_ng__4D5F7D71">
+          <End Role="nguoi_dung" Type="Self.nguoi_dung" Multiplicity="0..1" />
+          <End Role="lich_su_luyen_noi" Type="Self.lich_su_luyen_noi" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="nguoi_dung">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Principal>
+            <Dependent Role="lich_su_luyen_noi">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__lich_su_s__id_ba__5E8A0973">
+          <End Role="bai_sap_xep" Type="Self.bai_sap_xep" Multiplicity="0..1" />
+          <End Role="lich_su_sap_xep" Type="Self.lich_su_sap_xep" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bai_sap_xep">
+              <PropertyRef Name="id_bai_sap_xep" />
+            </Principal>
+            <Dependent Role="lich_su_sap_xep">
+              <PropertyRef Name="id_bai_sap_xep" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__lich_su_s__id_ng__5D95E53A">
+          <End Role="nguoi_dung" Type="Self.nguoi_dung" Multiplicity="0..1" />
+          <End Role="lich_su_sap_xep" Type="Self.lich_su_sap_xep" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="nguoi_dung">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Principal>
+            <Dependent Role="lich_su_sap_xep">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__lich_su_v__id_ng__5224328E">
+          <End Role="nguoi_dung" Type="Self.nguoi_dung" Multiplicity="0..1" />
+          <End Role="lich_su_video" Type="Self.lich_su_video" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="nguoi_dung">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Principal>
+            <Dependent Role="lich_su_video">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__lich_su_v__id_vi__531856C7">
+          <End Role="bai_giang_video" Type="Self.bai_giang_video" Multiplicity="0..1" />
+          <End Role="lich_su_video" Type="Self.lich_su_video" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bai_giang_video">
+              <PropertyRef Name="id_video" />
+            </Principal>
+            <Dependent Role="lich_su_video">
+              <PropertyRef Name="id_video" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK__nguoi_dun__id_ca__6383C8BA">
           <End Role="cap_do" Type="Self.cap_do" Multiplicity="0..1" />
           <End Role="nguoi_dung" Type="Self.nguoi_dung" Multiplicity="*" />
@@ -351,11 +736,26 @@
         <EntityContainer Name="wed_learn_eModelStoreContainer">
           <EntitySet Name="bai_giang_video" EntityType="Self.bai_giang_video" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="bai_kiem_tra_dau_vao" EntityType="Self.bai_kiem_tra_dau_vao" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="bai_luyen_nghe" EntityType="Self.bai_luyen_nghe" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="bai_luyen_noi" EntityType="Self.bai_luyen_noi" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="bai_luyen_viet" EntityType="Self.bai_luyen_viet" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="bai_sap_xep" EntityType="Self.bai_sap_xep" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="bai_tap_thuc_hanh" EntityType="Self.bai_tap_thuc_hanh" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="cap_do" EntityType="Self.cap_do" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="cau_hoi_kho_bau" EntityType="Self.cau_hoi_kho_bau" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="cau_hoi_kiem_tra" EntityType="Self.cau_hoi_kiem_tra" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="cau_hoi_luyen_nghe" EntityType="Self.cau_hoi_luyen_nghe" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="cau_hoi_luyen_viet" EntityType="Self.cau_hoi_luyen_viet" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="cau_hoi_sap_xep" EntityType="Self.cau_hoi_sap_xep" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="game_kho_bau" EntityType="Self.game_kho_bau" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ket_qua_kiem_tra" EntityType="Self.ket_qua_kiem_tra" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="khoa_hoc" EntityType="Self.khoa_hoc" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="lich_su_kho_bau" EntityType="Self.lich_su_kho_bau" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="lich_su_luyen_nghe" EntityType="Self.lich_su_luyen_nghe" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="lich_su_luyen_noi" EntityType="Self.lich_su_luyen_noi" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="lich_su_luyen_viet" EntityType="Self.lich_su_luyen_viet" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="lich_su_sap_xep" EntityType="Self.lich_su_sap_xep" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="lich_su_video" EntityType="Self.lich_su_video" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="nguoi_dung" EntityType="Self.nguoi_dung" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="nhat_ky_quan_tri" EntityType="Self.nhat_ky_quan_tri" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
@@ -369,6 +769,22 @@
             <End Role="nguoi_dung" EntitySet="nguoi_dung" />
             <End Role="bai_kiem_tra_dau_vao" EntitySet="bai_kiem_tra_dau_vao" />
           </AssociationSet>
+          <AssociationSet Name="FK__bai_luyen__id_kh__2B0A656D" Association="Self.FK__bai_luyen__id_kh__2B0A656D">
+            <End Role="khoa_hoc" EntitySet="khoa_hoc" />
+            <End Role="bai_luyen_noi" EntitySet="bai_luyen_noi" />
+          </AssociationSet>
+          <AssociationSet Name="FK__bai_luyen__id_kh__2EDAF651" Association="Self.FK__bai_luyen__id_kh__2EDAF651">
+            <End Role="khoa_hoc" EntitySet="khoa_hoc" />
+            <End Role="bai_luyen_nghe" EntitySet="bai_luyen_nghe" />
+          </AssociationSet>
+          <AssociationSet Name="FK__bai_luyen__id_kh__3D2915A8" Association="Self.FK__bai_luyen__id_kh__3D2915A8">
+            <End Role="khoa_hoc" EntitySet="khoa_hoc" />
+            <End Role="bai_luyen_viet" EntitySet="bai_luyen_viet" />
+          </AssociationSet>
+          <AssociationSet Name="FK__bai_sap_x__id_kh__56E8E7AB" Association="Self.FK__bai_sap_x__id_kh__56E8E7AB">
+            <End Role="khoa_hoc" EntitySet="khoa_hoc" />
+            <End Role="bai_sap_xep" EntitySet="bai_sap_xep" />
+          </AssociationSet>
           <AssociationSet Name="FK__bai_tap_t__id_kh__0E6E26BF" Association="Self.FK__bai_tap_t__id_kh__0E6E26BF">
             <End Role="khoa_hoc" EntitySet="khoa_hoc" />
             <End Role="bai_tap_thuc_hanh" EntitySet="bai_tap_thuc_hanh" />
@@ -377,6 +793,10 @@
             <End Role="bai_kiem_tra_dau_vao" EntitySet="bai_kiem_tra_dau_vao" />
             <End Role="cau_hoi_kiem_tra" EntitySet="cau_hoi_kiem_tra" />
           </AssociationSet>
+          <AssociationSet Name="FK__cau_hoi_k__id_ga__6442E2C9" Association="Self.FK__cau_hoi_k__id_ga__6442E2C9">
+            <End Role="game_kho_bau" EntitySet="game_kho_bau" />
+            <End Role="cau_hoi_kho_bau" EntitySet="cau_hoi_kho_bau" />
+          </AssociationSet>
           <AssociationSet Name="FK__cau_hoi_k__nguoi__114A936A" Association="Self.FK__cau_hoi_k__nguoi__114A936A">
             <End Role="nguoi_dung" EntitySet="nguoi_dung" />
             <End Role="cau_hoi_kiem_tra" EntitySet="cau_hoi_kiem_tra" />
@@ -384,6 +804,18 @@
           <AssociationSet Name="FK__cau_hoi_k__nguoi__123EB7A3" Association="Self.FK__cau_hoi_k__nguoi__123EB7A3">
             <End Role="nguoi_dung" EntitySet="nguoi_dung" />
             <End Role="cau_hoi_kiem_tra" EntitySet="cau_hoi_kiem_tra" />
+          </AssociationSet>
+          <AssociationSet Name="FK__cau_hoi_l__id_ba__31B762FC" Association="Self.FK__cau_hoi_l__id_ba__31B762FC">
+            <End Role="bai_luyen_nghe" EntitySet="bai_luyen_nghe" />
+            <End Role="cau_hoi_luyen_nghe" EntitySet="cau_hoi_luyen_nghe" />
+          </AssociationSet>
+          <AssociationSet Name="FK__cau_hoi_l__id_ba__40058253" Association="Self.FK__cau_hoi_l__id_ba__40058253">
+            <End Role="bai_luyen_viet" EntitySet="bai_luyen_viet" />
+            <End Role="cau_hoi_luyen_viet" EntitySet="cau_hoi_luyen_viet" />
+          </AssociationSet>
+          <AssociationSet Name="FK__cau_hoi_s__id_ba__59C55456" Association="Self.FK__cau_hoi_s__id_ba__59C55456">
+            <End Role="bai_sap_xep" EntitySet="bai_sap_xep" />
+            <End Role="cau_hoi_sap_xep" EntitySet="cau_hoi_sap_xep" />
           </AssociationSet>
           <AssociationSet Name="FK__ket_qua_k__id_ba__6E01572D" Association="Self.FK__ket_qua_k__id_ba__6E01572D">
             <End Role="bai_kiem_tra_dau_vao" EntitySet="bai_kiem_tra_dau_vao" />
@@ -409,6 +841,50 @@
             <End Role="nguoi_dung" EntitySet="nguoi_dung" />
             <End Role="khoa_hoc" EntitySet="khoa_hoc" />
           </AssociationSet>
+          <AssociationSet Name="FK__lich_su_k__id_ca__671F4F74" Association="Self.FK__lich_su_k__id_ca__671F4F74">
+            <End Role="cau_hoi_kho_bau" EntitySet="cau_hoi_kho_bau" />
+            <End Role="lich_su_kho_bau" EntitySet="lich_su_kho_bau" />
+          </AssociationSet>
+          <AssociationSet Name="FK__lich_su_l__id_ba__44CA3770" Association="Self.FK__lich_su_l__id_ba__44CA3770">
+            <End Role="bai_luyen_viet" EntitySet="bai_luyen_viet" />
+            <End Role="lich_su_luyen_viet" EntitySet="lich_su_luyen_viet" />
+          </AssociationSet>
+          <AssociationSet Name="FK__lich_su_l__id_ba__498EEC8D" Association="Self.FK__lich_su_l__id_ba__498EEC8D">
+            <End Role="bai_luyen_nghe" EntitySet="bai_luyen_nghe" />
+            <End Role="lich_su_luyen_nghe" EntitySet="lich_su_luyen_nghe" />
+          </AssociationSet>
+          <AssociationSet Name="FK__lich_su_l__id_ba__4E53A1AA" Association="Self.FK__lich_su_l__id_ba__4E53A1AA">
+            <End Role="bai_luyen_noi" EntitySet="bai_luyen_noi" />
+            <End Role="lich_su_luyen_noi" EntitySet="lich_su_luyen_noi" />
+          </AssociationSet>
+          <AssociationSet Name="FK__lich_su_l__id_ng__43D61337" Association="Self.FK__lich_su_l__id_ng__43D61337">
+            <End Role="nguoi_dung" EntitySet="nguoi_dung" />
+            <End Role="lich_su_luyen_viet" EntitySet="lich_su_luyen_viet" />
+          </AssociationSet>
+          <AssociationSet Name="FK__lich_su_l__id_ng__489AC854" Association="Self.FK__lich_su_l__id_ng__489AC854">
+            <End Role="nguoi_dung" EntitySet="nguoi_dung" />
+            <End Role="lich_su_luyen_nghe" EntitySet="lich_su_luyen_nghe" />
+          </AssociationSet>
+          <AssociationSet Name="FK__lich_su_l__id_ng__4D5F7D71" Association="Self.FK__lich_su_l__id_ng__4D5F7D71">
+            <End Role="nguoi_dung" EntitySet="nguoi_dung" />
+            <End Role="lich_su_luyen_noi" EntitySet="lich_su_luyen_noi" />
+          </AssociationSet>
+          <AssociationSet Name="FK__lich_su_s__id_ba__5E8A0973" Association="Self.FK__lich_su_s__id_ba__5E8A0973">
+            <End Role="bai_sap_xep" EntitySet="bai_sap_xep" />
+            <End Role="lich_su_sap_xep" EntitySet="lich_su_sap_xep" />
+          </AssociationSet>
+          <AssociationSet Name="FK__lich_su_s__id_ng__5D95E53A" Association="Self.FK__lich_su_s__id_ng__5D95E53A">
+            <End Role="nguoi_dung" EntitySet="nguoi_dung" />
+            <End Role="lich_su_sap_xep" EntitySet="lich_su_sap_xep" />
+          </AssociationSet>
+          <AssociationSet Name="FK__lich_su_v__id_ng__5224328E" Association="Self.FK__lich_su_v__id_ng__5224328E">
+            <End Role="nguoi_dung" EntitySet="nguoi_dung" />
+            <End Role="lich_su_video" EntitySet="lich_su_video" />
+          </AssociationSet>
+          <AssociationSet Name="FK__lich_su_v__id_vi__531856C7" Association="Self.FK__lich_su_v__id_vi__531856C7">
+            <End Role="bai_giang_video" EntitySet="bai_giang_video" />
+            <End Role="lich_su_video" EntitySet="lich_su_video" />
+          </AssociationSet>
           <AssociationSet Name="FK__nguoi_dun__id_ca__6383C8BA" Association="Self.FK__nguoi_dun__id_ca__6383C8BA">
             <End Role="cap_do" EntitySet="cap_do" />
             <End Role="nguoi_dung" EntitySet="nguoi_dung" />
@@ -430,8 +906,7 @@
             <End Role="tu_vung" EntitySet="tu_vung" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="wed_learn_eModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -445,6 +920,7 @@
           <Property Name="duong_dan_video" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="thoi_luong_phut" Type="Int32" />
           <NavigationProperty Name="khoa_hoc" Relationship="Self.FK__bai_giang__id_kh__0A9D95DB" FromRole="bai_giang_video" ToRole="khoa_hoc" />
+          <NavigationProperty Name="lich_su_video" Relationship="wed_learn_eModel.FK__lich_su_v__id_vi__531856C7" FromRole="bai_giang_video" ToRole="lich_su_video" />
         </EntityType>
         <EntityType Name="bai_kiem_tra_dau_vao">
           <Key>
@@ -534,6 +1010,10 @@
           <NavigationProperty Name="nguoi_dung1" Relationship="Self.FK__khoa_hoc__nguoi___10566F31" FromRole="khoa_hoc" ToRole="nguoi_dung" />
           <NavigationProperty Name="tien_do_hoc_tap" Relationship="Self.FK__tien_do_h__id_kh__7A672E12" FromRole="khoa_hoc" ToRole="tien_do_hoc_tap" />
           <NavigationProperty Name="tu_vung" Relationship="Self.FK__tu_vung__id_khoa__07C12930" FromRole="khoa_hoc" ToRole="tu_vung" />
+          <NavigationProperty Name="bai_luyen_noi" Relationship="wed_learn_eModel.FK__bai_luyen__id_kh__2B0A656D" FromRole="khoa_hoc" ToRole="bai_luyen_noi" />
+          <NavigationProperty Name="bai_luyen_nghe" Relationship="wed_learn_eModel.FK__bai_luyen__id_kh__2EDAF651" FromRole="khoa_hoc" ToRole="bai_luyen_nghe" />
+          <NavigationProperty Name="bai_luyen_viet" Relationship="wed_learn_eModel.FK__bai_luyen__id_kh__3D2915A8" FromRole="khoa_hoc" ToRole="bai_luyen_viet" />
+          <NavigationProperty Name="bai_sap_xep" Relationship="wed_learn_eModel.FK__bai_sap_x__id_kh__56E8E7AB" FromRole="khoa_hoc" ToRole="bai_sap_xep" />
         </EntityType>
         <EntityType Name="nguoi_dung">
           <Key>
@@ -557,6 +1037,11 @@
           <NavigationProperty Name="khoa_hoc1" Relationship="Self.FK__khoa_hoc__nguoi___10566F31" FromRole="nguoi_dung" ToRole="khoa_hoc" />
           <NavigationProperty Name="nhat_ky_quan_tri" Relationship="Self.FK__nhat_ky_q__id_ad__160F4887" FromRole="nguoi_dung" ToRole="nhat_ky_quan_tri" />
           <NavigationProperty Name="tien_do_hoc_tap" Relationship="Self.FK__tien_do_h__id_ng__797309D9" FromRole="nguoi_dung" ToRole="tien_do_hoc_tap" />
+          <NavigationProperty Name="lich_su_luyen_viet" Relationship="wed_learn_eModel.FK__lich_su_l__id_ng__43D61337" FromRole="nguoi_dung" ToRole="lich_su_luyen_viet" />
+          <NavigationProperty Name="lich_su_luyen_nghe" Relationship="wed_learn_eModel.FK__lich_su_l__id_ng__489AC854" FromRole="nguoi_dung" ToRole="lich_su_luyen_nghe" />
+          <NavigationProperty Name="lich_su_luyen_noi" Relationship="wed_learn_eModel.FK__lich_su_l__id_ng__4D5F7D71" FromRole="nguoi_dung" ToRole="lich_su_luyen_noi" />
+          <NavigationProperty Name="lich_su_video" Relationship="wed_learn_eModel.FK__lich_su_v__id_ng__5224328E" FromRole="nguoi_dung" ToRole="lich_su_video" />
+          <NavigationProperty Name="lich_su_sap_xep" Relationship="wed_learn_eModel.FK__lich_su_s__id_ng__5D95E53A" FromRole="nguoi_dung" ToRole="lich_su_sap_xep" />
         </EntityType>
         <EntityType Name="nhat_ky_quan_tri">
           <Key>
@@ -594,6 +1079,8 @@
           <Property Name="lan_truy_cap_cuoi" Type="DateTime" Precision="3" />
           <NavigationProperty Name="khoa_hoc" Relationship="Self.FK__tien_do_h__id_kh__7A672E12" FromRole="tien_do_hoc_tap" ToRole="khoa_hoc" />
           <NavigationProperty Name="nguoi_dung" Relationship="Self.FK__tien_do_h__id_ng__797309D9" FromRole="tien_do_hoc_tap" ToRole="nguoi_dung" />
+          <Property Name="tong_bai_tap" Type="Int32" />
+          <Property Name="bai_tap_da_lam" Type="Int32" />
         </EntityType>
         <EntityType Name="tu_vung">
           <Key>
@@ -893,7 +1380,509 @@
             <End Role="nguoi_dung" EntitySet="nguoi_dung" />
             <End Role="tien_do_hoc_tap" EntitySet="tien_do_hoc_tap" />
           </AssociationSet>
+          <EntitySet Name="bai_luyen_noi" EntityType="wed_learn_eModel.bai_luyen_noi" />
+          <AssociationSet Name="FK__bai_luyen__id_kh__2B0A656D" Association="wed_learn_eModel.FK__bai_luyen__id_kh__2B0A656D">
+            <End Role="khoa_hoc" EntitySet="khoa_hoc" />
+            <End Role="bai_luyen_noi" EntitySet="bai_luyen_noi" />
+          </AssociationSet>
+          <EntitySet Name="bai_luyen_nghe" EntityType="wed_learn_eModel.bai_luyen_nghe" />
+          <EntitySet Name="cau_hoi_luyen_nghe" EntityType="wed_learn_eModel.cau_hoi_luyen_nghe" />
+          <AssociationSet Name="FK__bai_luyen__id_kh__2EDAF651" Association="wed_learn_eModel.FK__bai_luyen__id_kh__2EDAF651">
+            <End Role="khoa_hoc" EntitySet="khoa_hoc" />
+            <End Role="bai_luyen_nghe" EntitySet="bai_luyen_nghe" />
+          </AssociationSet>
+          <AssociationSet Name="FK__cau_hoi_l__id_ba__31B762FC" Association="wed_learn_eModel.FK__cau_hoi_l__id_ba__31B762FC">
+            <End Role="bai_luyen_nghe" EntitySet="bai_luyen_nghe" />
+            <End Role="cau_hoi_luyen_nghe" EntitySet="cau_hoi_luyen_nghe" />
+          </AssociationSet>
+          <EntitySet Name="bai_luyen_viet" EntityType="wed_learn_eModel.bai_luyen_viet" />
+          <EntitySet Name="cau_hoi_luyen_viet" EntityType="wed_learn_eModel.cau_hoi_luyen_viet" />
+          <EntitySet Name="lich_su_luyen_viet" EntityType="wed_learn_eModel.lich_su_luyen_viet" />
+          <AssociationSet Name="FK__bai_luyen__id_kh__3D2915A8" Association="wed_learn_eModel.FK__bai_luyen__id_kh__3D2915A8">
+            <End Role="khoa_hoc" EntitySet="khoa_hoc" />
+            <End Role="bai_luyen_viet" EntitySet="bai_luyen_viet" />
+          </AssociationSet>
+          <AssociationSet Name="FK__cau_hoi_l__id_ba__40058253" Association="wed_learn_eModel.FK__cau_hoi_l__id_ba__40058253">
+            <End Role="bai_luyen_viet" EntitySet="bai_luyen_viet" />
+            <End Role="cau_hoi_luyen_viet" EntitySet="cau_hoi_luyen_viet" />
+          </AssociationSet>
+          <AssociationSet Name="FK__lich_su_l__id_ba__44CA3770" Association="wed_learn_eModel.FK__lich_su_l__id_ba__44CA3770">
+            <End Role="bai_luyen_viet" EntitySet="bai_luyen_viet" />
+            <End Role="lich_su_luyen_viet" EntitySet="lich_su_luyen_viet" />
+          </AssociationSet>
+          <AssociationSet Name="FK__lich_su_l__id_ng__43D61337" Association="wed_learn_eModel.FK__lich_su_l__id_ng__43D61337">
+            <End Role="nguoi_dung" EntitySet="nguoi_dung" />
+            <End Role="lich_su_luyen_viet" EntitySet="lich_su_luyen_viet" />
+          </AssociationSet>
+          <EntitySet Name="lich_su_luyen_nghe" EntityType="wed_learn_eModel.lich_su_luyen_nghe" />
+          <EntitySet Name="lich_su_luyen_noi" EntityType="wed_learn_eModel.lich_su_luyen_noi" />
+          <EntitySet Name="lich_su_video" EntityType="wed_learn_eModel.lich_su_video" />
+          <AssociationSet Name="FK__lich_su_v__id_vi__531856C7" Association="wed_learn_eModel.FK__lich_su_v__id_vi__531856C7">
+            <End Role="bai_giang_video" EntitySet="bai_giang_video" />
+            <End Role="lich_su_video" EntitySet="lich_su_video" />
+          </AssociationSet>
+          <AssociationSet Name="FK__lich_su_l__id_ba__498EEC8D" Association="wed_learn_eModel.FK__lich_su_l__id_ba__498EEC8D">
+            <End Role="bai_luyen_nghe" EntitySet="bai_luyen_nghe" />
+            <End Role="lich_su_luyen_nghe" EntitySet="lich_su_luyen_nghe" />
+          </AssociationSet>
+          <AssociationSet Name="FK__lich_su_l__id_ba__4E53A1AA" Association="wed_learn_eModel.FK__lich_su_l__id_ba__4E53A1AA">
+            <End Role="bai_luyen_noi" EntitySet="bai_luyen_noi" />
+            <End Role="lich_su_luyen_noi" EntitySet="lich_su_luyen_noi" />
+          </AssociationSet>
+          <AssociationSet Name="FK__lich_su_l__id_ng__489AC854" Association="wed_learn_eModel.FK__lich_su_l__id_ng__489AC854">
+            <End Role="nguoi_dung" EntitySet="nguoi_dung" />
+            <End Role="lich_su_luyen_nghe" EntitySet="lich_su_luyen_nghe" />
+          </AssociationSet>
+          <AssociationSet Name="FK__lich_su_l__id_ng__4D5F7D71" Association="wed_learn_eModel.FK__lich_su_l__id_ng__4D5F7D71">
+            <End Role="nguoi_dung" EntitySet="nguoi_dung" />
+            <End Role="lich_su_luyen_noi" EntitySet="lich_su_luyen_noi" />
+          </AssociationSet>
+          <AssociationSet Name="FK__lich_su_v__id_ng__5224328E" Association="wed_learn_eModel.FK__lich_su_v__id_ng__5224328E">
+            <End Role="nguoi_dung" EntitySet="nguoi_dung" />
+            <End Role="lich_su_video" EntitySet="lich_su_video" />
+          </AssociationSet>
+          <EntitySet Name="bai_sap_xep" EntityType="wed_learn_eModel.bai_sap_xep" />
+          <EntitySet Name="cau_hoi_sap_xep" EntityType="wed_learn_eModel.cau_hoi_sap_xep" />
+          <EntitySet Name="lich_su_sap_xep" EntityType="wed_learn_eModel.lich_su_sap_xep" />
+          <AssociationSet Name="FK__bai_sap_x__id_kh__56E8E7AB" Association="wed_learn_eModel.FK__bai_sap_x__id_kh__56E8E7AB">
+            <End Role="khoa_hoc" EntitySet="khoa_hoc" />
+            <End Role="bai_sap_xep" EntitySet="bai_sap_xep" />
+          </AssociationSet>
+          <AssociationSet Name="FK__cau_hoi_s__id_ba__59C55456" Association="wed_learn_eModel.FK__cau_hoi_s__id_ba__59C55456">
+            <End Role="bai_sap_xep" EntitySet="bai_sap_xep" />
+            <End Role="cau_hoi_sap_xep" EntitySet="cau_hoi_sap_xep" />
+          </AssociationSet>
+          <AssociationSet Name="FK__lich_su_s__id_ba__5E8A0973" Association="wed_learn_eModel.FK__lich_su_s__id_ba__5E8A0973">
+            <End Role="bai_sap_xep" EntitySet="bai_sap_xep" />
+            <End Role="lich_su_sap_xep" EntitySet="lich_su_sap_xep" />
+          </AssociationSet>
+          <AssociationSet Name="FK__lich_su_s__id_ng__5D95E53A" Association="wed_learn_eModel.FK__lich_su_s__id_ng__5D95E53A">
+            <End Role="nguoi_dung" EntitySet="nguoi_dung" />
+            <End Role="lich_su_sap_xep" EntitySet="lich_su_sap_xep" />
+          </AssociationSet>
+          <EntitySet Name="cau_hoi_kho_bau" EntityType="wed_learn_eModel.cau_hoi_kho_bau" />
+          <EntitySet Name="game_kho_bau" EntityType="wed_learn_eModel.game_kho_bau" />
+          <EntitySet Name="lich_su_kho_bau" EntityType="wed_learn_eModel.lich_su_kho_bau" />
+          <AssociationSet Name="FK__cau_hoi_k__id_ga__6442E2C9" Association="wed_learn_eModel.FK__cau_hoi_k__id_ga__6442E2C9">
+            <End Role="game_kho_bau" EntitySet="game_kho_bau" />
+            <End Role="cau_hoi_kho_bau" EntitySet="cau_hoi_kho_bau" />
+          </AssociationSet>
+          <AssociationSet Name="FK__lich_su_k__id_ca__671F4F74" Association="wed_learn_eModel.FK__lich_su_k__id_ca__671F4F74">
+            <End Role="cau_hoi_kho_bau" EntitySet="cau_hoi_kho_bau" />
+            <End Role="lich_su_kho_bau" EntitySet="lich_su_kho_bau" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="bai_luyen_noi">
+          <Key>
+            <PropertyRef Name="id_bai_noi" />
+          </Key>
+          <Property Name="id_bai_noi" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_khoa_hoc" Type="Int32" />
+          <Property Name="loai_bai_noi" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="noi_dung_goc" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="nghia_tieng_viet" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="phien_am" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="file_am_thanh_mau" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="ngay_tao" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="khoa_hoc" Relationship="wed_learn_eModel.FK__bai_luyen__id_kh__2B0A656D" FromRole="bai_luyen_noi" ToRole="khoa_hoc" />
+          <NavigationProperty Name="lich_su_luyen_noi" Relationship="wed_learn_eModel.FK__lich_su_l__id_ba__4E53A1AA" FromRole="bai_luyen_noi" ToRole="lich_su_luyen_noi" />
+        </EntityType>
+        <Association Name="FK__bai_luyen__id_kh__2B0A656D">
+          <End Type="wed_learn_eModel.khoa_hoc" Role="khoa_hoc" Multiplicity="0..1" />
+          <End Type="wed_learn_eModel.bai_luyen_noi" Role="bai_luyen_noi" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="khoa_hoc">
+              <PropertyRef Name="id_khoa_hoc" />
+            </Principal>
+            <Dependent Role="bai_luyen_noi">
+              <PropertyRef Name="id_khoa_hoc" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="bai_luyen_nghe">
+          <Key>
+            <PropertyRef Name="id_bai_nghe" />
+          </Key>
+          <Property Name="id_bai_nghe" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_khoa_hoc" Type="Int32" />
+          <Property Name="tieu_de" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="mo_ta" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="file_am_thanh" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ngay_tao" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="khoa_hoc" Relationship="wed_learn_eModel.FK__bai_luyen__id_kh__2EDAF651" FromRole="bai_luyen_nghe" ToRole="khoa_hoc" />
+          <NavigationProperty Name="cau_hoi_luyen_nghe" Relationship="wed_learn_eModel.FK__cau_hoi_l__id_ba__31B762FC" FromRole="bai_luyen_nghe" ToRole="cau_hoi_luyen_nghe" />
+          <NavigationProperty Name="lich_su_luyen_nghe" Relationship="wed_learn_eModel.FK__lich_su_l__id_ba__498EEC8D" FromRole="bai_luyen_nghe" ToRole="lich_su_luyen_nghe" />
+        </EntityType>
+        <EntityType Name="cau_hoi_luyen_nghe">
+          <Key>
+            <PropertyRef Name="id_cau_hoi" />
+          </Key>
+          <Property Name="id_cau_hoi" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_bai_nghe" Type="Int32" />
+          <Property Name="noi_dung_cau_hoi" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="dap_an_a" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="dap_an_b" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="dap_an_c" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="dap_an_d" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="dap_an_dung" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <NavigationProperty Name="bai_luyen_nghe" Relationship="wed_learn_eModel.FK__cau_hoi_l__id_ba__31B762FC" FromRole="cau_hoi_luyen_nghe" ToRole="bai_luyen_nghe" />
+        </EntityType>
+        <Association Name="FK__bai_luyen__id_kh__2EDAF651">
+          <End Type="wed_learn_eModel.khoa_hoc" Role="khoa_hoc" Multiplicity="0..1" />
+          <End Type="wed_learn_eModel.bai_luyen_nghe" Role="bai_luyen_nghe" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="khoa_hoc">
+              <PropertyRef Name="id_khoa_hoc" />
+            </Principal>
+            <Dependent Role="bai_luyen_nghe">
+              <PropertyRef Name="id_khoa_hoc" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__cau_hoi_l__id_ba__31B762FC">
+          <End Type="wed_learn_eModel.bai_luyen_nghe" Role="bai_luyen_nghe" Multiplicity="0..1" />
+          <End Type="wed_learn_eModel.cau_hoi_luyen_nghe" Role="cau_hoi_luyen_nghe" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bai_luyen_nghe">
+              <PropertyRef Name="id_bai_nghe" />
+            </Principal>
+            <Dependent Role="cau_hoi_luyen_nghe">
+              <PropertyRef Name="id_bai_nghe" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="bai_luyen_viet">
+          <Key>
+            <PropertyRef Name="id_bai_viet" />
+          </Key>
+          <Property Name="id_bai_viet" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_khoa_hoc" Type="Int32" />
+          <Property Name="tieu_de" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="mo_ta" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ngay_tao" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="khoa_hoc" Relationship="wed_learn_eModel.FK__bai_luyen__id_kh__3D2915A8" FromRole="bai_luyen_viet" ToRole="khoa_hoc" />
+          <NavigationProperty Name="cau_hoi_luyen_viet" Relationship="wed_learn_eModel.FK__cau_hoi_l__id_ba__40058253" FromRole="bai_luyen_viet" ToRole="cau_hoi_luyen_viet" />
+          <NavigationProperty Name="lich_su_luyen_viet" Relationship="wed_learn_eModel.FK__lich_su_l__id_ba__44CA3770" FromRole="bai_luyen_viet" ToRole="lich_su_luyen_viet" />
+        </EntityType>
+        <EntityType Name="cau_hoi_luyen_viet">
+          <Key>
+            <PropertyRef Name="id_cau_hoi_viet" />
+          </Key>
+          <Property Name="id_cau_hoi_viet" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_bai_viet" Type="Int32" />
+          <Property Name="cau_tieng_viet" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="dap_an_tieng_anh" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="bai_luyen_viet" Relationship="wed_learn_eModel.FK__cau_hoi_l__id_ba__40058253" FromRole="cau_hoi_luyen_viet" ToRole="bai_luyen_viet" />
+        </EntityType>
+        <EntityType Name="lich_su_luyen_viet">
+          <Key>
+            <PropertyRef Name="id_lich_su" />
+          </Key>
+          <Property Name="id_lich_su" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_nguoi_dung" Type="Int32" />
+          <Property Name="id_bai_viet" Type="Int32" />
+          <Property Name="ngay_hoan_thanh" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="bai_luyen_viet" Relationship="wed_learn_eModel.FK__lich_su_l__id_ba__44CA3770" FromRole="lich_su_luyen_viet" ToRole="bai_luyen_viet" />
+          <NavigationProperty Name="nguoi_dung" Relationship="wed_learn_eModel.FK__lich_su_l__id_ng__43D61337" FromRole="lich_su_luyen_viet" ToRole="nguoi_dung" />
+        </EntityType>
+        <Association Name="FK__bai_luyen__id_kh__3D2915A8">
+          <End Type="wed_learn_eModel.khoa_hoc" Role="khoa_hoc" Multiplicity="0..1" />
+          <End Type="wed_learn_eModel.bai_luyen_viet" Role="bai_luyen_viet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="khoa_hoc">
+              <PropertyRef Name="id_khoa_hoc" />
+            </Principal>
+            <Dependent Role="bai_luyen_viet">
+              <PropertyRef Name="id_khoa_hoc" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__cau_hoi_l__id_ba__40058253">
+          <End Type="wed_learn_eModel.bai_luyen_viet" Role="bai_luyen_viet" Multiplicity="0..1" />
+          <End Type="wed_learn_eModel.cau_hoi_luyen_viet" Role="cau_hoi_luyen_viet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bai_luyen_viet">
+              <PropertyRef Name="id_bai_viet" />
+            </Principal>
+            <Dependent Role="cau_hoi_luyen_viet">
+              <PropertyRef Name="id_bai_viet" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__lich_su_l__id_ba__44CA3770">
+          <End Type="wed_learn_eModel.bai_luyen_viet" Role="bai_luyen_viet" Multiplicity="0..1" />
+          <End Type="wed_learn_eModel.lich_su_luyen_viet" Role="lich_su_luyen_viet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bai_luyen_viet">
+              <PropertyRef Name="id_bai_viet" />
+            </Principal>
+            <Dependent Role="lich_su_luyen_viet">
+              <PropertyRef Name="id_bai_viet" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__lich_su_l__id_ng__43D61337">
+          <End Type="wed_learn_eModel.nguoi_dung" Role="nguoi_dung" Multiplicity="0..1" />
+          <End Type="wed_learn_eModel.lich_su_luyen_viet" Role="lich_su_luyen_viet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="nguoi_dung">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Principal>
+            <Dependent Role="lich_su_luyen_viet">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="lich_su_luyen_nghe">
+          <Key>
+            <PropertyRef Name="id_lich_su" />
+          </Key>
+          <Property Name="id_lich_su" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_nguoi_dung" Type="Int32" />
+          <Property Name="id_bai_nghe" Type="Int32" />
+          <Property Name="ngay_hoan_thanh" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="bai_luyen_nghe" Relationship="wed_learn_eModel.FK__lich_su_l__id_ba__498EEC8D" FromRole="lich_su_luyen_nghe" ToRole="bai_luyen_nghe" />
+          <NavigationProperty Name="nguoi_dung" Relationship="wed_learn_eModel.FK__lich_su_l__id_ng__489AC854" FromRole="lich_su_luyen_nghe" ToRole="nguoi_dung" />
+        </EntityType>
+        <EntityType Name="lich_su_luyen_noi">
+          <Key>
+            <PropertyRef Name="id_lich_su" />
+          </Key>
+          <Property Name="id_lich_su" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_nguoi_dung" Type="Int32" />
+          <Property Name="id_bai_noi" Type="Int32" />
+          <Property Name="ngay_hoan_thanh" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="bai_luyen_noi" Relationship="wed_learn_eModel.FK__lich_su_l__id_ba__4E53A1AA" FromRole="lich_su_luyen_noi" ToRole="bai_luyen_noi" />
+          <NavigationProperty Name="nguoi_dung" Relationship="wed_learn_eModel.FK__lich_su_l__id_ng__4D5F7D71" FromRole="lich_su_luyen_noi" ToRole="nguoi_dung" />
+        </EntityType>
+        <EntityType Name="lich_su_video">
+          <Key>
+            <PropertyRef Name="id_lich_su" />
+          </Key>
+          <Property Name="id_lich_su" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_nguoi_dung" Type="Int32" />
+          <Property Name="id_video" Type="Int32" />
+          <Property Name="ngay_hoan_thanh" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="bai_giang_video" Relationship="wed_learn_eModel.FK__lich_su_v__id_vi__531856C7" FromRole="lich_su_video" ToRole="bai_giang_video" />
+          <NavigationProperty Name="nguoi_dung" Relationship="wed_learn_eModel.FK__lich_su_v__id_ng__5224328E" FromRole="lich_su_video" ToRole="nguoi_dung" />
+        </EntityType>
+        <Association Name="FK__lich_su_v__id_vi__531856C7">
+          <End Type="wed_learn_eModel.bai_giang_video" Role="bai_giang_video" Multiplicity="0..1" />
+          <End Type="wed_learn_eModel.lich_su_video" Role="lich_su_video" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bai_giang_video">
+              <PropertyRef Name="id_video" />
+            </Principal>
+            <Dependent Role="lich_su_video">
+              <PropertyRef Name="id_video" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__lich_su_l__id_ba__498EEC8D">
+          <End Type="wed_learn_eModel.bai_luyen_nghe" Role="bai_luyen_nghe" Multiplicity="0..1" />
+          <End Type="wed_learn_eModel.lich_su_luyen_nghe" Role="lich_su_luyen_nghe" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bai_luyen_nghe">
+              <PropertyRef Name="id_bai_nghe" />
+            </Principal>
+            <Dependent Role="lich_su_luyen_nghe">
+              <PropertyRef Name="id_bai_nghe" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__lich_su_l__id_ba__4E53A1AA">
+          <End Type="wed_learn_eModel.bai_luyen_noi" Role="bai_luyen_noi" Multiplicity="0..1" />
+          <End Type="wed_learn_eModel.lich_su_luyen_noi" Role="lich_su_luyen_noi" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bai_luyen_noi">
+              <PropertyRef Name="id_bai_noi" />
+            </Principal>
+            <Dependent Role="lich_su_luyen_noi">
+              <PropertyRef Name="id_bai_noi" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__lich_su_l__id_ng__489AC854">
+          <End Type="wed_learn_eModel.nguoi_dung" Role="nguoi_dung" Multiplicity="0..1" />
+          <End Type="wed_learn_eModel.lich_su_luyen_nghe" Role="lich_su_luyen_nghe" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="nguoi_dung">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Principal>
+            <Dependent Role="lich_su_luyen_nghe">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__lich_su_l__id_ng__4D5F7D71">
+          <End Type="wed_learn_eModel.nguoi_dung" Role="nguoi_dung" Multiplicity="0..1" />
+          <End Type="wed_learn_eModel.lich_su_luyen_noi" Role="lich_su_luyen_noi" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="nguoi_dung">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Principal>
+            <Dependent Role="lich_su_luyen_noi">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__lich_su_v__id_ng__5224328E">
+          <End Type="wed_learn_eModel.nguoi_dung" Role="nguoi_dung" Multiplicity="0..1" />
+          <End Type="wed_learn_eModel.lich_su_video" Role="lich_su_video" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="nguoi_dung">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Principal>
+            <Dependent Role="lich_su_video">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="bai_sap_xep">
+          <Key>
+            <PropertyRef Name="id_bai_sap_xep" />
+          </Key>
+          <Property Name="id_bai_sap_xep" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_khoa_hoc" Type="Int32" />
+          <Property Name="tieu_de" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="mo_ta" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ngay_tao" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="khoa_hoc" Relationship="wed_learn_eModel.FK__bai_sap_x__id_kh__56E8E7AB" FromRole="bai_sap_xep" ToRole="khoa_hoc" />
+          <NavigationProperty Name="cau_hoi_sap_xep" Relationship="wed_learn_eModel.FK__cau_hoi_s__id_ba__59C55456" FromRole="bai_sap_xep" ToRole="cau_hoi_sap_xep" />
+          <NavigationProperty Name="lich_su_sap_xep" Relationship="wed_learn_eModel.FK__lich_su_s__id_ba__5E8A0973" FromRole="bai_sap_xep" ToRole="lich_su_sap_xep" />
+        </EntityType>
+        <EntityType Name="cau_hoi_sap_xep">
+          <Key>
+            <PropertyRef Name="id_cau_hoi" />
+          </Key>
+          <Property Name="id_cau_hoi" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_bai_sap_xep" Type="Int32" />
+          <Property Name="cau_tieng_viet" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="dap_an_dung" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="bai_sap_xep" Relationship="wed_learn_eModel.FK__cau_hoi_s__id_ba__59C55456" FromRole="cau_hoi_sap_xep" ToRole="bai_sap_xep" />
+        </EntityType>
+        <EntityType Name="lich_su_sap_xep">
+          <Key>
+            <PropertyRef Name="id_lich_su" />
+          </Key>
+          <Property Name="id_lich_su" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_nguoi_dung" Type="Int32" />
+          <Property Name="id_bai_sap_xep" Type="Int32" />
+          <Property Name="ngay_hoan_thanh" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="bai_sap_xep" Relationship="wed_learn_eModel.FK__lich_su_s__id_ba__5E8A0973" FromRole="lich_su_sap_xep" ToRole="bai_sap_xep" />
+          <NavigationProperty Name="nguoi_dung" Relationship="wed_learn_eModel.FK__lich_su_s__id_ng__5D95E53A" FromRole="lich_su_sap_xep" ToRole="nguoi_dung" />
+        </EntityType>
+        <Association Name="FK__bai_sap_x__id_kh__56E8E7AB">
+          <End Type="wed_learn_eModel.khoa_hoc" Role="khoa_hoc" Multiplicity="0..1" />
+          <End Type="wed_learn_eModel.bai_sap_xep" Role="bai_sap_xep" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="khoa_hoc">
+              <PropertyRef Name="id_khoa_hoc" />
+            </Principal>
+            <Dependent Role="bai_sap_xep">
+              <PropertyRef Name="id_khoa_hoc" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__cau_hoi_s__id_ba__59C55456">
+          <End Type="wed_learn_eModel.bai_sap_xep" Role="bai_sap_xep" Multiplicity="0..1" />
+          <End Type="wed_learn_eModel.cau_hoi_sap_xep" Role="cau_hoi_sap_xep" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bai_sap_xep">
+              <PropertyRef Name="id_bai_sap_xep" />
+            </Principal>
+            <Dependent Role="cau_hoi_sap_xep">
+              <PropertyRef Name="id_bai_sap_xep" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__lich_su_s__id_ba__5E8A0973">
+          <End Type="wed_learn_eModel.bai_sap_xep" Role="bai_sap_xep" Multiplicity="0..1" />
+          <End Type="wed_learn_eModel.lich_su_sap_xep" Role="lich_su_sap_xep" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bai_sap_xep">
+              <PropertyRef Name="id_bai_sap_xep" />
+            </Principal>
+            <Dependent Role="lich_su_sap_xep">
+              <PropertyRef Name="id_bai_sap_xep" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__lich_su_s__id_ng__5D95E53A">
+          <End Type="wed_learn_eModel.nguoi_dung" Role="nguoi_dung" Multiplicity="0..1" />
+          <End Type="wed_learn_eModel.lich_su_sap_xep" Role="lich_su_sap_xep" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="nguoi_dung">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Principal>
+            <Dependent Role="lich_su_sap_xep">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="cau_hoi_kho_bau">
+          <Key>
+            <PropertyRef Name="id_cau_hoi" />
+          </Key>
+          <Property Name="id_cau_hoi" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_game" Type="Int32" />
+          <Property Name="thu_tu" Type="Int32" />
+          <Property Name="loai_cau_hoi" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="noi_dung" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="dap_an_a" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="dap_an_b" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="dap_an_c" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="dap_an_d" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="dap_an_dung" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="manh_ghep" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="game_kho_bau" Relationship="wed_learn_eModel.FK__cau_hoi_k__id_ga__6442E2C9" FromRole="cau_hoi_kho_bau" ToRole="game_kho_bau" />
+          <NavigationProperty Name="lich_su_kho_bau" Relationship="wed_learn_eModel.FK__lich_su_k__id_ca__671F4F74" FromRole="cau_hoi_kho_bau" ToRole="lich_su_kho_bau" />
+        </EntityType>
+        <EntityType Name="game_kho_bau">
+          <Key>
+            <PropertyRef Name="id_game" />
+          </Key>
+          <Property Name="id_game" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_cap_do" Type="Int32" />
+          <Property Name="tieu_de" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="tu_khoa_cuoi" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="mo_ta" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="cau_hoi_kho_bau" Relationship="wed_learn_eModel.FK__cau_hoi_k__id_ga__6442E2C9" FromRole="game_kho_bau" ToRole="cau_hoi_kho_bau" />
+        </EntityType>
+        <EntityType Name="lich_su_kho_bau">
+          <Key>
+            <PropertyRef Name="id_lich_su" />
+          </Key>
+          <Property Name="id_lich_su" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_nguoi_dung" Type="Int32" />
+          <Property Name="id_cau_hoi" Type="Int32" />
+          <Property Name="ngay_giai_ma" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="cau_hoi_kho_bau" Relationship="wed_learn_eModel.FK__lich_su_k__id_ca__671F4F74" FromRole="lich_su_kho_bau" ToRole="cau_hoi_kho_bau" />
+        </EntityType>
+        <Association Name="FK__cau_hoi_k__id_ga__6442E2C9">
+          <End Type="wed_learn_eModel.game_kho_bau" Role="game_kho_bau" Multiplicity="0..1" />
+          <End Type="wed_learn_eModel.cau_hoi_kho_bau" Role="cau_hoi_kho_bau" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="game_kho_bau">
+              <PropertyRef Name="id_game" />
+            </Principal>
+            <Dependent Role="cau_hoi_kho_bau">
+              <PropertyRef Name="id_game" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__lich_su_k__id_ca__671F4F74">
+          <End Type="wed_learn_eModel.cau_hoi_kho_bau" Role="cau_hoi_kho_bau" Multiplicity="0..1" />
+          <End Type="wed_learn_eModel.lich_su_kho_bau" Role="lich_su_kho_bau" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="cau_hoi_kho_bau">
+              <PropertyRef Name="id_cau_hoi" />
+            </Principal>
+            <Dependent Role="lich_su_kho_bau">
+              <PropertyRef Name="id_cau_hoi" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1029,6 +2018,8 @@
           <EntitySetMapping Name="tien_do_hoc_tap">
             <EntityTypeMapping TypeName="wed_learn_eModel.tien_do_hoc_tap">
               <MappingFragment StoreEntitySet="tien_do_hoc_tap">
+                <ScalarProperty Name="bai_tap_da_lam" ColumnName="bai_tap_da_lam" />
+                <ScalarProperty Name="tong_bai_tap" ColumnName="tong_bai_tap" />
                 <ScalarProperty Name="id_tien_do" ColumnName="id_tien_do" />
                 <ScalarProperty Name="id_nguoi_dung" ColumnName="id_nguoi_dung" />
                 <ScalarProperty Name="id_khoa_hoc" ColumnName="id_khoa_hoc" />
@@ -1048,6 +2039,176 @@
                 <ScalarProperty Name="nghia_tieng_viet" ColumnName="nghia_tieng_viet" />
                 <ScalarProperty Name="phien_am" ColumnName="phien_am" />
                 <ScalarProperty Name="vi_du" ColumnName="vi_du" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="bai_luyen_noi">
+            <EntityTypeMapping TypeName="wed_learn_eModel.bai_luyen_noi">
+              <MappingFragment StoreEntitySet="bai_luyen_noi">
+                <ScalarProperty Name="ngay_tao" ColumnName="ngay_tao" />
+                <ScalarProperty Name="file_am_thanh_mau" ColumnName="file_am_thanh_mau" />
+                <ScalarProperty Name="phien_am" ColumnName="phien_am" />
+                <ScalarProperty Name="nghia_tieng_viet" ColumnName="nghia_tieng_viet" />
+                <ScalarProperty Name="noi_dung_goc" ColumnName="noi_dung_goc" />
+                <ScalarProperty Name="loai_bai_noi" ColumnName="loai_bai_noi" />
+                <ScalarProperty Name="id_khoa_hoc" ColumnName="id_khoa_hoc" />
+                <ScalarProperty Name="id_bai_noi" ColumnName="id_bai_noi" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="bai_luyen_nghe">
+            <EntityTypeMapping TypeName="wed_learn_eModel.bai_luyen_nghe">
+              <MappingFragment StoreEntitySet="bai_luyen_nghe">
+                <ScalarProperty Name="ngay_tao" ColumnName="ngay_tao" />
+                <ScalarProperty Name="file_am_thanh" ColumnName="file_am_thanh" />
+                <ScalarProperty Name="mo_ta" ColumnName="mo_ta" />
+                <ScalarProperty Name="tieu_de" ColumnName="tieu_de" />
+                <ScalarProperty Name="id_khoa_hoc" ColumnName="id_khoa_hoc" />
+                <ScalarProperty Name="id_bai_nghe" ColumnName="id_bai_nghe" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="cau_hoi_luyen_nghe">
+            <EntityTypeMapping TypeName="wed_learn_eModel.cau_hoi_luyen_nghe">
+              <MappingFragment StoreEntitySet="cau_hoi_luyen_nghe">
+                <ScalarProperty Name="dap_an_dung" ColumnName="dap_an_dung" />
+                <ScalarProperty Name="dap_an_d" ColumnName="dap_an_d" />
+                <ScalarProperty Name="dap_an_c" ColumnName="dap_an_c" />
+                <ScalarProperty Name="dap_an_b" ColumnName="dap_an_b" />
+                <ScalarProperty Name="dap_an_a" ColumnName="dap_an_a" />
+                <ScalarProperty Name="noi_dung_cau_hoi" ColumnName="noi_dung_cau_hoi" />
+                <ScalarProperty Name="id_bai_nghe" ColumnName="id_bai_nghe" />
+                <ScalarProperty Name="id_cau_hoi" ColumnName="id_cau_hoi" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="bai_luyen_viet">
+            <EntityTypeMapping TypeName="wed_learn_eModel.bai_luyen_viet">
+              <MappingFragment StoreEntitySet="bai_luyen_viet">
+                <ScalarProperty Name="ngay_tao" ColumnName="ngay_tao" />
+                <ScalarProperty Name="mo_ta" ColumnName="mo_ta" />
+                <ScalarProperty Name="tieu_de" ColumnName="tieu_de" />
+                <ScalarProperty Name="id_khoa_hoc" ColumnName="id_khoa_hoc" />
+                <ScalarProperty Name="id_bai_viet" ColumnName="id_bai_viet" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="cau_hoi_luyen_viet">
+            <EntityTypeMapping TypeName="wed_learn_eModel.cau_hoi_luyen_viet">
+              <MappingFragment StoreEntitySet="cau_hoi_luyen_viet">
+                <ScalarProperty Name="dap_an_tieng_anh" ColumnName="dap_an_tieng_anh" />
+                <ScalarProperty Name="cau_tieng_viet" ColumnName="cau_tieng_viet" />
+                <ScalarProperty Name="id_bai_viet" ColumnName="id_bai_viet" />
+                <ScalarProperty Name="id_cau_hoi_viet" ColumnName="id_cau_hoi_viet" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="lich_su_luyen_viet">
+            <EntityTypeMapping TypeName="wed_learn_eModel.lich_su_luyen_viet">
+              <MappingFragment StoreEntitySet="lich_su_luyen_viet">
+                <ScalarProperty Name="ngay_hoan_thanh" ColumnName="ngay_hoan_thanh" />
+                <ScalarProperty Name="id_bai_viet" ColumnName="id_bai_viet" />
+                <ScalarProperty Name="id_nguoi_dung" ColumnName="id_nguoi_dung" />
+                <ScalarProperty Name="id_lich_su" ColumnName="id_lich_su" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="lich_su_luyen_nghe">
+            <EntityTypeMapping TypeName="wed_learn_eModel.lich_su_luyen_nghe">
+              <MappingFragment StoreEntitySet="lich_su_luyen_nghe">
+                <ScalarProperty Name="ngay_hoan_thanh" ColumnName="ngay_hoan_thanh" />
+                <ScalarProperty Name="id_bai_nghe" ColumnName="id_bai_nghe" />
+                <ScalarProperty Name="id_nguoi_dung" ColumnName="id_nguoi_dung" />
+                <ScalarProperty Name="id_lich_su" ColumnName="id_lich_su" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="lich_su_luyen_noi">
+            <EntityTypeMapping TypeName="wed_learn_eModel.lich_su_luyen_noi">
+              <MappingFragment StoreEntitySet="lich_su_luyen_noi">
+                <ScalarProperty Name="ngay_hoan_thanh" ColumnName="ngay_hoan_thanh" />
+                <ScalarProperty Name="id_bai_noi" ColumnName="id_bai_noi" />
+                <ScalarProperty Name="id_nguoi_dung" ColumnName="id_nguoi_dung" />
+                <ScalarProperty Name="id_lich_su" ColumnName="id_lich_su" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="lich_su_video">
+            <EntityTypeMapping TypeName="wed_learn_eModel.lich_su_video">
+              <MappingFragment StoreEntitySet="lich_su_video">
+                <ScalarProperty Name="ngay_hoan_thanh" ColumnName="ngay_hoan_thanh" />
+                <ScalarProperty Name="id_video" ColumnName="id_video" />
+                <ScalarProperty Name="id_nguoi_dung" ColumnName="id_nguoi_dung" />
+                <ScalarProperty Name="id_lich_su" ColumnName="id_lich_su" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="bai_sap_xep">
+            <EntityTypeMapping TypeName="wed_learn_eModel.bai_sap_xep">
+              <MappingFragment StoreEntitySet="bai_sap_xep">
+                <ScalarProperty Name="ngay_tao" ColumnName="ngay_tao" />
+                <ScalarProperty Name="mo_ta" ColumnName="mo_ta" />
+                <ScalarProperty Name="tieu_de" ColumnName="tieu_de" />
+                <ScalarProperty Name="id_khoa_hoc" ColumnName="id_khoa_hoc" />
+                <ScalarProperty Name="id_bai_sap_xep" ColumnName="id_bai_sap_xep" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="cau_hoi_sap_xep">
+            <EntityTypeMapping TypeName="wed_learn_eModel.cau_hoi_sap_xep">
+              <MappingFragment StoreEntitySet="cau_hoi_sap_xep">
+                <ScalarProperty Name="dap_an_dung" ColumnName="dap_an_dung" />
+                <ScalarProperty Name="cau_tieng_viet" ColumnName="cau_tieng_viet" />
+                <ScalarProperty Name="id_bai_sap_xep" ColumnName="id_bai_sap_xep" />
+                <ScalarProperty Name="id_cau_hoi" ColumnName="id_cau_hoi" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="lich_su_sap_xep">
+            <EntityTypeMapping TypeName="wed_learn_eModel.lich_su_sap_xep">
+              <MappingFragment StoreEntitySet="lich_su_sap_xep">
+                <ScalarProperty Name="ngay_hoan_thanh" ColumnName="ngay_hoan_thanh" />
+                <ScalarProperty Name="id_bai_sap_xep" ColumnName="id_bai_sap_xep" />
+                <ScalarProperty Name="id_nguoi_dung" ColumnName="id_nguoi_dung" />
+                <ScalarProperty Name="id_lich_su" ColumnName="id_lich_su" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="cau_hoi_kho_bau">
+            <EntityTypeMapping TypeName="wed_learn_eModel.cau_hoi_kho_bau">
+              <MappingFragment StoreEntitySet="cau_hoi_kho_bau">
+                <ScalarProperty Name="manh_ghep" ColumnName="manh_ghep" />
+                <ScalarProperty Name="dap_an_dung" ColumnName="dap_an_dung" />
+                <ScalarProperty Name="dap_an_d" ColumnName="dap_an_d" />
+                <ScalarProperty Name="dap_an_c" ColumnName="dap_an_c" />
+                <ScalarProperty Name="dap_an_b" ColumnName="dap_an_b" />
+                <ScalarProperty Name="dap_an_a" ColumnName="dap_an_a" />
+                <ScalarProperty Name="noi_dung" ColumnName="noi_dung" />
+                <ScalarProperty Name="loai_cau_hoi" ColumnName="loai_cau_hoi" />
+                <ScalarProperty Name="thu_tu" ColumnName="thu_tu" />
+                <ScalarProperty Name="id_game" ColumnName="id_game" />
+                <ScalarProperty Name="id_cau_hoi" ColumnName="id_cau_hoi" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="game_kho_bau">
+            <EntityTypeMapping TypeName="wed_learn_eModel.game_kho_bau">
+              <MappingFragment StoreEntitySet="game_kho_bau">
+                <ScalarProperty Name="mo_ta" ColumnName="mo_ta" />
+                <ScalarProperty Name="tu_khoa_cuoi" ColumnName="tu_khoa_cuoi" />
+                <ScalarProperty Name="tieu_de" ColumnName="tieu_de" />
+                <ScalarProperty Name="id_cap_do" ColumnName="id_cap_do" />
+                <ScalarProperty Name="id_game" ColumnName="id_game" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="lich_su_kho_bau">
+            <EntityTypeMapping TypeName="wed_learn_eModel.lich_su_kho_bau">
+              <MappingFragment StoreEntitySet="lich_su_kho_bau">
+                <ScalarProperty Name="ngay_giai_ma" ColumnName="ngay_giai_ma" />
+                <ScalarProperty Name="id_cau_hoi" ColumnName="id_cau_hoi" />
+                <ScalarProperty Name="id_nguoi_dung" ColumnName="id_nguoi_dung" />
+                <ScalarProperty Name="id_lich_su" ColumnName="id_lich_su" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

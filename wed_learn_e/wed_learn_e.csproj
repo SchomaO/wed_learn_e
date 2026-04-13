@@ -49,6 +49,12 @@
       <HintPath>..\packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="PagedList, Version=1.17.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\PagedList.1.17.0.0\lib\net40\PagedList.dll</HintPath>
+    </Reference>
+    <Reference Include="PagedList.Mvc, Version=4.5.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\PagedList.Mvc.4.5.0.0\lib\net40\PagedList.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Entity" />
@@ -121,6 +127,8 @@
     <Compile Include="App_Start\BundleConfig2.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Admin\Controllers\Trang_AdminController.cs" />
     <Compile Include="Controllers\bai_testController.cs" />
     <Compile Include="Controllers\PageController.cs" />
     <Compile Include="Controllers\tinh_nangController.cs" />
@@ -135,19 +143,64 @@
     <Compile Include="Models\bai_kiem_tra_dau_vao.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\bai_luyen_nghe.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\bai_luyen_noi.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\bai_luyen_viet.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\bai_sap_xep.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\bai_tap_thuc_hanh.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\cap_do.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\cau_hoi_kho_bau.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\cau_hoi_kiem_tra.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\cau_hoi_luyen_nghe.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\cau_hoi_luyen_viet.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\cau_hoi_sap_xep.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\game_kho_bau.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ket_qua_kiem_tra.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\khoa_hoc.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\lich_su_kho_bau.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\lich_su_luyen_nghe.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\lich_su_luyen_noi.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\lich_su_luyen_viet.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\lich_su_sap_xep.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\lich_su_video.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Model1.Context.cs">
@@ -201,6 +254,7 @@
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
     <Content Include="Content\baitest.css" />
+    <Content Include="Content\PagedList.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -227,6 +281,8 @@
     <Content Include="Models\Model1.edmx.diagram">
       <DependentUpon>Model1.edmx</DependentUpon>
     </Content>
+    <Content Include="Areas\Admin\Views\web.config" />
+    <Content Include="Areas\Admin\Views\Trang_Admin\Index.cshtml" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
     <Content Include="Scripts\jquery-3.7.0.min.js" />
@@ -265,12 +321,26 @@
     <Content Include="Views\Page\khoadaotao.cshtml" />
     <Content Include="Views\Page\_1000TuVung.cshtml" />
     <Content Include="Views\bai_test\kq_bai_test.cshtml" />
-    <Content Include="Views\tinh_nang\list_luyen_nghe.cshtml" />
+    <Content Include="Views\tinh_nang\list_hoc_video.cshtml" />
     <Content Include="Views\Page\_NguPhap.cshtml" />
     <Content Include="Views\Page\_ThanhNgu.cshtml" />
+    <Content Include="Views\bai_test\review.cshtml" />
+    <Content Include="Views\Page\thong_tin_khoa_hoc.cshtml" />
+    <Content Include="Views\tinh_nang\bai_video.cshtml" />
+    <Content Include="Views\tinh_nang\LuyenNoi.cshtml" />
+    <Content Include="Views\tinh_nang\LuyenNghe.cshtml" />
+    <Content Include="Views\tinh_nang\list_luyen_nghe.cshtml" />
+    <Content Include="Views\tinh_nang\list_luyen_viet.cshtml" />
+    <Content Include="Views\tinh_nang\LuyenViet.cshtml" />
+    <Content Include="Views\tinh_nang\MiniTestHangNgay.cshtml" />
+    <Content Include="Views\tinh_nang\BanDoKhoBau.cshtml" />
+    <Content Include="Views\tinh_nang\GiaiMaCauHoi.cshtml" />
+    <Content Include="Views\User\TrangCaNhan.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Areas\Admin\Data\" />
+    <Folder Include="Areas\Admin\Views\Shared\" />
     <Folder Include="Data\" />
     <Folder Include="Views\Default\" />
   </ItemGroup>
