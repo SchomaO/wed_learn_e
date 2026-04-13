@@ -324,6 +324,7 @@
     <Content Include="Views\tinh_nang\list_hoc_video.cshtml" />
     <Content Include="Views\Page\_NguPhap.cshtml" />
     <Content Include="Views\Page\_ThanhNgu.cshtml" />
+
     <Content Include="Views\bai_test\review.cshtml" />
     <Content Include="Views\Page\thong_tin_khoa_hoc.cshtml" />
     <Content Include="Views\tinh_nang\bai_video.cshtml" />
@@ -336,6 +337,9 @@
     <Content Include="Views\tinh_nang\BanDoKhoBau.cshtml" />
     <Content Include="Views\tinh_nang\GiaiMaCauHoi.cshtml" />
     <Content Include="Views\User\TrangCaNhan.cshtml" />
+
+    <Content Include="Views\Page\_LuyenViet.cshtml" />
+
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
