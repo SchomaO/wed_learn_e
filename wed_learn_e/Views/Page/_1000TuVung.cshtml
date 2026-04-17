@@ -20,6 +20,7 @@
         color: #555;
         margin-bottom: 30px;
     }
+
     .search-box {
         text-align: center;
         margin-bottom: 30px;
@@ -136,9 +137,11 @@
 </style>
 
 
-<div class="page-title">
-    1000 Từ Vựng Tiếng Anh Thông Dụng
-</div>
+@Html.Partial("_NutQuayLai", new ViewDataDictionary {
+  // Thêm đoạn new { id = ... } để hệ thống tạo ra link có đuôi /1
+  { "LinkQuayVe", Url.Action("thong_tin_khoa_hoc", "Page", new { id = Request.QueryString["id_cap_do"] }) },
+  { "TieuDe", "1000 Từ Vựng Tiếng Anh Thông Dụng "  }
+})
 
 <div class="page-desc">
 

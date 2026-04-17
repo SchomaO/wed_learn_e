@@ -14,7 +14,7 @@
     /* HEADER */
     .page-header {
         text-align: center;
-        padding: 30px 20px;
+   
         color: #333;
     }
 
@@ -147,7 +147,11 @@
 
 <div class="page-header">
 
-    <h1>Thành Ngữ Tiếng Anh</h1>
+    @Html.Partial("_NutQuayLai", new ViewDataDictionary {
+   // Thêm đoạn new { id = ... } để hệ thống tạo ra link có đuôi /1
+   { "LinkQuayVe", Url.Action("thong_tin_khoa_hoc", "Page", new { id = Request.QueryString["id_cap_do"] }) },
+   { "TieuDe", "Thành Ngữ Tiếng Anh "  }
+ })
 
     <p>
         Khám phá các thành ngữ phổ biến trong tiếng Anh và cách sử dụng chúng trong giao tiếp hàng ngày.

@@ -604,18 +604,33 @@ namespace wed_learn_e.Controllers
 
         // 3. MỞ RƯƠNG (Xác nhận Keyword cuối)
         [HttpPost]
-        public ActionResult MoRuongKhoBau(int id_game, string keyword)
+        public JsonResult MoRuongKhoBau(int id_game, string keyword)
         {
             var game = db.game_kho_bau.FirstOrDefault(g => g.id_game == id_game);
+            if (game == null)
+            {
+                return Json(new { success = false, message = "Lỗi dữ liệu game!" });
+            }
+
             if (keyword != null && keyword.Trim().ToUpper() == game.tu_khoa_cuoi.ToUpper())
             {
-                TempData["WinGame"] = "🏆 CHÚC MỪNG! BẠN ĐÃ MỞ ĐƯỢC KHO BÁU TỐI THƯỢNG!";
+                // MẬT KHẨU ĐÚNG: Trả về success = true và kèm theo id_cap_do để lát làm nút Quay Về
+                return Json(new
+                {
+                    success = true,
+                    message = "🏆 CHÚC MỪNG! BẠN ĐÃ MỞ ĐƯỢC KHO BÁU TỐI THƯỢNG!",
+                    idCapDo = game.id_cap_do
+                });
             }
             else
             {
-                TempData["ErrorGame"] = "Sai mật khẩu! Hãy ghép lại các mảnh ghép cẩn thận.";
+                // MẬT KHẨU SAI
+                return Json(new
+                {
+                    success = false,
+                    message = "❌ Sai mật khẩu! Hãy ghép lại các mảnh ghép cẩn thận."
+                });
             }
-            return RedirectToAction("BanDoKhoBau", new { id_cap_do = game.id_cap_do });
         }
     }
 }

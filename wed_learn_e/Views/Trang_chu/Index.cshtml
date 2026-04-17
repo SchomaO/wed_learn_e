@@ -3,6 +3,8 @@
     ViewBag.Title = "Trang chủ";
     Layout = null;
 }
+@using PagedList
+@using PagedList.Mvc
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -25,14 +27,51 @@
             align-items: center;
             background: linear-gradient(360deg, #e5e5e5, #f4b400);
             padding: 20px 60px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border-bottom-left-radius: 50px;
+            border-bottom-right-radius: 50px;
         }
 
         .logo {
             font-size: 24px;
             font-weight: bold;
             color: white;
+            cursor: pointer;
+        }
+        .logo {
+            position: relative; /* Làm gốc tọa độ cho 2 ảnh bên trong */
+            width: 80px; /* Khai báo chiều rộng cụ thể */
+            height: 80px; /* Khai báo chiều cao (tùy chỉnh theo ảnh của bạn) */
         }
 
+            .logo img {
+                position: absolute; /* Chồng 2 ảnh lên nhau */
+                top: 0;
+                left: 0;
+                width: 160px;
+                transition: opacity 0.6s ease; /* Thời gian chuyển từ từ (0.6 giây) */
+            }
+
+            /* Ảnh 2 mặc định sẽ bị ẩn đi */
+            .logo .img-2 {
+                opacity: 0;
+                z-index: 2; /* Nằm trên ảnh 1 */
+            }
+
+            /* Ảnh 1 mặc định hiện ra */
+            .logo .img-1 {
+                opacity: 1;
+                z-index: 1;
+            }
+
+            /* Khi rà chuột vào khu vực .logo */
+            .logo:hover .img-2 {
+                opacity: 1; /* Hiện ảnh 2 lên */
+            }
+
+            .logo:hover .img-1 {
+                opacity: 0; /* Ẩn ảnh 1 đi */
+            }
         .login {
             color: white;
         }
@@ -61,7 +100,6 @@
             align-items: center;
             justify-content: center;
             padding: 80px;
-         
         }
 
 
@@ -76,7 +114,6 @@
 
         .hero-right {
             margin-left: 80px;
-
         }
 
         .title {
@@ -150,6 +187,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             font-family: Arial, sans-serif;
             line-height: 1.7;
+            background: beige;
         }
 
             .gioi_thieu_khoa_hoc p {
@@ -296,20 +334,79 @@
             font-style: italic;
             line-height: 1.6;
         }
+
+        .user {
+            color: white;
+            font-weight: bold;
+        }
+
+            .user:hover {
+                color: #2dafff;
+            }
+        /* --- CSS CHO THANH PHÂN TRANG (PAGINATION) --- */
+        .pagination {
+            display: inline-flex;
+            padding-left: 0;
+            list-style: none;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+            .pagination li {
+                margin: 0 5px;
+            }
+
+                .pagination li a, .pagination li span {
+                    display: block;
+                    padding: 10px 18px;
+                    color: #4786e3;
+                    text-decoration: none;
+                    background-color: #fff;
+                    border: 1px solid #ddd;
+                    border-radius: 8px;
+                    font-weight: bold;
+                    font-size: 16px;
+                    transition: 0.3s;
+                }
+
+                    .pagination li a:hover {
+                        background-color: #f8f9fa;
+                        color: #0b5ed7;
+                        border-color: #4786e3;
+                    }
+
+            /* Nút của trang hiện tại đang đứng */
+            .pagination .active span {
+                background-color: #4786e3;
+                color: white;
+                border-color: #4786e3;
+            }
+
+            /* Nút bị mờ (Ví dụ: Đang ở trang 1 thì nút "Lùi lại" bị mờ) */
+            .pagination .disabled span {
+                color: #ccc;
+                cursor: not-allowed;
+                background-color: #f9f9f9;
+            }
     </style>
 </head>
 <body>
     <!-- HEADER -->
     <header>
         <div class="logo">
-            <img src="@Url.Content("~/Img/Gemini_Generated_Image_khrd5ikhrd5ikhrd-removebg-preview.png")" alt="" style=" width: 160px; ">
-           
+            <img src="@Url.Content("~/Img/Gemini_Generated_Image_khrd5ikhrd5ikhrd-removebg-preview.png")"
+                 class="img-1" alt="">
+            <img src="@Url.Content("~/Img/Gemini_Generated_Image_pj8wj4pj8wj4pj8w-removebg-preview.png")"
+                 class="img-2" alt="" onclick="location.href='@Url.Action("Index","Trang_chu")'">
         </div>
         @if (Session["TenDN"] != null)
         {
-
-            <a href="#">Xin chào: @Session["HoTen"]</a>
-            <a href="@Url.Action("DangXuat","User")">Đăng xuất</a>
+            <div class="login">
+                <a href="@Url.Action("TrangCaNhan", "User")" class="user">
+                    👤  @Session["HoTen"]
+                </a>
+                <button onclick="location.href='@Url.Action("DangXuat","User")'">Đăng xuất</button>
+            </div>
         }
         else
         {
@@ -328,11 +425,11 @@
         <div class="hero-left">
             <img src="@Url.Content("~/Img/Gemini_Generated_Image_xdycdaxdycdaxdyc-removebg-preview (1).png")" alt="Học tiếng Anh online">
         </div>
-        
+
         <div class="hero-right">
 
-           
-            <img src="@Url.Content("~/Img/Gemini_Generated_Image_khrd5ikhrd5ikhrd-removebg-preview.png")" style="width :420px" >
+
+            <img src="@Url.Content("~/Img/Gemini_Generated_Image_khrd5ikhrd5ikhrd-removebg-preview.png")" style="width :420px">
             <h1>
             </h1>
 
@@ -383,42 +480,57 @@
 
     </div>
 
-    <div class="testimonials-section">
+    <div class="testimonials-section" id="khu-vuc-binh-luan">
         <h2>Học viên nói gì về chúng tôi?</h2>
 
         <div class="testimonial-grid">
-            <div class="testimonial-card">
-                <div class="user-info">
-                    <img src="https://ui-avatars.com/api/?name=Hieu+Vo&background=f4b400&color=fff" alt="User 1">
-                    <div>
-                        <div class="user-name">Võ Trung Hiếu</div>
-                        <div class="user-role">Học viên VIP</div>
-                    </div>
-                </div>
-                <div class="comment">"Giao diện cực kỳ trực quan và thân thiện. Lộ trình học bài bản giúp mình từ một người mất gốc lấy lại căn bản chỉ sau 2 tháng!"</div>
-            </div>
+            @{
+                // ÉP KIỂU LẠI THÀNH IPagedList
+                var listBinhLuan = ViewBag.DanhSachBinhLuan as IPagedList<wed_learn_e.Models.binh_luan>;
 
-            <div class="testimonial-card">
-                <div class="user-info">
-                    <img src="https://ui-avatars.com/api/?name=Mai+Anh&background=4786e3&color=fff" alt="User 2">
-                    <div>
-                        <div class="user-name">Mai Anh Nguyễn</div>
-                        <div class="user-role">Đạt chứng chỉ B1</div>
-                    </div>
-                </div>
-                <div class="comment">"Phần luyện nói tích hợp AI sửa lỗi phát âm rất hay. Mình có thể luyện tập bất cứ lúc nào mà không ngại ngùng. Rất đáng tiền!"</div>
-            </div>
+                if (listBinhLuan != null && listBinhLuan.Count > 0)
+                {
+                    string[] colors = { "f4b400", "4786e3", "28a745", "dc3545", "17a2b8" };
+                    int colorIndex = 0;
 
-            <div class="testimonial-card">
-                <div class="user-info">
-                    <img src="https://ui-avatars.com/api/?name=Quoc+Bao&background=28a745&color=fff" alt="User 3">
-                    <div>
-                        <div class="user-name">Quốc Bảo</div>
-                        <div class="user-role">Học viên Cấp độ A2</div>
-                    </div>
-                </div>
-                <div class="comment">"Hệ thống bài tập cực kỳ phong phú. Thích nhất là tính năng theo dõi tiến độ giúp mình biết bản thân đang thiếu sót ở đâu."</div>
-            </div>
+                    foreach (var item in listBinhLuan)
+                    {
+                        // Giữ nguyên toàn bộ code phần in HTML của từng cái Card ở đây (không đổi gì cả)
+                        string tenHocVien = (item.nguoi_dung != null) ? item.nguoi_dung.ho_va_ten : "Học viên";
+                        string tenAvatar = tenHocVien.Replace(" ", "+");
+                        string bgColor = colors[colorIndex % colors.Length];
+                        colorIndex++;
+
+                        <div class="testimonial-card">
+                            <div class="user-info">
+                                <img src="https://ui-avatars.com/api/?name=@tenAvatar&background=@bgColor&color=fff" alt="User">
+                                <div>
+                                    <div class="user-name">@tenHocVien</div>
+                                    <div class="user-role">Đánh giá ngày @(item.ngay_tao.HasValue ? item.ngay_tao.Value.ToString("dd/MM/yyyy") : "Gần đây")</div>
+                                </div>
+                            </div>
+                            <div class="comment">"@item.noi_dung"</div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p style="color: #888; font-style: italic;">Chưa có đánh giá nào từ học viên.</p>
+                }
+            }
+        </div>
+
+        <div style="text-align: center; margin-top: 40px;">
+            @if (listBinhLuan != null && listBinhLuan.PageCount > 1)
+            {
+                // Thêm cái mỏ neo #khu-vuc-binh-luan vào cuối đường link
+                @Html.PagedListPager(listBinhLuan, page => Url.Action("Index", new { page }) + "#khu-vuc-binh-luan")
+            }
+        </div>
+        <div style="text-align: center; margin: 40px 0;">
+            <button class="start-btn" onclick="location.href='@Url.Action("LienHe", "Trang_chu")'" style="padding: 15px 40px; font-size: 20px;">
+                📞 Liên Hệ & Đóng Góp Ý Kiến
+            </button>
         </div>
     </div>
 

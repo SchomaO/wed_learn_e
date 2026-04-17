@@ -199,7 +199,11 @@
         font-size: 20px;
     }
 </style>
+@Html.Partial("_NutQuayLai", new ViewDataDictionary {
+  // Thêm đoạn new { id = ... } để hệ thống tạo ra link có đuôi /1
+  { "LinkQuayVe", Url.Action("thong_tin_khoa_hoc", "Page", new { id = Request.QueryString["id_cap_do"] }) },
 
+})
 <div class="speak-container">
 
     <div class="list-sidebar">

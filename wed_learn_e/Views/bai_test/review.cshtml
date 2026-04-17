@@ -4,8 +4,11 @@
     Layout = "~/Views/Shared/_Layoutcauhoi.cshtml";
 
     string userAnswer = ViewBag.UserAnswer as string;
-    // Đảm bảo so sánh không bị lỗi khoảng trắng hoặc chữ hoa/chữ thường
     string correctAnswer = Model.dap_an_dung?.Trim().ToUpper();
+
+    // Lấy danh sách Đúng/Sai từ Controller
+    var listDung = ViewBag.ListDung as List<int> ?? new List<int>();
+    var listSai = ViewBag.ListSai as List<int> ?? new List<int>();
 }
 
 <style>
@@ -25,6 +28,7 @@
         gap: 30px;
     }
 
+    /* CỘT TRÁI: Câu hỏi */
     .quiz-box {
         background: white;
         width: 520px;
@@ -52,9 +56,10 @@
         border: 2px solid #ddd;
         background: #fdfdfd;
         color: #555;
+        position: relative;
     }
 
-        /* CSS RIÊNG CHO TRẠNG THÁI ĐÚNG / SAI */
+        /* Hiệu ứng màu đáp án */
         .answer.correct {
             background: #d4edda;
             border-color: #28a745;
@@ -68,10 +73,57 @@
             color: #721c24;
         }
 
-    /* Mục lục */
+    /* Nhãn trạng thái nhỏ ở góc */
+    .status-badge {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        font-weight: bold;
+    }
+
+    /* CỘT PHẢI: Thống kê + Mục lục */
+    .right-panel {
+        width: 240px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    /* Hộp Thống kê */
+    .stat-box {
+        background: white;
+        padding: 20px;
+        border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+
+    .stat-title {
+        font-weight: bold;
+        color: #2b4a5a;
+        margin-bottom: 15px;
+        font-size: 18px;
+    }
+
+    .stat-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .text-success {
+        color: #28a745;
+    }
+
+    .text-danger {
+        color: #dc3545;
+    }
+
+    /* Hộp Mục lục */
     .question-list {
         background: white;
-        width: 220px;
         padding: 20px;
         border-radius: 20px;
         box-shadow: 0 10px 25px rgba(0,0,0,0.1);
@@ -79,6 +131,7 @@
 
         .question-list h3 {
             text-align: center;
+            margin-top: 0;
             margin-bottom: 15px;
             color: #2b4a5a;
         }
@@ -90,21 +143,42 @@
     }
 
     .q-number {
-        background: #eef8ff;
         height: 40px;
         border-radius: 10px;
         display: flex;
         justify-content: center;
         align-items: center;
         text-decoration: none;
-        color: #333;
+        color: white;
         font-weight: bold;
+        transition: 0.2s;
+        box-shadow: inset 0 -3px 0 rgba(0,0,0,0.15);
     }
 
-        .q-number:hover {
-            background: #dff3ff;
+        /* Màu xanh lá cho câu Đúng, Đỏ cho câu Sai/Bỏ trống */
+        .q-number.correct-node {
+            background: #28a745;
         }
 
+            .q-number.correct-node:hover {
+                background: #218838;
+            }
+
+        .q-number.wrong-node {
+            background: #dc3545;
+        }
+
+            .q-number.wrong-node:hover {
+                background: #c82333;
+            }
+
+        /* Hiệu ứng viền phát sáng khi đang xem câu đó */
+        .q-number.active-view {
+            box-shadow: 0 0 0 3px #ffeaa7, inset 0 -3px 0 rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+
+    /* Các nút bấm */
     .nav-question {
         display: flex;
         justify-content: space-between;
@@ -128,13 +202,64 @@
         display: block;
         text-align: center;
         margin-top: 20px;
-        background: #28a745;
+        background: #0d6efd;
         color: white;
-        padding: 12px;
-        border-radius: 10px;
+        padding: 15px;
+        border-radius: 12px;
         text-decoration: none;
         font-weight: bold;
+        font-size: 16px;
     }
+
+        .btn-finish:hover {
+            background: #0b5ed7;
+        }
+    /* --- CÁC NÚT KẾT THÚC --- */
+    .action-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 10px;
+    }
+
+    .btn-finish {
+        display: block;
+        text-align: center;
+        background: #0d6efd;
+        color: white;
+        padding: 14px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 16px;
+        transition: 0.2s;
+    }
+
+        .btn-finish:hover {
+            background: #0b5ed7;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3);
+        }
+
+    .btn-back-result {
+        display: block;
+        text-align: center;
+        background: #f8f9fa;
+        color: #495057;
+        padding: 14px;
+        border: 2px solid #dee2e6;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 16px;
+        transition: 0.2s;
+    }
+
+        .btn-back-result:hover {
+            background: #e2e6ea;
+            border-color: #ced4da;
+            transform: translateY(-2px);
+        }
 </style>
 
 <div class="container">
@@ -147,24 +272,43 @@
         <div class="answers">
             <div class="answer @(correctAnswer == "A" ? "correct" : (userAnswer == "A" ? "wrong" : ""))">
                 A. @Model.dap_an_a
-                @(correctAnswer == "A" ? " ✔️ (Đáp án đúng)" : (userAnswer == "A" ? " ❌ (Bạn chọn sai)" : ""))
+                @if (correctAnswer == "A")
+                {<span class="status-badge">✔️ Đúng</span>}
+                @if (userAnswer == "A" && correctAnswer != "A")
+                {<span class="status-badge">❌ Chọn sai</span>}
             </div>
 
             <div class="answer @(correctAnswer == "B" ? "correct" : (userAnswer == "B" ? "wrong" : ""))">
                 B. @Model.dap_an_b
-                @(correctAnswer == "B" ? " ✔️ (Đáp án đúng)" : (userAnswer == "B" ? " ❌ (Bạn chọn sai)" : ""))
+                @if (correctAnswer == "B")
+                {<span class="status-badge">✔️ Đúng</span>}
+                @if (userAnswer == "B" && correctAnswer != "B")
+                {<span class="status-badge">❌ Chọn sai</span>}
             </div>
 
             <div class="answer @(correctAnswer == "C" ? "correct" : (userAnswer == "C" ? "wrong" : ""))">
                 C. @Model.dap_an_c
-                @(correctAnswer == "C" ? " ✔️ (Đáp án đúng)" : (userAnswer == "C" ? " ❌ (Bạn chọn sai)" : ""))
+                @if (correctAnswer == "C")
+                {<span class="status-badge">✔️ Đúng</span>}
+                @if (userAnswer == "C" && correctAnswer != "C")
+                {<span class="status-badge">❌ Chọn sai</span>}
             </div>
 
             <div class="answer @(correctAnswer == "D" ? "correct" : (userAnswer == "D" ? "wrong" : ""))">
                 D. @Model.dap_an_d
-                @(correctAnswer == "D" ? " ✔️ (Đáp án đúng)" : (userAnswer == "D" ? " ❌ (Bạn chọn sai)" : ""))
+                @if (correctAnswer == "D")
+                {<span class="status-badge">✔️ Đúng</span>}
+                @if (userAnswer == "D" && correctAnswer != "D")
+                {<span class="status-badge">❌ Chọn sai</span>}
             </div>
         </div>
+
+        @if (string.IsNullOrEmpty(userAnswer))
+        {
+            <div style="margin-top: 15px; color: #dc3545; font-style: italic; font-weight: bold;">
+                ⚠️ Bạn đã bỏ trống câu này!
+            </div>
+        }
 
         <div class="nav-question">
             @if (ViewBag.Index > 0)
@@ -172,31 +316,58 @@
                 <a href="@Url.Action("review", "bai_test", new { index = ViewBag.Index - 1 })" class="btn-nav">← Câu trước</a>
             }
             else
-            {
-                <div></div>}
+            { <div></div>}
 
             @if (ViewBag.Index < ViewBag.Total - 1)
             {
                 <a href="@Url.Action("review", "bai_test", new { index = ViewBag.Index + 1 })" class="btn-nav">Câu sau →</a>
             }
         </div>
-
-        <a href="@Url.Action("khoadaotao", "Page")" class="btn-finish">Kết thúc xem lại</a>
-
     </div>
 
-    <div class="question-list">
-        <h3>Danh sách câu hỏi</h3>
-        <div class="grid">
-            @for (int j = 0; j < ViewBag.Total; j++)
-            {
-                <a href="@Url.Action("review", "bai_test", new { index = j })"
-                   class="q-number"
-                   style="@(ViewBag.Index == j ? "background:#6ec8ff; color:white;" : "")">
-                    @(j + 1)
-                </a>
-            }
+    <div class="right-panel">
+
+        <div class="stat-box">
+            <div class="stat-title">📊 KẾT QUẢ TỔNG QUAN</div>
+            <div class="stat-row text-success">
+                <span>Số câu đúng:</span>
+                <span>@listDung.Count / @ViewBag.Total</span>
+            </div>
+            <div class="stat-row text-danger">
+                <span>Số câu sai / Bỏ qua:</span>
+                <span>@listSai.Count / @ViewBag.Total</span>
+            </div>
         </div>
+
+        <div class="question-list">
+            <h3>Mục lục bài làm</h3>
+            <div class="grid">
+                @for (int j = 0; j < ViewBag.Total; j++)
+                {
+                    // Kiểm tra xem câu j nằm trong list đúng hay sai
+                    string nodeColor = listDung.Contains(j) ? "correct-node" : "wrong-node";
+
+                    // Thêm viền phát sáng nếu đang xem câu đó
+                    string activeStyle = (ViewBag.Index == j) ? "active-view" : "";
+
+                    <a href="@Url.Action("review", "bai_test", new { index = j })"
+                       class="q-number @nodeColor @activeStyle" title="Tới câu @(j + 1)">
+                        @(j + 1)
+                    </a>
+                }
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <a href="@Url.Action("kq_bai_test", "bai_test")" class="btn-back-result">
+                🔙 Về Bảng Điểm
+            </a>
+
+            <a href="@Url.Action("khoadaotao", "Page")" class="btn-finish">
+                🏠 Về Trang Chính
+            </a>
+        </div>
+
     </div>
 
 </div>

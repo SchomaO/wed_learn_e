@@ -167,6 +167,11 @@
 </style>
 
 <div class="test-wrapper">
+    @Html.Partial("_NutQuayLai", new ViewDataDictionary {
+    // Thêm đoạn new { id = ... } để hệ thống tạo ra link có đuôi /1
+    { "LinkQuayVe", Url.Action("thong_tin_khoa_hoc", "Page", new { id = Request.QueryString["id_cap_do"] }) },
+  
+})
     <div class="header-box">
         <div class="header-title">🏆 Mini Test Hàng Ngày</div>
         <div style="display: inline-block; background: #fff4e6; color: #ff9800; padding: 5px 15px; border-radius: 20px; font-weight: bold;">📅 Ngày: @ViewBag.NgayTest</div>
@@ -183,7 +188,7 @@
     <form action="@Url.Action("MiniTestHangNgay", "tinh_nang")" method="post" onsubmit="gatherAnswers()">
         <input type="hidden" name="id_cap_do" value="@ViewBag.IdCapDo" />
 
-        
+
 
         @if (sapXep != null)
         {
@@ -226,7 +231,7 @@
 
         @if (!isSubmitted)
         {
-            <button type="submit" class="btn-submit">Nộp Bài Bằng C#</button>
+            <button type="submit" class="btn-submit">Nộp Bài</button>
         }
     </form>
 </div>

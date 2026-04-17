@@ -79,7 +79,7 @@ namespace wed_learn_e.Controllers
                 Session["TenDN"] = user.ten_dang_nhap;
                 Session["HoTen"] = user.ho_va_ten;
                 Session["VaiTro"] = user.vai_tro; // Quan trọng: Lưu lại vai trò để các trang khác kiểm tra
-
+                Session["Email"] = user.email; // Nhớ
                 // Lấy cấp độ hiện tại nếu có (Dành cho User)
                 if (user.id_cap_do_hien_tai != null)
                 {

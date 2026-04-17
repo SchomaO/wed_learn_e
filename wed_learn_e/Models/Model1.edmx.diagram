@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="a0447b2e78c846688355d58ded414ff7" Name="Diagram1" ZoomLevel="40">
+      <Diagram DiagramId="a0447b2e78c846688355d58ded414ff7" Name="Diagram1" ZoomLevel="49">
         <EntityTypeShape EntityType="wed_learn_eModel.bai_giang_video" Width="1.5" PointX="7.5" PointY="16.375" IsExpanded="true" />
         <EntityTypeShape EntityType="wed_learn_eModel.bai_kiem_tra_dau_vao" Width="1.5" PointX="5.25" PointY="23.625" IsExpanded="true" />
         <EntityTypeShape EntityType="wed_learn_eModel.bai_tap_thuc_hanh" Width="1.5" PointX="7.5" PointY="12.25" IsExpanded="true" />
@@ -68,6 +68,9 @@
         <EntityTypeShape EntityType="wed_learn_eModel.lich_su_kho_bau" Width="1.5" PointX="14.875" PointY="8.75" />
         <AssociationConnector Association="wed_learn_eModel.FK__cau_hoi_k__id_ga__6442E2C9" />
         <AssociationConnector Association="wed_learn_eModel.FK__lich_su_k__id_ca__671F4F74" />
+        <EntityTypeShape EntityType="wed_learn_eModel.binh_luan" Width="1.5" PointX="3.375" PointY="0.75" />
+        <AssociationConnector Association="wed_learn_eModel.FK_BinhLuan_CapDo" />
+        <AssociationConnector Association="wed_learn_eModel.FK_BinhLuan_NguoiDung" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

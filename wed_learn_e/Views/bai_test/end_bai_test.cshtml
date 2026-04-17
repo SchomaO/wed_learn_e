@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "end_bai_test";
+    ViewBag.Title = "Kiểm tra bài làm";
     Layout = "~/Views/Shared/_Layoutcauhoi.cshtml";
 
     var done = ViewBag.Done as List<int> ?? new List<int>();
@@ -8,7 +8,8 @@
 
 <style>
     body {
-        background: white;
+        background: #f0f7ff; /* Đổi nền hơi xanh nhạt cho dịu mắt */
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     .submit-box {
@@ -16,131 +17,191 @@
         margin: auto;
         margin-top: 120px;
         background: white;
-        padding: 30px;
+        padding: 40px;
         border-radius: 20px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
         text-align: center;
     }
 
-        .submit-box h2 {
-            color: #2b4a5a;
-            margin-bottom: 25px;
-        }
-
-    .done-title,
-    .notdone-title {
-        font-weight: bold;
-        margin: 15px 0;
-        color: #3a5f73;
+    .submit-box h2 {
+        color: #0d6efd;
+        margin-top: 0;
+        margin-bottom: 25px;
+        font-size: 28px;
     }
+
+    .done-title { color: #28a745; font-weight: bold; margin: 20px 0 15px 0; font-size: 18px; }
+    .notdone-title { color: #dc3545; font-weight: bold; margin: 20px 0 15px 0; font-size: 18px; }
 
     .done-list {
         display: grid;
         grid-template-columns: repeat(5,1fr);
-        gap: 10px;
+        gap: 12px;
         margin-bottom: 20px;
     }
 
     .q {
-        background: #eef8ff;
-        height: 40px;
-        border-radius: 10px;
+        background: #f8f9fa;
+        height: 45px;
+        border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
+        font-weight: bold;
+        color: #555;
+        border: 1px solid #dee2e6;
+        transition: 0.2s;
     }
+    .q:hover { transform: translateY(-3px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 
-        .q.done {
-            background: #6ec8ff;
-            color: white;
-        }
-
-    .done-list a {
-        text-decoration: none;
-    }
+    .q.done { background: #d4edda; color: #155724; border-color: #c3e6cb; }
+    .done-list a { text-decoration: none; }
 
     .submit-btns {
-        margin-top: 25px;
+        margin-top: 40px;
         display: flex;
         justify-content: space-between;
+        gap: 15px;
     }
 
     .back-btn {
         text-decoration: none;
-        background: #cfefff;
-        padding: 10px 18px;
+        background: #f8f9fa;
+        padding: 12px 20px;
+        border: 1px solid #ccc;
         border-radius: 10px;
-        color: #1b4d63;
+        color: #555;
         font-weight: bold;
+        flex: 1;
+        transition: 0.2s;
     }
+    .back-btn:hover { background: #e2e6ea; }
 
     .submit-btn {
-        background: #6ec8ff;
-        padding: 10px 25px;
+        background: linear-gradient(135deg, #0d6efd, #4786e3);
+        padding: 12px 20px;
+        border: none;
         border-radius: 10px;
         font-weight: bold;
         color: white;
         text-decoration: none;
+        cursor: pointer;
+        flex: 1;
+        font-size: 16px;
+        transition: 0.2s;
+        box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3);
     }
-
-        .submit-btn:hover {
-            background: #48b9ff;
-        }
+    .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(13, 110, 253, 0.4); }
 
     .warning {
-        color: red;
-        font-weight: bold;
-        margin-bottom: 10px;
+        background: #f8d7da; color: #721c24; font-weight: bold; padding: 15px;
+        border-radius: 10px; border: 1px solid #f5c6cb; margin-bottom: 20px;
     }
+
+    /* --- CSS CHO POPUP XÁC NHẬN --- */
+    .modal-overlay {
+        display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); z-index: 9999;
+        align-items: center; justify-content: center;
+    }
+    .modal-box {
+        background: white; padding: 40px; border-radius: 20px; width: 400px;
+        text-align: center; box-shadow: 0 15px 40px rgba(0,0,0,0.2); animation: popUp 0.3s ease-out;
+    }
+    @@keyframes popUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .modal-icon { font-size: 60px; margin-bottom: 15px; }
+    .modal-title { font-size: 24px; font-weight: bold; color: #333; margin-bottom: 10px; }
+    .modal-text { color: #666; margin-bottom: 25px; font-size: 16px; line-height: 1.5; }
+
+    .modal-buttons { display: flex; justify-content: center; gap: 15px; }
+    .btn-cancel { background: #f8f9fa; color: #555; padding: 12px 20px; border: 1px solid #ccc; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.2s; flex: 1; font-size: 16px; }
+    .btn-cancel:hover { background: #e2e6ea; }
+    .btn-confirm-submit { background: linear-gradient(135deg, #28a745, #20c997); color: white; padding: 12px 20px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.2s; flex: 1; font-size: 16px; box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3); }
+    .btn-confirm-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(40, 167, 69, 0.4); }
 </style>
 
 <div class="submit-box">
 
     <h2>Kiểm tra bài làm</h2>
 
-    <!-- ⚠️ cảnh báo -->
     @if (notdone.Count > 0)
     {
         <div class="warning">
-            Bạn còn @notdone.Count câu chưa làm!
+            ⚠️ Chú ý: Bạn còn @notdone.Count câu chưa trả lời!
         </div>
     }
 
-    <!-- ✅ Đã làm -->
-    <div class="done-title">Câu đã trả lời</div>
-
+    <div class="done-title">✔ Các câu đã trả lời</div>
     <div class="done-list">
         @foreach (var i in done)
         {
-            <a href="@Url.Action("bai_test","bai_test", new { index = i })">
+            <a href="@Url.Action("bai_test","bai_test", new { index = i })" title="Nhấn để xem lại câu @(i + 1)">
                 <div class="q done">@(i + 1)</div>
             </a>
         }
     </div>
 
-    <!-- ❌ Chưa làm -->
-    <div class="notdone-title">Câu chưa trả lời</div>
-
+    <div class="notdone-title">✖ Các câu chưa trả lời</div>
     <div class="done-list">
         @foreach (var i in notdone)
         {
-            <a href="@Url.Action("bai_test","bai_test", new { index = i })">
-                <div class="q">@(i + 1)</div> 
+            <a href="@Url.Action("bai_test","bai_test", new { index = i })" title="Nhấn để đi tới câu @(i + 1)">
+                <div class="q">@(i + 1)</div>
             </a>
         }
     </div>
 
-    <!-- nút -->
     <div class="submit-btns">
-
         <a href="@Url.Action("bai_test","bai_test")" class="back-btn">
-            ← Quay lại làm bài
+            ← Quay lại
         </a>
 
-        <a href="@Url.Action("kq_bai_test","bai_test")" class="submit-btn">
-            Nộp bài
-        </a>
-
+        <button class="submit-btn" onclick="MoPopupNopBai()">
+            Nộp bài ngay
+        </button>
     </div>
 
 </div>
+
+<div class="modal-overlay" id="submitFinalModal">
+    <div class="modal-box">
+        <div class="modal-icon">📤</div>
+        <div class="modal-title">Xác nhận nộp bài</div>
+        <div class="modal-text">
+            @if (notdone.Count > 0)
+            {
+                <span style="color: #dc3545; font-weight: bold;">Bạn vẫn còn @notdone.Count câu chưa làm.</span><br />
+            }
+            Bạn có chắc chắn muốn nộp bài ngay lúc này? Sau khi nộp sẽ xem được điểm số chi tiết.
+        </div>
+        <div class="modal-buttons">
+            <button class="btn-cancel" onclick="DongPopupNopBai()">Kiểm tra lại</button>
+            <button class="btn-confirm-submit" onclick="ChotNopBai()">Chắc chắn nộp</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Hàm mở bảng xác nhận
+    function MoPopupNopBai() {
+        document.getElementById("submitFinalModal").style.display = "flex";
+    }
+
+    // Hàm đóng bảng xác nhận
+    function DongPopupNopBai() {
+        document.getElementById("submitFinalModal").style.display = "none";
+    }
+
+    // Hàm thực hiện chuyển trang khi chốt nộp
+    function ChotNopBai() {
+        // Đổi chữ trên nút để tạo hiệu ứng đang xử lý
+        document.querySelector(".btn-confirm-submit").innerText = "Đang nộp...";
+        document.querySelector(".btn-confirm-submit").style.opacity = "0.7";
+
+        // Xóa sạch bộ đếm thời gian (nếu có) để chuẩn bị cho lần thi sau
+        sessionStorage.removeItem("quizTimeLeft");
+
+        // Chuyển hướng sang trang kết quả
+        location.href = '@Url.Action("kq_bai_test", "bai_test")';
+    }
+</script>

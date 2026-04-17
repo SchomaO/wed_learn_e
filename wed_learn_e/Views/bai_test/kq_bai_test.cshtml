@@ -90,6 +90,87 @@
         .btn-course:hover {
             background: #0b5ed7;
         }
+    /* --- CSS CHO POPUP ĐĂNG KÝ --- */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.6);
+        backdrop-filter: blur(5px);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-box {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        width: 400px;
+        text-align: center;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    }
+
+    .modal-icon {
+        font-size: 60px;
+        margin-bottom: 15px;
+    }
+
+    .modal-title {
+        font-size: 24px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .modal-text {
+        color: #555;
+        margin-bottom: 25px;
+        font-size: 16px;
+        line-height: 1.5;
+    }
+
+    .modal-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .btn-cancel {
+        background: #f8f9fa;
+        color: #555;
+        padding: 12px 20px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        font-weight: bold;
+        cursor: pointer;
+        flex: 1;
+        transition: 0.2s;
+    }
+
+        .btn-cancel:hover {
+            background: #e2e6ea;
+        }
+
+    .btn-confirm-submit {
+        background: #28a745;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 10px;
+        font-weight: bold;
+        cursor: pointer;
+        flex: 1;
+        transition: 0.2s;
+    }
+
+        .btn-confirm-submit:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
 </style>
 
 <div class="result-container">
@@ -132,7 +213,7 @@
                         <div class="course-desc">
                             Khóa học cơ bản dành cho người mới bắt đầu.
                         </div>
-                        <a class="btn-course" href="@Url.Action("thong_tin_khoa_hoc", "Page", new { id = 1 })">Bắt đầu học</a>
+                        <button class="btn-course" onclick="MoPopupDangKy(1, 'Beginner (A1)')" style="border:none; cursor:pointer;">Đăng ký học ngay</button>
                     </div>
                 }
                 else if (ViewBag.CapDo == 2)
@@ -143,7 +224,7 @@
                         <div class="course-desc">
                             Nâng cao kỹ năng giao tiếp và ngữ pháp.
                         </div>
-                        <a class="btn-course" href="@Url.Action("thong_tin_khoa_hoc", "Page", new { id = 2 })">Bắt đầu học</a>
+                        <button class="btn-course" onclick="MoPopupDangKy(2, 'Elementary (A2)')" style="border:none; cursor:pointer;">Đăng ký học ngay</button>
                     </div>
                 }
                 else if (ViewBag.CapDo == 3)
@@ -154,7 +235,7 @@
                         <div class="course-desc">
                             Thành thạo tiếng Anh giao tiếp văn phòng.
                         </div>
-                        <a class="btn-course" href="@Url.Action("thong_tin_khoa_hoc", "Page", new { id = 3 })">Bắt đầu học</a>
+                        <button class="btn-course" onclick="MoPopupDangKy(3, 'Intermediate (B1)')" style="border:none; cursor:pointer;">Đăng ký học ngay</button>
                     </div>
                 }
                 else if (ViewBag.CapDo == 4)
@@ -165,7 +246,7 @@
                         <div class="course-desc">
                             Rèn luyện phong thái và kỹ năng thuyết trình.
                         </div>
-                        <a class="btn-course" href="@Url.Action("thong_tin_khoa_hoc", "Page", new { id = 4 })">Bắt đầu học</a>
+                        <button class="btn-course" onclick="MoPopupDangKy(4, 'Upper-Intermediate (B2)')" style="border:none; cursor:pointer;">Đăng ký học ngay</button>
                     </div>
                 }
                 else if (ViewBag.CapDo == 5)
@@ -176,7 +257,7 @@
                         <div class="course-desc">
                             Học cách viết luận học thuật chuyên sâu.
                         </div>
-                        <a class="btn-course" href="@Url.Action("thong_tin_khoa_hoc", "Page", new { id = 5 })">Bắt đầu học</a>
+                        <button class="btn-course" onclick="MoPopupDangKy(5, 'Advanced (C1)')" style="border:none; cursor:pointer;">Đăng ký học ngay</button>
                     </div>
                 }
                 else if (ViewBag.CapDo == 6)
@@ -187,7 +268,7 @@
                         <div class="course-desc">
                             Giao tiếp tự nhiên như người bản xứ.
                         </div>
-                        <a class="btn-course" href="@Url.Action("thong_tin_khoa_hoc", "Page", new { id = 6 })">Bắt đầu học</a>
+                        <button class="btn-course" onclick="MoPopupDangKy(6, 'Proficient (C2)')" style="border:none; cursor:pointer;">Đăng ký học ngay</button>
                     </div>
                 }
 
@@ -202,3 +283,60 @@
 
     </div>
 </div>
+<div class="modal-overlay" id="regModal">
+    <div class="modal-box">
+        <div class="modal-icon">🎁</div>
+        <div class="modal-title">Đăng ký khóa học</div>
+        <div class="modal-text">Bạn có muốn đăng ký và thêm khóa học <br><b id="courseNameText" style="color:#0d6efd; font-size:18px;"></b><br>vào tài khoản không?</div>
+        <div class="modal-buttons">
+            <button class="btn-cancel" onclick="DongPopupDangKy()">Hủy</button>
+            <button class="btn-confirm-submit" onclick="ThucHienDangKy()">Đồng ý ĐK</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    var currentCourseId = 0;
+
+    // 1. Mở Popup và gán dữ liệu
+    function MoPopupDangKy(idCapDo, tenKhoaHoc) {
+        currentCourseId = idCapDo;
+        document.getElementById("courseNameText").innerText = tenKhoaHoc;
+        document.getElementById("regModal").style.display = "flex";
+    }
+
+    // 2. Đóng Popup
+    function DongPopupDangKy() {
+        document.getElementById("regModal").style.display = "none";
+    }
+
+    // 3. Gọi AJAX đăng ký
+    function ThucHienDangKy() {
+        var btn = document.querySelector(".btn-confirm-submit");
+        btn.innerText = "Đang đăng ký...";
+        btn.style.opacity = "0.7";
+
+        $.ajax({
+            url: '@Url.Action("DangKyKhoaHocAjax", "bai_test")',
+            type: 'POST',
+            data: { id_cap_do: currentCourseId },
+            success: function (res) {
+                if (res.success) {
+                    alert(res.message);
+                    // Đăng ký xong thì chuyển về trang thông tin khóa học đó
+                    location.href = '@Url.Action("thong_tin_khoa_hoc", "Page")' + '?id=' + currentCourseId;
+                } else {
+                    alert(res.message);
+                    DongPopupDangKy();
+                    btn.innerText = "Đồng ý ĐK";
+                    btn.style.opacity = "1";
+                }
+            },
+            error: function () {
+                alert("Lỗi kết nối máy chủ!");
+                DongPopupDangKy();
+            }
+        });
+    }
+</script>   

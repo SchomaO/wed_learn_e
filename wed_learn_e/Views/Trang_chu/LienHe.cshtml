@@ -1,0 +1,381 @@
+﻿@{
+    ViewBag.Title = "Liên Hệ & Hỗ Trợ";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title</title>
+    <style>
+        body {
+            background: #f8f9fa;
+            font-family: Arial, sans-serif;
+            margin: 0;
+        }
+
+        .contact-wrapper {
+            width: 85%;
+            margin: 50px auto;
+            display: flex;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(360deg, #e5e5e5, #f4b400);
+            padding: 20px 60px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border-bottom-left-radius: 50px;
+            border-bottom-right-radius: 50px;
+        }
+
+        .login button {
+            margin-left: 15px;
+            padding: 8px 18px;
+            border: none;
+            border-radius: 20px;
+            background: white;
+            color: #4f83cc;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+            .login button:hover {
+                background: #2dafff;
+                color: black;
+            }
+
+        .user {
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+            .user:hover {
+                color: #2dafff;
+            }
+
+        /* --- CỘT TRÁI: THÔNG TIN (NỀN XANH) --- */
+        .contact-info {
+            flex: 4;
+            background: linear-gradient(135deg, #0d6efd, #4786e3);
+            color: white;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+            .contact-info h2 {
+                margin-top: 0;
+                font-size: 28px;
+            }
+
+            .contact-info p {
+                line-height: 1.6;
+                font-size: 15px;
+                opacity: 0.9;
+            }
+
+        .info-list {
+            margin-top: 30px;
+            list-style: none;
+            padding: 0;
+        }
+
+            .info-list li {
+                margin-bottom: 25px;
+                display: flex;
+                align-items: center;
+                font-size: 16px;
+            }
+
+                .info-list li span {
+                    font-size: 24px;
+                    margin-right: 15px;
+                }
+
+        .map-container {
+            margin-top: 30px;
+            border-radius: 10px;
+            overflow: hidden;
+            height: 200px;
+            border: 3px solid rgba(255,255,255,0.2);
+        }
+
+        /* --- CỘT PHẢI: FORM ĐIỀN TIN NHẮN --- */
+        .contact-form {
+            flex: 6;
+            padding: 50px 60px;
+        }
+
+            .contact-form h2 {
+                color: #333;
+                margin-top: 0;
+                margin-bottom: 30px;
+                font-size: 28px;
+            }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+            .form-group label {
+                display: block;
+                font-weight: bold;
+                margin-bottom: 8px;
+                color: #555;
+            }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+            box-sizing: border-box;
+            transition: 0.3s;
+        }
+
+            .form-control:focus {
+                border-color: #0d6efd;
+                outline: none;
+                box-shadow: 0 0 5px rgba(13,110,253,0.3);
+            }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+
+            .form-row .form-group {
+                flex: 1;
+            }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .btn-submit {
+            background: #0d6efd;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.3s;
+        }
+
+            .btn-submit:hover {
+                background: #0b5ed7;
+            }
+
+        /* --- POPUP THÔNG BÁO --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-box {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .modal-icon {
+            font-size: 60px;
+            color: #28a745;
+            margin-bottom: 15px;
+        }
+
+        .modal-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .modal-text {
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .btn-close-modal {
+            background: #e9ecef;
+            color: #333;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+            .btn-close-modal:hover {
+                background: #dde2e6;
+            }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <img src="@Url.Content("~/Img/Gemini_Generated_Image_khrd5ikhrd5ikhrd-removebg-preview.png")" alt="Logo" style="width: 160px;">
+        </div>
+        @if (Session["TenDN"] != null)
+        {
+            <div class="login">
+                <a href="@Url.Action("TrangCaNhan", "User")" class="user">👤 @Session["HoTen"]</a>
+                <button onclick="location.href='@Url.Action("DangXuat","User")'">Đăng xuất</button>
+            </div>
+        }
+        else
+        {
+            <div class="login">
+                <a href="@Url.Action("Index","User")" style="color: white; font-weight:bold; text-decoration:none; margin-right: 15px;">Bạn đã có tài khoản?</a>
+                <button onclick="location.href='@Url.Action("dangnhap","User")'">Đăng nhập</button>
+            </div>
+        }
+    </header>
+
+    <div class="contact-wrapper">
+        <div class="contact-info">
+            <div>
+                <h2>Thông tin liên hệ</h2>
+                <p>Chúng tôi luôn sẵn sàng lắng nghe và hỗ trợ bạn trong suốt quá trình học tập. Đừng ngần ngại liên hệ nhé!</p>
+                <ul class="info-list">
+                    <li><span>📍</span> Tòa nhà E-Learning, Quận 1, TP.HCM</li>
+                    <li><span>📞</span> Hotline: 0123 456 789</li>
+                    <li><span>✉️</span> Email: hotro@kitting.edu.vn</li>
+                    <li><span>🌐</span> Fanpage: Kitting - Học tiếng Anh</li>
+                </ul>
+            </div>
+            <div class="map-container">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1m3!1d3919.5132741062075!2d106.6990749!3d10.7719448!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f40a3b49e59%3A0xa1bd14e483a602db!2sB%E1%BA%BFn%20Th%C3%A0nh%20Market!5e0!3m2!1sen!2s!4v1700000000000!5m2!1sen!2s" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+        </div>
+
+        <div class="contact-form">
+            <h2>Gửi tin nhắn cho chúng tôi</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Họ và tên *</label>
+                    <input type="text" id="txtHoTen" class="form-control" placeholder="Nhập họ tên của bạn"
+                           value="@(Session["HoTen"] != null ? Session["HoTen"] : "")"
+                           @(Session["HoTen"] != null ? "readonly style=background-color:#e9ecef;cursor:not-allowed;" : "")>
+                </div>
+                <div class="form-group">
+                    <label>Email liên hệ *</label>
+                    <input type="email" id="txtEmail" class="form-control" placeholder="Ví dụ: abc@gmail.com"
+                           value="@(Session["Email"] != null ? Session["Email"] : "")"
+                           @(Session["Email"] != null ? "readonly style=background-color:#e9ecef;cursor:not-allowed;" : "")>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Chủ đề cần hỗ trợ</label>
+                <select id="cbChuDe" class="form-control">
+                    <option value="Tư vấn lộ trình học">📚 Tư vấn lộ trình học</option>
+                    <option value="Hỗ trợ thanh toán / Lỗi nạp VIP">💳 Hỗ trợ thanh toán / Lỗi nạp VIP</option>
+                    <option value="Lỗi kỹ thuật web/app">⚙️ Lỗi kỹ thuật web/app</option>
+                    <option value="Đóng góp ý kiến">💡 Đóng góp ý kiến</option>
+                    <option value="Khác">Khác</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Nội dung chi tiết *</label>
+                <textarea id="txtNoiDung" class="form-control" placeholder="Mô tả vấn đề bạn đang gặp phải..."></textarea>
+            </div>
+
+            <button class="btn-submit" id="btnGuiTinNhan" onclick="XuLyGuiLienHe()">Gửi Tin Nhắn 🚀</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="successModal">
+        <div class="modal-box">
+            <div class="modal-icon">✔</div>
+            <div class="modal-title">Gửi thành công!</div>
+            <div class="modal-text" id="successMessage">Tin nhắn của bạn đã được tiếp nhận.</div>
+            <button class="btn-close-modal" onclick="DongModal()">Đóng</button>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    function XuLyGuiLienHe() {
+        // Lấy dữ liệu (Đã xóa lấy Số điện thoại)
+        var hoTen = $("#txtHoTen").val().trim();
+        var email = $("#txtEmail").val().trim();
+        var chuDe = $("#cbChuDe").val();
+        var noiDung = $("#txtNoiDung").val().trim();
+
+        if (hoTen === "" || email === "" || noiDung === "") {
+            alert("Vui lòng điền đầy đủ Họ tên, Email và Nội dung tin nhắn!");
+            return;
+        }
+
+        var btn = $("#btnGuiTinNhan");
+        btn.text("Đang gửi...");
+        btn.prop("disabled", true);
+        btn.css("opacity", "0.7");
+
+        $.ajax({
+            url: '@Url.Action("GuiLienHe", "Trang_chu")', // Đảm bảo tên Controller đúng là Trang_chu
+            type: 'POST',
+            data: {
+                ho_ten: hoTen,
+                email: email,
+                chu_de: chuDe,
+                noi_dung: noiDung
+            },
+            success: function (res) {
+                if (res.success) {
+                    if ('@(Session["HoTen"])' === '') $("#txtHoTen").val('');
+                    $("#txtEmail").val('');
+                    $("#txtNoiDung").val('');
+
+                    $("#successMessage").text(res.message);
+                    $("#successModal").css("display", "flex");
+                } else {
+                    alert(res.message);
+                }
+            },
+            error: function () {
+                alert("Có lỗi xảy ra khi kết nối máy chủ. Vui lòng thử lại!");
+            },
+            complete: function () {
+                btn.text("Gửi Tin Nhắn 🚀");
+                btn.prop("disabled", false);
+                btn.css("opacity", "1");
+            }
+        });
+    }
+
+    function DongModal() {
+        $("#successModal").css("display", "none");
+    }
+    </script>
+</body>
+</html>

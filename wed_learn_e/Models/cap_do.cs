@@ -19,6 +19,7 @@ namespace wed_learn_e.Models
             this.ket_qua_kiem_tra = new HashSet<ket_qua_kiem_tra>();
             this.khoa_hoc = new HashSet<khoa_hoc>();
             this.nguoi_dung = new HashSet<nguoi_dung>();
+            this.binh_luan = new HashSet<binh_luan>();
         }
     
         public int id_cap_do { get; set; }
@@ -28,5 +29,6 @@ namespace wed_learn_e.Models
         public virtual ICollection<ket_qua_kiem_tra> ket_qua_kiem_tra { get; set; }
         public virtual ICollection<khoa_hoc> khoa_hoc { get; set; }
         public virtual ICollection<nguoi_dung> nguoi_dung { get; set; }
+        public virtual ICollection<binh_luan> binh_luan { get; set; }
     }
 }

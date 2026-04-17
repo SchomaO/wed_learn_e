@@ -1,34 +1,40 @@
-﻿
-@{
+﻿@{
     Layout = "~/Views/Shared/_Layoutcauhoi.cshtml";
 }
 <title>Bài Test</title>
 
 <style>
-
     body {
         background: linear-gradient(177deg, #dcdcdc, #ffffff, #bfe7ff, #d6f4ff, #006c97);
         font-family: Arial;
         display: flex;
         justify-content: center;
         align-items: flex-start;
-        padding-top: 90px; /* khoảng trống cho navbar */
+        padding-top: 90px;
         margin: 0;
         min-height: 100vh;
     }
 
-    /* layout */
-
+    /* BỐ CỤC 2 CỘT */
     .container {
         display: flex;
         gap: 30px;
     }
 
-    /* hộp câu hỏi */
+    .left-panel {
+        width: 520px;
+    }
 
+    .right-panel {
+        width: 240px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px; /* Khoảng cách giữa các hộp bên phải */
+    }
+
+    /* --- CỘT TRÁI: HỘP CÂU HỎI --- */
     .quiz-box {
         background: white;
-        width: 520px;
         padding: 30px;
         border-radius: 20px;
         box-shadow: 0 10px 25px rgba(0,0,0,0.1);
@@ -39,210 +45,248 @@
         font-weight: bold;
         margin-bottom: 25px;
         color: #2b4a5a;
+        line-height: 1.4;
     }
 
-    /* đáp án */
-
-    .answers {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-    }
-
-        .answers input {
-            display: none;
-        }
-
+    .answers { display: flex; flex-direction: column; gap: 15px; }
+    .answers input { display: none; }
     .answer {
-        background: #eef8ff;
-        padding: 15px;
-        border-radius: 12px;
-        cursor: pointer;
-        transition: 0.3s;
-        border: 2px solid transparent;
+        background: #eef8ff; padding: 15px; border-radius: 12px;
+        cursor: pointer; transition: 0.3s; border: 2px solid transparent; font-size: 16px;
     }
-
-        .answer:hover {
-            background: #dff3ff;
-            transform: scale(1.02);
-        }
-
-    /* khi chọn */
-
+    .answer:hover { background: #dff3ff; transform: scale(1.02); }
     .answers input:checked + .answer {
-        background: #bfe9ff;
-        border: 2px solid #6ec8ff;
+        background: #bfe9ff; border: 2px solid #6ec8ff; font-weight: bold;
     }
 
-    /* mục lục */
+    .nav-question {
+        display: flex; justify-content: space-between; margin-top: 25px;
+    }
+    .btn-nav {
+        text-decoration: none; background: #bfe9ff; padding: 10px 18px; border: none;
+        border-radius: 10px; color: #1b4d63; font-weight: bold; transition: 0.2s; cursor: pointer;
+    }
+    .btn-nav:hover { background: #9edcff; }
+
+    /* --- CỘT PHẢI: ĐỒNG HỒ, MỤC LỤC, NỘP BÀI --- */
+    .timer-box {
+        background: white; padding: 15px; border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center;
+    }
+    .timer-title { color: #555; font-size: 14px; font-weight: bold; margin-bottom: 5px; }
+    .timer-display { font-size: 32px; font-weight: bold; color: #0d6efd; letter-spacing: 2px; }
+
+    /* Hiệu ứng chớp đỏ khi sắp hết giờ */
+    .timer-display.warning { animation: blink 1s infinite; color: #e74c3c; }
+    @@keyframes blink { 50% { opacity: 0.4; } }
 
     .question-list {
-        background: white;
-        width: 220px;
-        padding: 20px;
-        border-radius: 20px;
+        background: white; padding: 20px; border-radius: 20px;
         box-shadow: 0 10px 25px rgba(0,0,0,0.1);
     }
+    .question-list h3 { text-align: center; margin-top: 0; margin-bottom: 15px; color: #2b4a5a; }
 
-        .question-list h3 {
-            text-align: center;
-            margin-bottom: 15px;
-            color: #2b4a5a;
-        }
-
-    .grid {
-        display: grid;
-        grid-template-columns: repeat(5,1fr);
-        gap: 10px;
-    }
-
+    .grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 10px; }
     .q-number {
-        background: #eef8ff;
-        height: 40px;
-        border-radius: 10px;
-        display: flex;
-        justify-content: center;
+        background: #eef8ff; height: 40px; border-radius: 10px; display: flex;
+        justify-content: center; align-items: center; cursor: pointer; transition: 0.2s;
+        text-decoration: none; color: #333; font-weight: bold;
+    }
+    .q-number:hover { background: #dff3ff; }
+    .done { background: #6ec8ff !important; color: white; }
+
+    .submit-box {
+        background: white; padding: 15px; border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    .submit-btn {
+        width: 100%; padding: 15px; border: none; border-radius: 12px;
+        background: linear-gradient(135deg, #ff6b6b, #ff4b4b); color: white;
+        font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.25s; text-transform: uppercase;
+    }
+    /* --- CSS CHO POPUP NỘP BÀI --- */
+    .modal-overlay {
+        display: none; /* Mặc định ẩn */
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.6);
+        backdrop-filter: blur(5px); /* Hiệu ứng làm mờ nền cực đẹp */
+        z-index: 9999;
         align-items: center;
-        cursor: pointer;
-        transition: 0.2s;
+        justify-content: center;
     }
 
-        .q-number:hover {
-            background: #dff3ff;
-        }
-    .nav-question {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 25px;
+    .modal-box {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        width: 400px;
+        text-align: center;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        animation: popUp 0.3s ease-out; /* Hiệu ứng nảy lên */
     }
 
-    .btn-nav {
-        text-decoration: none;
-        background: #bfe9ff;
-        padding: 10px 18px;
-        border-radius: 10px;
-        color: #1b4d63;
-        font-weight: bold;
-        transition: 0.2s;
+    @@keyframes popUp {
+        from { transform: scale(0.8); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
     }
 
-        .btn-nav:hover {
-            background: #9edcff;
-        }
-    .done {
-        background: #6ec8ff !important;
-        color: white;
+    .modal-icon { font-size: 60px; margin-bottom: 15px; }
+    .modal-title { font-size: 24px; font-weight: bold; color: #333; margin-bottom: 10px; }
+    .modal-text { color: #666; margin-bottom: 25px; font-size: 16px; line-height: 1.5; }
+    .modal-buttons { display: flex; justify-content: center; gap: 15px; }
+
+    .btn-cancel {
+        background: #f8f9fa; color: #555; padding: 12px 20px; border: 1px solid #ccc;
+        border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.2s; flex: 1; font-size: 16px;
     }
+    .btn-cancel:hover { background: #e2e6ea; }
+
+    .btn-confirm-submit {
+        background: linear-gradient(135deg, #0d6efd, #4786e3); color: white; padding: 12px 20px;
+        border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.2s; flex: 1; font-size: 16px;
+    }
+    .btn-confirm-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(13, 110, 253, 0.4);
+    }
+    .submit-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(255, 75, 75, 0.4); }
 </style>
-
 
 <div class="container">
 
-    <!-- câu hỏi -->
-    @using (Html.BeginForm("bai_test", "bai_test", FormMethod.Post))
-    {
-        <input type="hidden" name="index" value="@ViewBag.Index" />
-    
-        <div class="quiz-box">
+    <div class="left-panel">
+        @using (Html.BeginForm("bai_test", "bai_test", FormMethod.Post))
+        {
+            <input type="hidden" name="index" value="@ViewBag.Index" />
+            <div class="quiz-box">
+                <div class="question">
+                    <span style="color:#0d6efd;">Câu @(ViewBag.Index + 1):</span><br>
+                    @Model.noi_dung_cau_hoi
+                </div>
 
-            <div class="question">
-                Question: @(ViewBag.Index + 1)
-                @Model.noi_dung_cau_hoi
+                <div class="answers">
+                    <label>
+                        <input type="radio" name="answer" value="A" @(Session["answer_" + ViewBag.Index]?.ToString() == "A" ? "checked" : "")>
+                        <div class="answer">A. @Model.dap_an_a</div>
+                    </label>
+
+                    <label>
+                        <input type="radio" name="answer" value="B" @(Session["answer_" + ViewBag.Index]?.ToString() == "B" ? "checked" : "")>
+                        <div class="answer">B. @Model.dap_an_b</div>
+                    </label>
+
+                    <label>
+                        <input type="radio" name="answer" value="C" @(Session["answer_" + ViewBag.Index]?.ToString() == "C" ? "checked" : "")>
+                        <div class="answer">C. @Model.dap_an_c</div>
+                    </label>
+
+                    <label>
+                        <input type="radio" name="answer" value="D" @(Session["answer_" + ViewBag.Index]?.ToString() == "D" ? "checked" : "")>
+                        <div class="answer">D. @Model.dap_an_d</div>
+                    </label>
+                </div>
+
+                <div class="nav-question">
+                    <button type="submit" name="action" value="prev" class="btn-nav">← Câu trước</button>
+                    <button type="submit" name="action" value="next" class="btn-nav">Câu sau →</button>
+                </div>
             </div>
-
-            <div class="answers">
-
-                <label>
-                    <input type="radio" name="answer" value="A"
-                           @(Session["answer_" + ViewBag.Index]?.ToString() == "A" ? "checked" : "")>
-                    <div class="answer">A. @Model.dap_an_a</div>
-                </label>
-
-                <label>
-                    <input type="radio" name="answer" value="B"
-                           @(Session["answer_" + ViewBag.Index]?.ToString() == "B" ? "checked" : "")>
-                    <div class="answer">B. @Model.dap_an_b</div>
-                </label>
-
-                <label>
-                    <input type="radio" name="answer" value="C"
-                           @(Session["answer_" + ViewBag.Index]?.ToString() == "C" ? "checked" : "")>
-                    <div class="answer">C. @Model.dap_an_c</div>
-                </label>
-
-                <label>
-                    <input type="radio" name="answer" value="D"
-                           @(Session["answer_" + ViewBag.Index]?.ToString() == "D" ? "checked" : "")>
-                    <div class="answer">D. @Model.dap_an_d</div>
-                </label>
-
-            </div>
-
-            <div class="nav-question">
-
-                <button type="submit" name="action" value="prev" class="btn-nav">← Câu trước</button>
-
-                <button type="submit" name="action" value="next" class="btn-nav">Câu sau →</button>
-
-            </div>
-
-        </div>
-    }
-
-    <!-- mục lục -->
-
-    <div class="question-list">
-
-        <div class="grid">
-            @for (int j = 0; j < ViewBag.Total; j++)
-            {
-                <a href="@Url.Action("bai_test","bai_test", new { index = j })"
-                   class="q-number @(Session["q" + j] != null ? "done" : "")">
-                    @(j + 1)
-                </a>
-
-            }
-        </div>
+        }
     </div>
 
+    <div class="right-panel">
 
+        <div class="timer-box">
+            <div class="timer-title">⏳ THỜI GIAN CÒN LẠI</div>
+            <div class="timer-display" id="timeDisplay">15:00</div>
+        </div>
+
+        <div class="question-list">
+            <h3>Danh sách câu hỏi</h3>
+            <div class="grid">
+                @for (int j = 0; j < ViewBag.Total; j++)
+                {
+                    <a href="@Url.Action("bai_test", "bai_test", new { index = j })"
+                       class="q-number @(Session["q" + j] != null ? "done" : "")">
+                        @(j + 1)
+                    </a>
+                }
+            </div>
+        </div>
+
+        <div class="submit-box">
+            <button class="submit-btn" onclick="XacNhanNopBai()">Nộp Bài</button>
+        </div>
+
+    </div>
 </div>
 
-    <div class="submit-box">
-
-            <button class="submit-btn"onclick="location.href='@Url.Action("end_bai_test","bai_test")'" >Nộp bài</button>
-
-
+<div class="modal-overlay" id="submitModal">
+    <div class="modal-box">
+        <div class="modal-icon">📤</div>
+        <div class="modal-title">Nộp bài thi?</div>
+        <div class="modal-text">Bạn có chắc chắn muốn nộp bài ngay lúc này? Sau khi nộp sẽ không thể sửa lại đáp án.</div>
+        <div class="modal-buttons">
+            <button class="btn-cancel" onclick="DongModalNopBai()">Kiểm tra lại</button>
+            <button class="btn-confirm-submit" onclick="TienHanhNopBai()">Chắc chắn nộp</button>
+        </div>
     </div>
+</div>
 
+<script>
+    // Lấy thời gian còn lại trực tiếp từ C# truyền sang
+    var totalSeconds = @(ViewBag.TimeLeft != null ? ViewBag.TimeLeft : 900);
+    var timeDisplay = document.getElementById("timeDisplay");
 
-    <style>
-        .submit-box {
-            background: white;
-            width: 220px;
-            margin-top: 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            display: flex;
-            justify-content: right;
-            align-items: center;
+    // Tách riêng hàm cập nhật giao diện đồng hồ
+    function updateTimerDisplay() {
+        if (totalSeconds < 0) totalSeconds = 0; // Tránh số âm
+
+        var minutes = Math.floor(totalSeconds / 60);
+        var seconds = totalSeconds % 60;
+
+        var minStr = minutes < 10 ? "0" + minutes : minutes;
+        var secStr = seconds < 10 ? "0" + seconds : seconds;
+
+        timeDisplay.innerText = minStr + ":" + secStr;
+
+        if (totalSeconds <= 60) {
+            timeDisplay.classList.add("warning");
         }
+    }
 
-        .submit-btn {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 10px;
-            background: linear-gradient(135deg,#6ec8ff,#4bbcff);
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.25s;
-        }
+    // 1. Gọi ngay lập tức 1 lần để render đúng số thời gian lúc vừa load xong
+    updateTimerDisplay();
 
-            .submit-btn:hover {
-                transform: scale(1.05);
-                box-shadow: 0 6px 15px rgba(0,0,0,0.15);
-            }
-    </style>
+    // 2. Thiết lập interval đếm lùi mỗi giây
+ var countdown = setInterval(function () {
+    totalSeconds--;
+    updateTimerDisplay();
+
+    // HẾT GIỜ: Ép nộp bài và chấm điểm ngay
+    if (totalSeconds <= 0) {
+        clearInterval(countdown);
+        alert("⏳ Đã hết thời gian! Hệ thống sẽ tự động nộp bài và chấm điểm.");
+
+        // CŨ: location.href = '@Url.Action("end_bai_test", "bai_test")';
+        // MỚI: Chuyển thẳng sang trang hiển thị kết quả
+        location.href = '@Url.Action("kq_bai_test", "bai_test")';
+    }
+}, 1000);
+
+    // --- CÁC HÀM XỬ LÝ POPUP NỘP BÀI CỦA BẠN (GIỮ NGUYÊN) ---
+    function XacNhanNopBai() {
+        document.getElementById("submitModal").style.display = "flex";
+    }
+
+    function DongModalNopBai() {
+        document.getElementById("submitModal").style.display = "none";
+    }
+
+    function TienHanhNopBai() {
+        document.querySelector(".btn-confirm-submit").innerText = "Đang nộp...";
+        document.querySelector(".btn-confirm-submit").style.opacity = "0.7";
+        location.href = '@Url.Action("end_bai_test", "bai_test")';
+    }
+</script>

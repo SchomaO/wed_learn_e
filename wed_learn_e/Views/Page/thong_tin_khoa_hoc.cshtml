@@ -96,10 +96,10 @@
             border-radius: 3px;
         }
 </style>
-
-<div class="extra-title">
-    Khóa Học: @(ViewBag.TenCapDo)
-</div>
+@Html.Partial("_NutQuayLai", new ViewDataDictionary {
+    { "LinkQuayVe", Url.Action("khoadaotao", "Page") },
+    { "TieuDe", "Khóa Học: " + ViewBag.TenCapDo }
+})
 
 <div class="course-container">
 

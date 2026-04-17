@@ -1,0 +1,91 @@
+﻿<style>
+    /* --- CSS CHO NÚT QUAY LẠI --- */
+    .btn-back {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px 24px;
+        font-size: 16px;
+        font-weight: 600;
+        color: #ffffff;
+        background: linear-gradient(135deg, #ff9f6b, #53cbff);
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        transition: all 0.3s ease;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0; /* Đảm bảo nút không bị lề đẩy lệch */
+    }
+
+        .btn-back svg {
+            transition: transform 0.3s ease;
+        }
+
+        .btn-back:hover {
+            background: linear-gradient(135deg, #6bffae, #6d53ff);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.5);
+            transform: translateY(-2px);
+        }
+
+            .btn-back:hover svg {
+                transform: translateX(-4px);
+            }
+
+        .btn-back:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 10px rgba(255, 107, 107, 0.2);
+        }
+
+    /* --- CSS CHO KHUNG CHỨA (CHỈNH LẠI CĂN GIỮA) --- */
+    .header-container {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center; /* Căn giữa theo chiều dọc */
+        margin-top: 40px; /* Chỉ dùng margin ở khung bọc ngoài */
+        margin-bottom: 30px;
+        padding: 0 5%;
+        min-height: 60px; /* Đảm bảo khung đủ cao cho nút */
+    }
+
+        .header-container .btn-back {
+            position: absolute;
+            left: 5%;
+        }
+
+    /* --- CSS CHO TIÊU ĐỀ --- */
+    .extra-title {
+        text-align: center;
+        margin: 0; /* XÓA BỎ MARGIN-TOP 80px ĐỂ CHỮ NẰM NGANG BẰNG NÚT */
+        font-size: 28px;
+        font-weight: bold;
+        color: #0b5ed7;
+        position: relative;
+    }
+
+        /* Đường gạch ngang trang trí dưới tiêu đề */
+        .extra-title:after {
+            content: "";
+            width: 120px;
+            height: 3px;
+          /* Phải thêm màu này thì đường gạch mới hiện */
+            display: block;
+            margin: 10px auto 0 auto;
+            border-radius: 3px;
+        }
+</style>
+<div class="header-container">
+    <button class="btn-back" id="backButton" onclick="location.href='@ViewData["LinkQuayVe"]'">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Quay lại
+    </button>
+
+    <div class="extra-title">
+        @ViewData["TieuDe"]
+    </div>
+</div>

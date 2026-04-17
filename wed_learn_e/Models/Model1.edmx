@@ -79,6 +79,18 @@
           <Property Name="noi_dung_cau_hoi" Type="nvarchar(max)" Nullable="false" />
           <Property Name="dap_an_mau" Type="nvarchar(max)" />
         </EntityType>
+        <EntityType Name="binh_luan">
+          <Key>
+            <PropertyRef Name="id_binh_luan" />
+          </Key>
+          <Property Name="id_binh_luan" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_nguoi_dung" Type="int" Nullable="false" />
+          <Property Name="id_cap_do" Type="int" Nullable="false" />
+          <Property Name="noi_dung" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="ngay_tao" Type="datetime" />
+          <Property Name="trang_thai" Type="bit" />
+          <Property Name="chu_de" Type="nvarchar" MaxLength="255" />
+        </EntityType>
         <EntityType Name="cap_do">
           <Key>
             <PropertyRef Name="id_cap_do" />
@@ -735,6 +747,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_BinhLuan_CapDo">
+          <End Role="cap_do" Type="Self.cap_do" Multiplicity="1" />
+          <End Role="binh_luan" Type="Self.binh_luan" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="cap_do">
+              <PropertyRef Name="id_cap_do" />
+            </Principal>
+            <Dependent Role="binh_luan">
+              <PropertyRef Name="id_cap_do" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BinhLuan_NguoiDung">
+          <End Role="nguoi_dung" Type="Self.nguoi_dung" Multiplicity="1" />
+          <End Role="binh_luan" Type="Self.binh_luan" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="nguoi_dung">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Principal>
+            <Dependent Role="binh_luan">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="wed_learn_eModelStoreContainer">
           <EntitySet Name="bai_giang_video" EntityType="Self.bai_giang_video" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="bai_kiem_tra_dau_vao" EntityType="Self.bai_kiem_tra_dau_vao" Schema="dbo" store:Type="Tables" />
@@ -743,6 +779,7 @@
           <EntitySet Name="bai_luyen_viet" EntityType="Self.bai_luyen_viet" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="bai_sap_xep" EntityType="Self.bai_sap_xep" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="bai_tap_thuc_hanh" EntityType="Self.bai_tap_thuc_hanh" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="binh_luan" EntityType="Self.binh_luan" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="cap_do" EntityType="Self.cap_do" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="cau_hoi_kho_bau" EntityType="Self.cau_hoi_kho_bau" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="cau_hoi_kiem_tra" EntityType="Self.cau_hoi_kiem_tra" Schema="dbo" store:Type="Tables" />
@@ -907,6 +944,14 @@
             <End Role="khoa_hoc" EntitySet="khoa_hoc" />
             <End Role="tu_vung" EntitySet="tu_vung" />
           </AssociationSet>
+          <AssociationSet Name="FK_BinhLuan_CapDo" Association="Self.FK_BinhLuan_CapDo">
+            <End Role="cap_do" EntitySet="cap_do" />
+            <End Role="binh_luan" EntitySet="binh_luan" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BinhLuan_NguoiDung" Association="Self.FK_BinhLuan_NguoiDung">
+            <End Role="nguoi_dung" EntitySet="nguoi_dung" />
+            <End Role="binh_luan" EntitySet="binh_luan" />
+          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -958,6 +1003,7 @@
           <NavigationProperty Name="ket_qua_kiem_tra" Relationship="Self.FK__ket_qua_k__id_ca__6EF57B66" FromRole="cap_do" ToRole="ket_qua_kiem_tra" />
           <NavigationProperty Name="khoa_hoc" Relationship="Self.FK__khoa_hoc__id_cap__72C60C4A" FromRole="cap_do" ToRole="khoa_hoc" />
           <NavigationProperty Name="nguoi_dung" Relationship="Self.FK__nguoi_dun__id_ca__6383C8BA" FromRole="cap_do" ToRole="nguoi_dung" />
+          <NavigationProperty Name="binh_luan" Relationship="wed_learn_eModel.FK_BinhLuan_CapDo" FromRole="cap_do" ToRole="binh_luan" />
         </EntityType>
         <EntityType Name="cau_hoi_kiem_tra">
           <Key>
@@ -1046,6 +1092,7 @@
           <NavigationProperty Name="lich_su_sap_xep" Relationship="wed_learn_eModel.FK__lich_su_s__id_ng__5D95E53A" FromRole="nguoi_dung" ToRole="lich_su_sap_xep" />
           <Property Name="loai_tai_khoan" Type="Int32" />
           <Property Name="so_luong_khoa_hoc" Type="Int32" />
+          <NavigationProperty Name="binh_luan" Relationship="wed_learn_eModel.FK_BinhLuan_NguoiDung" FromRole="nguoi_dung" ToRole="binh_luan" />
         </EntityType>
         <EntityType Name="nhat_ky_quan_tri">
           <Key>
@@ -1475,6 +1522,15 @@
             <End Role="cau_hoi_kho_bau" EntitySet="cau_hoi_kho_bau" />
             <End Role="lich_su_kho_bau" EntitySet="lich_su_kho_bau" />
           </AssociationSet>
+          <EntitySet Name="binh_luan" EntityType="wed_learn_eModel.binh_luan" />
+          <AssociationSet Name="FK_BinhLuan_CapDo" Association="wed_learn_eModel.FK_BinhLuan_CapDo">
+            <End Role="cap_do" EntitySet="cap_do" />
+            <End Role="binh_luan" EntitySet="binh_luan" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BinhLuan_NguoiDung" Association="wed_learn_eModel.FK_BinhLuan_NguoiDung">
+            <End Role="nguoi_dung" EntitySet="nguoi_dung" />
+            <End Role="binh_luan" EntitySet="binh_luan" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="bai_luyen_noi">
           <Key>
@@ -1887,6 +1943,44 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="binh_luan">
+          <Key>
+            <PropertyRef Name="id_binh_luan" />
+          </Key>
+          <Property Name="id_binh_luan" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_nguoi_dung" Type="Int32" Nullable="false" />
+          <Property Name="id_cap_do" Type="Int32" Nullable="false" />
+          <Property Name="noi_dung" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ngay_tao" Type="DateTime" Precision="3" />
+          <Property Name="trang_thai" Type="Boolean" />
+          <NavigationProperty Name="cap_do" Relationship="wed_learn_eModel.FK_BinhLuan_CapDo" FromRole="binh_luan" ToRole="cap_do" />
+          <NavigationProperty Name="nguoi_dung" Relationship="wed_learn_eModel.FK_BinhLuan_NguoiDung" FromRole="binh_luan" ToRole="nguoi_dung" />
+          <Property Name="chu_de" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="FK_BinhLuan_CapDo">
+          <End Type="wed_learn_eModel.cap_do" Role="cap_do" Multiplicity="1" />
+          <End Type="wed_learn_eModel.binh_luan" Role="binh_luan" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="cap_do">
+              <PropertyRef Name="id_cap_do" />
+            </Principal>
+            <Dependent Role="binh_luan">
+              <PropertyRef Name="id_cap_do" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BinhLuan_NguoiDung">
+          <End Type="wed_learn_eModel.nguoi_dung" Role="nguoi_dung" Multiplicity="1" />
+          <End Type="wed_learn_eModel.binh_luan" Role="binh_luan" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="nguoi_dung">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Principal>
+            <Dependent Role="binh_luan">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2215,6 +2309,19 @@
                 <ScalarProperty Name="id_cau_hoi" ColumnName="id_cau_hoi" />
                 <ScalarProperty Name="id_nguoi_dung" ColumnName="id_nguoi_dung" />
                 <ScalarProperty Name="id_lich_su" ColumnName="id_lich_su" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="binh_luan">
+            <EntityTypeMapping TypeName="wed_learn_eModel.binh_luan">
+              <MappingFragment StoreEntitySet="binh_luan">
+                <ScalarProperty Name="chu_de" ColumnName="chu_de" />
+                <ScalarProperty Name="trang_thai" ColumnName="trang_thai" />
+                <ScalarProperty Name="ngay_tao" ColumnName="ngay_tao" />
+                <ScalarProperty Name="noi_dung" ColumnName="noi_dung" />
+                <ScalarProperty Name="id_cap_do" ColumnName="id_cap_do" />
+                <ScalarProperty Name="id_nguoi_dung" ColumnName="id_nguoi_dung" />
+                <ScalarProperty Name="id_binh_luan" ColumnName="id_binh_luan" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

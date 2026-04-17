@@ -46,11 +46,53 @@
             nav a:hover {
                 color: white; /* Đổi màu hover sang trắng cho nổi bật trên nền xanh */
             }
+    .logo {
+        position: relative; /* Làm gốc tọa độ cho 2 ảnh bên trong */
+        width: 80px; /* Khai báo chiều rộng cụ thể */
+        height: 65px; /* Khai báo chiều cao (tùy chỉnh theo ảnh của bạn) */
+        display: inline-block; /* Giúp khung bao quanh sát vào ảnh */
+        cursor: pointer;
+        pointer-events: auto; /* Chỉ cho phép tương tác tại khung logo */
+    }
+
+        .logo img {
+            position: absolute; /* Chồng 2 ảnh lên nhau */
+            top: 0;
+            left: 0;
+            width: 160px;
+            transition: opacity 0.6s ease; /* Thời gian chuyển từ từ (0.6 giây) */
+        }
+
+        /* Ảnh 2 mặc định sẽ bị ẩn đi */
+        .logo .img-2 {
+            opacity: 0;
+            z-index: 2; /* Nằm trên ảnh 1 */
+        }
+
+        /* Ảnh 1 mặc định hiện ra */
+        .logo .img-1 {
+            opacity: 1;
+            z-index: 1;
+        }
+
+        /* Khi rà chuột vào khu vực .logo */
+        .logo:hover .img-2 {
+            opacity: 1; /* Hiện ảnh 2 lên */
+        }
+
+        .logo:hover .img-1 {
+            opacity: 0; /* Ẩn ảnh 1 đi */
+        }
 </style>
 
 <nav>
     <ul>
-        <li><a href="/Trang_chu/Index">Trang chủ</a></li>
+        <div class="logo">
+            <img src="@Url.Content("~/Img/Gemini_Generated_Image_khrd5ikhrd5ikhrd-removebg-preview.png")"
+                 class="img-1" alt="">
+            <img src="@Url.Content("~/Img/Gemini_Generated_Image_pj8wj4pj8wj4pj8w-removebg-preview.png")"
+                 class="img-2" alt="" onclick="location.href='@Url.Action("Index","Trang_chu")'">
+        </div>
     </ul>
     <ul>
         @if (Session["TenDN"] != null)

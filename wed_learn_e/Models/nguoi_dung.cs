@@ -29,6 +29,7 @@ namespace wed_learn_e.Models
             this.lich_su_luyen_noi = new HashSet<lich_su_luyen_noi>();
             this.lich_su_video = new HashSet<lich_su_video>();
             this.lich_su_sap_xep = new HashSet<lich_su_sap_xep>();
+            this.binh_luan = new HashSet<binh_luan>();
         }
     
         public int id_nguoi_dung { get; set; }
@@ -57,5 +58,6 @@ namespace wed_learn_e.Models
         public virtual ICollection<lich_su_luyen_noi> lich_su_luyen_noi { get; set; }
         public virtual ICollection<lich_su_video> lich_su_video { get; set; }
         public virtual ICollection<lich_su_sap_xep> lich_su_sap_xep { get; set; }
+        public virtual ICollection<binh_luan> binh_luan { get; set; }
     }
 }
