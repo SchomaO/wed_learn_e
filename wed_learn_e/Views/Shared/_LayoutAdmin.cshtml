@@ -1,0 +1,158 @@
+﻿
+@{
+    ViewBag.Title = "Admin - Quản lý khóa học";
+}
+@using wed_learn_e.Models;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - User Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <div class="flex h-screen overflow-hidden">
+
+        <aside class="w-64 bg-indigo-900 text-white flex-shrink-0 hidden md:flex flex-col">
+            <div class="p-6 text-2xl font-bold tracking-wider flex items-center gap-3">
+                <div class="w-8 h-8 bg-indigo-500 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-bolt text-sm"></i>
+                </div>
+                <span>ADMIN.IO</span>
+            </div>
+
+            <nav class="flex-1 px-4 space-y-2 mt-4">
+                <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-indigo-800 transition shadow-sm">
+                    <i class="fas fa-home w-5"></i> Course Management
+                </a>
+                <a href="#" class="flex items-center gap-3 p-3 rounded-lg bg-indigo-700 font-medium">
+                    <i class="fas fa-users w-5"></i> Users Management
+                </a>
+                <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-indigo-800 transition">
+                    <i class="fas fa-chart-line w-5"></i> Analytics
+                </a>
+                <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-indigo-800 transition">
+                    <i class="fas fa-cog w-5"></i> Settings
+                </a>
+            </nav>
+
+            <div class="p-4 border-t border-indigo-800 relative">
+                @* Phần hiển thị mặc định - Khi bấm vào sẽ mở Menu *@
+                <button onclick="toggleAdminMenu()" class="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-indigo-800 transition focus:outline-none" id="adminBtn">
+                    <img src="https://ui-avatars.com/api/?name=@(Session["HoTen"] ?? "Admin")&background=6366f1&color=fff"
+                         class="w-10 h-10 rounded-full border-2 border-indigo-400">
+                    <div class="text-left flex-1">
+                        <p class="text-sm font-semibold truncate w-32">@(Session["HoTen"] ?? "Admin Account")</p>
+                        <p class="text-[10px] text-indigo-300">Super Admin</p>
+                    </div>
+                    <i class="fas fa-chevron-up text-xs text-indigo-400 transition-transform duration-300" id="chevronIcon"></i>
+                </button>
+
+                @* Menu mở rộng - Mặc định sẽ ẩn (hidden) *@
+                <div id="adminMenu" class="hidden absolute bottom-20 left-4 right-4 bg-indigo-950 border border-indigo-700 rounded-xl shadow-2xl p-3 z-50 animate-fade-in-up">
+                    <div class="space-y-1">
+                        <div class="px-2 py-2 border-b border-indigo-800 mb-2">
+                            <p class="text-[10px] uppercase tracking-wider text-indigo-400 font-bold">Tài khoản</p>
+                            <p class="text-xs text-white truncate">admin@wed_learn_e.com</p>
+                        </div>
+
+                        <a href="#" class="flex items-center gap-3 p-2 text-sm text-indigo-200 hover:bg-indigo-800 hover:text-white rounded-lg transition">
+                            <i class="fas fa-user-circle w-4"></i> Hồ sơ cá nhân
+                        </a>
+
+                        <a href="#" class="flex items-center gap-3 p-2 text-sm text-indigo-200 hover:bg-indigo-800 hover:text-white rounded-lg transition">
+                            <i class="fas fa-key w-4"></i> Đổi mật khẩu
+                        </a>
+
+                        <div class="pt-2 mt-2 border-t border-indigo-800">
+                            <a href="@Url.Action("DangXuat", "User", new { area = "" })"
+                               class="flex items-center gap-3 p-2 text-sm text-red-400 hover:bg-red-900/30 rounded-lg transition font-medium">
+                                <i class="fas fa-power-off w-4"></i> Đăng xuất
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @* Script điều khiển việc đóng mở *@
+            <script>
+                function toggleAdminMenu() {
+                    const menu = document.getElementById('adminMenu');
+                    const icon = document.getElementById('chevronIcon');
+
+                    // Đảo trạng thái ẩn/hiện
+                    menu.classList.toggle('hidden');
+
+                    // Xoay icon mũi tên cho sinh động
+                    icon.style.transform = menu.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+                }
+
+                // Đóng menu nếu bấm ra ngoài vùng admin
+                window.onclick = function (event) {
+                    if (!event.target.closest('#adminBtn') && !event.target.closest('#adminMenu')) {
+                        document.getElementById('adminMenu').classList.add('hidden');
+                        document.getElementById('chevronIcon').style.transform = 'rotate(0deg)';
+                    }
+                }
+            </script>
+
+            @* Thêm một chút CSS cho hiệu ứng mượt *@
+            <style>
+                .animate-fade-in-up {
+                    animation: fadeInUp 0.2s ease-out;
+                }
+
+                @@keyframes fadeInUp {
+                    from {
+                        opacity: 0;
+                        transform: translateY(10px);
+                    }
+
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+            </style>
+        </aside>
+
+        <div class="flex-1 flex flex-col overflow-y-auto">
+
+        <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 sticky top-0 z-10">
+    <div class="flex items-center gap-4">
+        <button class="md:hidden text-gray-600"><i class="fas fa-bars"></i></button>
+
+        <h1 class="text-xl font-bold text-gray-700 uppercase tracking-tight">
+            @(ViewBag.Title ?? "Hệ Thống Quản Trị")
+        </h1>
+    </div>
+
+    <div class="flex items-center gap-6">
+        <div class="relative hidden sm:block">
+            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+            <input type="text" placeholder="Tìm kiếm nhanh..." class="pl-10 pr-4 py-2 bg-gray-100 border-none rounded-full text-sm focus:ring-2 focus:ring-indigo-500 w-64">
+        </div>
+
+        <div class="flex items-center gap-4">
+            <button class="relative text-gray-500 hover:text-indigo-600">
+                <i class="fas fa-bell text-xl"></i>
+                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">3</span>
+            </button>
+
+        </div>
+    </div>
+</header>
+
+            <main class="p-8">
+                @RenderBody()
+                
+            </main>
+        </div>
+    </div>
+
+</body>
+</html>
+
