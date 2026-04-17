@@ -61,6 +61,7 @@
             align-items: center;
             justify-content: center;
             padding: 80px;
+         
         }
 
 
@@ -75,6 +76,7 @@
 
         .hero-right {
             margin-left: 80px;
+
         }
 
         .title {
@@ -161,19 +163,153 @@
                     font-size: 20px;
                     color: #2c7be5;
                 }
+
+        /* --- PHẦN 1: TÍNH NĂNG (ZIGZAG GIỐNG ẢNH MẪU) --- */
+        .gioi_thieu_cac_uu_dai {
+            width: 100%;
+            background: white;
+            padding: 40px 0;
+        }
+
+        .feature-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 40px 12%;
+            gap: 60px;
+        }
+
+            /* Đảo ngược vị trí cho khối thứ 2 */
+            .feature-row.reverse {
+                flex-direction: row-reverse;
+            }
+
+        .feature-content {
+            flex: 1;
+        }
+
+            /* Ép chữ căn lề phải cho khối 1 giống hệt trong ảnh */
+            .feature-content.right-align {
+                text-align: right;
+            }
+
+            .feature-content.left-align {
+                text-align: left;
+            }
+
+            .feature-content h2 {
+                color: #4786e3; /* Màu xanh giống header của bạn */
+                font-size: 26px;
+                margin-bottom: 20px;
+                line-height: 1.4;
+            }
+
+            .feature-content p {
+                font-size: 16px;
+                color: #333;
+                line-height: 1.6;
+            }
+
+        .feature-image {
+            flex: 1.2; /* Cho ảnh to hơn chữ một tí */
+            text-align: center;
+        }
+
+            .feature-image img {
+                width: 100%;
+                max-width: 500px;
+                height: auto;
+                border-radius: 10px;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.1); /* Đổ bóng cho ảnh app nổi lên */
+            }
+
+
+        /* --- PHẦN 2: BÌNH LUẬN CỦA HỌC VIÊN --- */
+        .testimonials-section {
+            background: #f8f9fa; /* Nền xám rất nhạt để phân biệt với phần 1 */
+            padding: 70px 10%;
+            text-align: center;
+        }
+
+            .testimonials-section h2 {
+                color: #4786e3;
+                font-size: 30px;
+                margin-bottom: 50px;
+            }
+
+        .testimonial-grid {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .testimonial-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            width: 320px;
+            text-align: left;
+            position: relative;
+        }
+
+            /* Dấu ngoặc kép trang trí */
+            .testimonial-card::before {
+                content: "❝";
+                font-size: 50px;
+                color: #e5e5e5;
+                position: absolute;
+                top: 10px;
+                right: 20px;
+            }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+            .user-info img {
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                margin-right: 15px;
+                object-fit: cover;
+            }
+
+        .user-name {
+            font-weight: bold;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .user-role {
+            font-size: 14px;
+            color: #f4b400; /* Màu vàng giống header của bạn */
+            font-weight: bold;
+        }
+
+        .comment {
+            color: #555;
+            font-size: 15px;
+            font-style: italic;
+            line-height: 1.6;
+        }
     </style>
 </head>
 <body>
     <!-- HEADER -->
     <header>
         <div class="logo">
-            trang chủ
+            <img src="@Url.Content("~/Img/Gemini_Generated_Image_khrd5ikhrd5ikhrd-removebg-preview.png")" alt="" style=" width: 160px; ">
+           
         </div>
         @if (Session["TenDN"] != null)
         {
 
-           <a href="#">Xin chào: @Session["HoTen"]</a>
-           <a href="@Url.Action("DangXuat","User")">Đăng xuất</a>
+            <a href="#">Xin chào: @Session["HoTen"]</a>
+            <a href="@Url.Action("DangXuat","User")">Đăng xuất</a>
         }
         else
         {
@@ -190,13 +326,13 @@
     <section class="hero">
 
         <div class="hero-left">
-            <img src="" alt="logo">
+            <img src="@Url.Content("~/Img/Gemini_Generated_Image_xdycdaxdycdaxdyc-removebg-preview (1).png")" alt="Học tiếng Anh online">
         </div>
-
+        
         <div class="hero-right">
 
-            <h2 class="title">trang chủ</h2>
-
+           
+            <img src="@Url.Content("~/Img/Gemini_Generated_Image_khrd5ikhrd5ikhrd-removebg-preview.png")" style="width :420px" >
             <h1>
             </h1>
 
@@ -224,7 +360,66 @@
         </p>
     </div>
     <div class="gioi_thieu_cac_uu_dai">
-        uu đãi
+
+        <div class="feature-row">
+            <div class="feature-content right-align">
+                <h2>Lộ trình cá nhân hóa<br>ứng dụng Adaptive Learning</h2>
+                <p>Trang web áp dụng Adaptive Learning, cá nhân hóa lộ trình học theo trình độ và mục tiêu của bạn. Hệ thống giúp xác định điểm mạnh, điểm yếu ở từng kỹ năng và gợi ý nhiệm vụ luyện tập chi tiết.</p>
+            </div>
+            <div class="feature-image">
+                <img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=600&q=80" alt="Giao diện 1">
+            </div>
+        </div>
+
+        <div class="feature-row reverse">
+            <div class="feature-content left-align">
+                <h2>Luyện tập hiệu quả với<br>Hệ thống Learn - Practice - Test</h2>
+                <p>Kho bài giảng, bài luyện và bài thi chuẩn xác, phù hợp với mọi trình độ. Học đúng lộ trình, luyện tập thông minh, tăng trình độ hiệu quả cùng hệ thống của chúng tôi.</p>
+            </div>
+            <div class="feature-image">
+                <img src="https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=600&q=80" alt="Giao diện 2">
+            </div>
+        </div>
+
+    </div>
+
+    <div class="testimonials-section">
+        <h2>Học viên nói gì về chúng tôi?</h2>
+
+        <div class="testimonial-grid">
+            <div class="testimonial-card">
+                <div class="user-info">
+                    <img src="https://ui-avatars.com/api/?name=Hieu+Vo&background=f4b400&color=fff" alt="User 1">
+                    <div>
+                        <div class="user-name">Võ Trung Hiếu</div>
+                        <div class="user-role">Học viên VIP</div>
+                    </div>
+                </div>
+                <div class="comment">"Giao diện cực kỳ trực quan và thân thiện. Lộ trình học bài bản giúp mình từ một người mất gốc lấy lại căn bản chỉ sau 2 tháng!"</div>
+            </div>
+
+            <div class="testimonial-card">
+                <div class="user-info">
+                    <img src="https://ui-avatars.com/api/?name=Mai+Anh&background=4786e3&color=fff" alt="User 2">
+                    <div>
+                        <div class="user-name">Mai Anh Nguyễn</div>
+                        <div class="user-role">Đạt chứng chỉ B1</div>
+                    </div>
+                </div>
+                <div class="comment">"Phần luyện nói tích hợp AI sửa lỗi phát âm rất hay. Mình có thể luyện tập bất cứ lúc nào mà không ngại ngùng. Rất đáng tiền!"</div>
+            </div>
+
+            <div class="testimonial-card">
+                <div class="user-info">
+                    <img src="https://ui-avatars.com/api/?name=Quoc+Bao&background=28a745&color=fff" alt="User 3">
+                    <div>
+                        <div class="user-name">Quốc Bảo</div>
+                        <div class="user-role">Học viên Cấp độ A2</div>
+                    </div>
+                </div>
+                <div class="comment">"Hệ thống bài tập cực kỳ phong phú. Thích nhất là tính năng theo dõi tiến độ giúp mình biết bản thân đang thiếu sót ở đâu."</div>
+            </div>
+        </div>
     </div>
 
     <footer class="footer">

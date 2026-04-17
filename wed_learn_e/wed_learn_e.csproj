@@ -258,6 +258,12 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Img\Gemini_Generated_Image_khrd5ikhrd5ikhrd-removebg-preview.png" />
+    <Content Include="Img\Gemini_Generated_Image_us7wfuus7wfuus7w.png" />
+    <Content Include="Img\Gemini_Generated_Image_vct2cjvct2cjvct2.png" />
+    <Content Include="Img\Gemini_Generated_Image_xdycdaxdycdaxdyc-removebg-preview %281%29.png" />
+    <Content Include="Img\Gemini_Generated_Image_xdycdaxdycdaxdyc.png" />
+    <Content Include="Img\pngtree-orange-cat-png-image_6385955.jpg" />
     <Content Include="Models\Model1.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>Model1.edmx</DependentUpon>
@@ -324,7 +330,6 @@
     <Content Include="Views\tinh_nang\list_hoc_video.cshtml" />
     <Content Include="Views\Page\_NguPhap.cshtml" />
     <Content Include="Views\Page\_ThanhNgu.cshtml" />
-
     <Content Include="Views\bai_test\review.cshtml" />
     <Content Include="Views\Page\thong_tin_khoa_hoc.cshtml" />
     <Content Include="Views\tinh_nang\bai_video.cshtml" />
@@ -337,9 +342,7 @@
     <Content Include="Views\tinh_nang\BanDoKhoBau.cshtml" />
     <Content Include="Views\tinh_nang\GiaiMaCauHoi.cshtml" />
     <Content Include="Views\User\TrangCaNhan.cshtml" />
-
-    <Content Include="Views\Page\_LuyenViet.cshtml" />
-
+    <Content Include="Views\Page\TrangMuaVIP.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

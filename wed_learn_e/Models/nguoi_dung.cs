@@ -40,6 +40,8 @@ namespace wed_learn_e.Models
         public Nullable<int> id_cap_do_hien_tai { get; set; }
         public Nullable<System.DateTime> ngay_tao { get; set; }
         public string MatKhauNL { get; set; }
+        public Nullable<int> loai_tai_khoan { get; set; }
+        public Nullable<int> so_luong_khoa_hoc { get; set; }
     
         public virtual ICollection<bai_kiem_tra_dau_vao> bai_kiem_tra_dau_vao { get; set; }
         public virtual cap_do cap_do { get; set; }

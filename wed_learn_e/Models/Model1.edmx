@@ -252,6 +252,8 @@
           <Property Name="id_cap_do_hien_tai" Type="int" />
           <Property Name="ngay_tao" Type="datetime" />
           <Property Name="MatKhauNL" Type="varchar" MaxLength="255" />
+          <Property Name="loai_tai_khoan" Type="int" />
+          <Property Name="so_luong_khoa_hoc" Type="int" />
         </EntityType>
         <EntityType Name="nhat_ky_quan_tri">
           <Key>
@@ -1042,6 +1044,8 @@
           <NavigationProperty Name="lich_su_luyen_noi" Relationship="wed_learn_eModel.FK__lich_su_l__id_ng__4D5F7D71" FromRole="nguoi_dung" ToRole="lich_su_luyen_noi" />
           <NavigationProperty Name="lich_su_video" Relationship="wed_learn_eModel.FK__lich_su_v__id_ng__5224328E" FromRole="nguoi_dung" ToRole="lich_su_video" />
           <NavigationProperty Name="lich_su_sap_xep" Relationship="wed_learn_eModel.FK__lich_su_s__id_ng__5D95E53A" FromRole="nguoi_dung" ToRole="lich_su_sap_xep" />
+          <Property Name="loai_tai_khoan" Type="Int32" />
+          <Property Name="so_luong_khoa_hoc" Type="Int32" />
         </EntityType>
         <EntityType Name="nhat_ky_quan_tri">
           <Key>
@@ -1978,6 +1982,8 @@
           <EntitySetMapping Name="nguoi_dung">
             <EntityTypeMapping TypeName="wed_learn_eModel.nguoi_dung">
               <MappingFragment StoreEntitySet="nguoi_dung">
+                <ScalarProperty Name="so_luong_khoa_hoc" ColumnName="so_luong_khoa_hoc" />
+                <ScalarProperty Name="loai_tai_khoan" ColumnName="loai_tai_khoan" />
                 <ScalarProperty Name="id_nguoi_dung" ColumnName="id_nguoi_dung" />
                 <ScalarProperty Name="ten_dang_nhap" ColumnName="ten_dang_nhap" />
                 <ScalarProperty Name="mat_khau" ColumnName="mat_khau" />
