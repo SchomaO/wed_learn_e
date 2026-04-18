@@ -74,10 +74,13 @@
             }
         .login {
             color: white;
+            display: flex;
+            align-items: center; /* Căn giữa tất cả theo chiều dọc */
+            gap: 15px; /* Tạo khoảng cách đều giữa cụm Avatar và nút Đăng xuất */
         }
 
             .login button {
-                margin-left: 15px;
+                /* Đã bỏ margin-left vì dùng gap ở trên rồi */
                 padding: 8px 18px;
                 border: none;
                 border-radius: 20px;
@@ -85,11 +88,12 @@
                 color: #4f83cc;
                 font-weight: bold;
                 cursor: pointer;
+                transition: 0.3s; /* Thêm tí mượt mà khi hover */
             }
 
                 .login button:hover {
                     background: #2dafff;
-                    color: black;
+                    color: white; /* Sửa màu chữ khi hover cho đẹp hơn */
                 }
 
 
@@ -388,6 +392,28 @@
                 cursor: not-allowed;
                 background-color: #f9f9f9;
             }
+        /* CSS cho khối Avatar và Tên trên thanh Nav */
+        .user-profile-nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 10px !important;
+            color: white; /* Đảm bảo tên màu trắng */
+            text-decoration: none; /* Bỏ gạch chân */
+        }
+
+            .user-profile-nav img {
+                width: 35px;
+                height: 35px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 2px solid white; /* Thêm viền trắng mỏng cho ảnh nổi bật */
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            }
+
+        .user-profile-name {
+            font-size: 15px;
+        }
     </style>
 </head>
 <body>
@@ -402,8 +428,10 @@
         @if (Session["TenDN"] != null)
         {
             <div class="login">
-                <a href="@Url.Action("TrangCaNhan", "User")" class="user">
-                    👤  @Session["HoTen"]
+                <a href="@Url.Action("TrangCaNhan", "User")" class="user-profile-nav">
+                    <img src="@(Session["Avatar"] == null ? "https://ui-avatars.com/api/?name=" + Session["HoTen"]?.ToString().Replace(" ", "+") + "&background=random" : Url.Content("~/Images/Avatars/" + Session["Avatar"]))" alt="Avatar">
+
+                    <span class="user-profile-name">@Session["HoTen"]</span>
                 </a>
                 <button onclick="location.href='@Url.Action("DangXuat","User")'">Đăng xuất</button>
             </div>

@@ -1,34 +1,29 @@
-﻿@{
+﻿@model PagedList.IPagedList<wed_learn_e.Models.Idiom>
+@using PagedList.Mvc;
+@{
     ViewBag.Title = "Thành Ngữ Tiếng Anh";
     Layout = "~/Views/Shared/_Layoutcauhoi.cshtml";
 }
 
 <style>
-
     body {
         background: linear-gradient(135deg, #eaf8ff, #a6e1ff);
         font-family: Arial;
         margin: 0;
     }
 
-    /* HEADER */
     .page-header {
         text-align: center;
-   
         color: #333;
+        margin-top: 30px;
     }
-
-        .page-header h1 {
-            font-size: 30px;
-            margin-bottom: 8px;
-        }
 
         .page-header p {
             font-size: 14px;
             color: #666;
+            margin-top: 15px;
         }
 
-    /* SEARCH */
     #searchBox {
         display: block;
         margin: 0 auto 30px auto;
@@ -40,19 +35,20 @@
         background: white;
     }
 
-    /* GRID */
     .idiom-container {
         width: 90%;
         margin: auto;
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        /* 1. Sửa auto-fit thành auto-fill ở dòng này */
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
         gap: 20px;
+        /* 2. Thêm dòng này để nếu có ít thẻ thì nó sẽ tự động căn giữa màn hình cho đẹp */
+        justify-content: center;
     }
 
     .idiom-card {
         background: linear-gradient(135deg, #ffffff, #d9f1ff);
         border-radius: 12px;
-        padding: 20px;
         text-align: center;
         box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         transition: 0.3s;
@@ -80,7 +76,6 @@
         transform: rotateY(180deg);
     }
 
-    /* BOX */
     .front, .back {
         position: absolute;
         width: 100%;
@@ -96,7 +91,7 @@
         text-align: center;
         background: #eaf6ff;
         border: 1px solid #e0e0e0;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.08); /* 👉 nổi nhẹ */
+        box-shadow: 0 4px 10px rgba(0,0,0,0.08);
         box-sizing: border-box;
         backface-visibility: hidden;
         -webkit-backface-visibility: hidden;
@@ -106,7 +101,6 @@
         transform: rotateY(180deg);
     }
 
-    /* TEXT */
     .idiom {
         font-size: 16px;
         font-weight: bold;
@@ -126,7 +120,6 @@
         font-style: italic;
     }
 
-    /* MASCOT */
     .cat-mascot {
         position: fixed;
         bottom: 15px;
@@ -142,220 +135,118 @@
         border-radius: 10px;
         font-size: 12px;
         border: 1px solid #ddd;
+        white-space: nowrap;
     }
+
+    /* --- CSS CHO THANH PHÂN TRANG (PAGINATION) --- */
+    .pagination-container {
+        text-align: center;
+        margin: 40px 0;
+    }
+
+    .pagination {
+        display: inline-flex;
+        padding-left: 0;
+        list-style: none;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+        .pagination li {
+            margin: 0 5px;
+        }
+
+            .pagination li a, .pagination li span {
+                display: block;
+                padding: 10px 18px;
+                color: #4786e3;
+                text-decoration: none;
+                background-color: #fff;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                font-weight: bold;
+                font-size: 16px;
+                transition: 0.3s;
+            }
+
+                .pagination li a:hover {
+                    background-color: #f8f9fa;
+                    color: #0b5ed7;
+                    border-color: #4786e3;
+                }
+
+        .pagination .active span {
+            background-color: #4786e3;
+            color: white;
+            border-color: #4786e3;
+        }
+
+        .pagination .disabled span {
+            color: #ccc;
+            cursor: not-allowed;
+            background-color: #f9f9f9;
+        }
 </style>
 
 <div class="page-header">
-
     @Html.Partial("_NutQuayLai", new ViewDataDictionary {
-   // Thêm đoạn new { id = ... } để hệ thống tạo ra link có đuôi /1
-   { "LinkQuayVe", Url.Action("thong_tin_khoa_hoc", "Page", new { id = Request.QueryString["id_cap_do"] }) },
-   { "TieuDe", "Thành Ngữ Tiếng Anh "  }
- })
-
-    <p>
-        Khám phá các thành ngữ phổ biến trong tiếng Anh và cách sử dụng chúng trong giao tiếp hàng ngày.
-    </p>
-
+      { "LinkQuayVe", Url.Action("thong_tin_khoa_hoc", "Page", new { id = ViewBag.IdCapDo }) },
+      { "TieuDe", "Thành Ngữ Tiếng Anh" }
+    })
+    <p>Khám phá các thành ngữ phổ biến trong tiếng Anh và cách sử dụng chúng trong giao tiếp hàng ngày.</p>
 </div>
 
-<input type="text" id="searchBox" placeholder="Tìm idiom..." />
+<form method="get" action="@Url.Action("_ThanhNgu", "Page")" style="text-align: center;">
+    @if (ViewBag.IdCapDo != null)
+    {
+        <input type="hidden" name="id_cap_do" value="@ViewBag.IdCapDo" />
+    }
+    <input type="text" id="searchBox" name="search" value="@ViewBag.Search" placeholder="Nhập để tìm idiom rồi nhấn Enter..." />
+</form>
 
 <div class="idiom-container">
-    <div class="idiom-card">
-        <div class="inner">
-            <div class="front">
-                <div class="idiom">💡 Break the ice</div>
-                <div class="meaning">Phá vỡ sự ngượng ngùng</div>
+    @if (Model != null && Model.Count > 0)
+    {
+        foreach (var item in Model)
+        {
+            <div class="idiom-card">
+                <div class="inner">
+                    <div class="front">
+                        <div class="idiom">@item.IdiomText</div>
+                        <div class="meaning">@item.Meaning</div>
+                    </div>
+                    <div class="back">
+                        <div class="example">@item.Example</div>
+                        <div class="meaning">→ @item.Meaning</div>
+                    </div>
+                </div>
             </div>
-            <div class="back">
-                <div class="example">He told a joke to break the ice.</div>
-                <div class="meaning">→ Làm mọi người thoải mái hơn</div>
-            </div>
-        </div>
-    </div>
-    <div class="idiom-card">
-        <div class="inner">
-            <div class="front">
-                <div class="idiom">🔥 Piece of cake</div>
-                <div class="meaning">Rất dễ</div>
-            </div>
-            <div class="back">
-                <div class="example">This test is a piece of cake.</div>
-                <div class="meaning">→ Việc cực kỳ đơn giản</div>
-            </div>
-        </div>
-    </div>
-    <div class="idiom-card">
-        <div class="inner">
-            <div class="front">
-                <div class="idiom">🌙 Once in a blue moon</div>
-                <div class="meaning">Rất hiếm</div>
-            </div>
-            <div class="back">
-                <div class="example">I go there once in a blue moon.</div>
-                <div class="meaning">→ Gần như không bao giờ</div>
-            </div>
-        </div>
-    </div>
-    <div class="idiom-card">
-        <div class="inner">
-            <div class="front">
-                <div class="idiom">🎯 Hit the nail on the head</div>
-                <div class="meaning">Nói chính xác</div>
-            </div>
-            <div class="back">
-                <div class="example">You hit the nail on the head.</div>
-                <div class="meaning">→ Nói trúng vấn đề</div>
-            </div>
-        </div>
-    </div>
-    <div class="idiom-card">
-        <div class="inner">
-            <div class="front">
-                <div class="idiom">🤫 Spill the beans</div>
-                <div class="meaning">Lộ bí mật</div>
-            </div>
-            <div class="back">
-                <div class="example">He spilled the beans.</div>
-                <div class="meaning">→ Tiết lộ điều bí mật</div>
-            </div>
-        </div>
-    </div>
-    <div class="idiom-card">
-        <div class="inner">
-            <div class="front">
-                <div class="idiom">🤒 Under the weather</div>
-                <div class="meaning">Không khỏe</div>
-            </div>
-            <div class="back">
-                <div class="example">I feel under the weather.</div>
-                <div class="meaning">→ Cảm thấy mệt</div>
-            </div>
-        </div>
-    </div>
+        }
+    }
+    else
+    {
+        <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">Không tìm thấy thành ngữ nào!</div>
+    }
+</div>
 
-    <!-- 7 -->
-    <div class="idiom-card">
-        <div class="inner">
-            <div class="front">
-                <div class="idiom">🎁 A blessing in disguise</div>
-                <div class="meaning">Trong cái rủi có cái may</div>
-            </div>
-            <div class="back">
-                <div class="example">It was a blessing in disguise.</div>
-                <div class="meaning">→ Kết quả tốt bất ngờ</div>
-            </div>
-        </div>
-    </div>
-    <div class="idiom-card">
-        <div class="inner">
-            <div class="front">
-                <div class="idiom">🌀 Beat around the bush</div>
-                <div class="meaning">Nói vòng vo</div>
-            </div>
-            <div class="back">
-                <div class="example">Stop beating around the bush.</div>
-                <div class="meaning">→ Nói thẳng vấn đề</div>
-            </div>
-        </div>
-    </div>
-    <div class="idiom-card">
-        <div class="inner">
-            <div class="front">
-                <div class="idiom">⏰ Better late than never</div>
-                <div class="meaning">Muộn còn hơn không</div>
-            </div>
-            <div class="back">
-                <div class="example">He came late but ok.</div>
-                <div class="meaning">→ Làm còn hơn không làm</div>
-            </div>
-        </div>
-    </div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">💪 Bite the bullet</div><div class="meaning">Cắn răng chịu</div></div>
-    <div class="back"><div class="example">She bit the bullet.</div><div class="meaning">→ Chịu đựng khó khăn</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">🌙 Burn the midnight oil</div><div class="meaning">Thức khuya</div></div><div class="back"><div class="example">He studied all night.</div><div class="meaning">→ Làm việc khuya</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">🛑 Call it a day</div><div class="meaning">Dừng lại</div></div><div class="back"><div class="example">Let's stop working.</div><div class="meaning">→ Kết thúc ngày</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">✂️ Cut corners</div><div class="meaning">Làm ẩu</div></div><div class="back"><div class="example">They cut corners.</div><div class="meaning">→ Làm cho xong</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">🐢 Easy does it</div><div class="meaning">Từ từ</div></div><div class="back"><div class="example">Go slow.</div><div class="meaning">→ Cẩn thận</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">⚠️ Get out of hand</div><div class="meaning">Mất kiểm soát</div></div><div class="back"><div class="example">It got crazy.</div><div class="meaning">→ Không kiểm soát được</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">💥 Get it out of your system</div><div class="meaning">Giải tỏa</div></div><div class="back"><div class="example">He ran a lot.</div><div class="meaning">→ Xả stress</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">💪 Hang in there</div><div class="meaning">Cố lên</div></div><div class="back"><div class="example">Don't give up.</div><div class="meaning">→ Kiên trì</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">😴 Hit the sack</div><div class="meaning">Đi ngủ</div></div><div class="back"><div class="example">I'm tired.</div><div class="meaning">→ Đi ngủ thôi</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">🔥 In hot water</div><div class="meaning">Gặp rắc rối</div></div><div class="back"><div class="example">He got trouble.</div><div class="meaning">→ Bị vấn đề</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">💃 It takes two to tango</div><div class="meaning">Cả 2 bên</div></div><div class="back"><div class="example">Both are wrong.</div><div class="meaning">→ Hai người liên quan</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">🚀 Go the extra mile</div><div class="meaning">Cố gắng hơn mức yêu cầu</div></div><div class="back"><div class="example">She always goes the extra mile.</div><div class="meaning">→ Làm hơn mong đợi</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">🧠 Know the ropes</div><div class="meaning">Hiểu rõ công việc</div></div><div class="back"><div class="example">He knows the ropes well.</div><div class="meaning">→ Có kinh nghiệm</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">🎲 Take a chance</div><div class="meaning">Thử vận may</div></div><div class="back"><div class="example">Take a chance and try.</div><div class="meaning">→ Thử một cơ hội</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">🌊 In the same boat</div><div class="meaning">Cùng hoàn cảnh</div></div><div class="back"><div class="example">We are in the same boat.</div><div class="meaning">→ Chung tình huống</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">💡 Think outside the box</div><div class="meaning">Suy nghĩ sáng tạo</div></div><div class="back"><div class="example">Think outside the box.</div><div class="meaning">→ Nghĩ khác biệt</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">🔥 On fire</div><div class="meaning">Làm rất tốt</div></div><div class="back"><div class="example">He is on fire today.</div><div class="meaning">→ Phong độ cao</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">🐟 A big fish</div><div class="meaning">Người quan trọng</div></div><div class="back"><div class="example">He is a big fish.</div><div class="meaning">→ Người có quyền lực</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">🌧️ Come rain or shine</div><div class="meaning">Dù chuyện gì xảy ra</div></div><div class="back"><div class="example">I will be there rain or shine.</div><div class="meaning">→ Bất kể điều kiện</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">🐱 Let the cat out of the bag</div><div class="meaning">Lộ bí mật</div></div><div class="back"><div class="example">He let the cat out.</div><div class="meaning">→ Lỡ tiết lộ</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">🎯 Miss the point</div><div class="meaning">Hiểu sai ý</div></div><div class="back"><div class="example">You missed the point.</div><div class="meaning">→ Không hiểu đúng</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">⚡ In no time</div><div class="meaning">Rất nhanh</div></div><div class="back"><div class="example">I’ll finish in no time.</div><div class="meaning">→ Nhanh chóng</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">🎭 Play it safe</div><div class="meaning">Chọn cách an toàn</div></div><div class="back"><div class="example">He played it safe.</div><div class="meaning">→ Tránh rủi ro</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">🧊 Break down</div><div class="meaning">Sụp đổ</div></div><div class="back"><div class="example">She broke down.</div><div class="meaning">→ Mất kiểm soát cảm xúc</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">🪙 Penny for your thoughts</div><div class="meaning">Bạn đang nghĩ gì</div></div><div class="back"><div class="example">Penny for your thoughts?</div><div class="meaning">→ Hỏi suy nghĩ</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">🌟 Stand out</div><div class="meaning">Nổi bật</div></div><div class="back"><div class="example">She stands out.</div><div class="meaning">→ Khác biệt</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">🛤️ Back on track</div><div class="meaning">Trở lại đúng hướng</div></div><div class="back"><div class="example">I’m back on track.</div><div class="meaning">→ Quay lại bình thường</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">🎢 Ups and downs</div><div class="meaning">Thăng trầm</div></div><div class="back"><div class="example">Life has ups and downs.</div><div class="meaning">→ Lúc tốt lúc xấu</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">💬 Speak of the devil</div><div class="meaning">Nhắc là tới</div></div><div class="back"><div class="example">Speak of the devil!</div><div class="meaning">→ Vừa nhắc xong</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">🎈 Blow off steam</div><div class="meaning">Xả stress</div></div><div class="back"><div class="example">I need to relax.</div><div class="meaning">→ Giải tỏa áp lực</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">📌 Get the hang of it</div><div class="meaning">Hiểu cách làm</div></div><div class="back"><div class="example">I got the hang of it.</div><div class="meaning">→ Đã quen</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">🔍 Look into</div><div class="meaning">Điều tra</div></div><div class="back"><div class="example">I’ll look into it.</div><div class="meaning">→ Xem xét kỹ</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">🎯 On point</div><div class="meaning">Chính xác</div></div><div class="back"><div class="example">Your answer is on point.</div><div class="meaning">→ Rất đúng</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">🧱 Hit a wall</div><div class="meaning">Bế tắc</div></div><div class="back"><div class="example">I hit a wall.</div><div class="meaning">→ Không tiến được</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">💤 Out like a light</div><div class="meaning">Ngủ ngay lập tức</div></div><div class="back"><div class="example">He slept fast.</div><div class="meaning">→ Ngủ liền</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">🎒 Learn the hard way</div><div class="meaning">Học từ sai lầm</div></div><div class="back"><div class="example">I learned the hard way.</div><div class="meaning">→ Rút kinh nghiệm</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">📉 Go downhill</div><div class="meaning">Tệ đi</div></div><div class="back"><div class="example">Things went downhill.</div><div class="meaning">→ Xấu dần</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">🧗 Pull yourself together</div><div class="meaning">Bình tĩnh lại</div></div><div class="back"><div class="example">Calm down.</div><div class="meaning">→ Lấy lại bình tĩnh</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">🎤 Say the word</div><div class="meaning">Chỉ cần nói</div></div><div class="back"><div class="example">Just say the word.</div><div class="meaning">→ Sẵn sàng giúp</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">🏁 Call the shots</div><div class="meaning">Quyết định</div></div><div class="back"><div class="example">He calls the shots.</div><div class="meaning">→ Người quyết định</div></div></div></div>
-    <div class="idiom-card"><div class="inner"><div class="front"><div class="idiom">🎯 Stick to your guns</div><div class="meaning">Giữ vững quan điểm</div></div><div class="back"><div class="example">She didn’t change her mind.</div><div class="meaning">→ Kiên định</div></div></div></div>
+<div class="pagination-container">
+    @if (Model != null && Model.PageCount > 1)
+    {
+        @Html.PagedListPager(Model, page => Url.Action("_ThanhNgu", new { page, id_cap_do = ViewBag.IdCapDo, search = ViewBag.Search }))
+    }
 </div>
 
 <div class="cat-mascot">
-
     <img src="https://cdn-icons-png.flaticon.com/512/763/763704.png" width="55">
-
-    <div class="cat-text">
-        Idioms make English more natural!
-    </div>
-
+    <div class="cat-text">Idioms make English more natural!</div>
 </div>
-<script>
-    const messages = [
-        "Idioms make English cool 😎",
-        "Learn 5 idioms a day!",
-        "Practice makes perfect!",
-    ];
-
-    let text = document.querySelector(".cat-text");
-    text.innerText = messages[Math.floor(Math.random() * messages.length)];
-</script>
-<script>
-    document.getElementById("searchBox").addEventListener("keyup", function () {
-        let filter = this.value.toLowerCase().trim();
-        let cards = document.querySelectorAll(".idiom-card");
-
-        cards.forEach(card => {
-            let text = card.innerText.toLowerCase();
-
-            if (text.includes(filter)) {
-                card.style.display = "";       
-            } else {
-                card.style.display = "none";
-            }
-        });
-    });
-</script>
 
 <script>
+    const messages = ["Idioms make English cool 😎", "Learn 5 idioms a day!", "Practice makes perfect!"];
+    document.querySelector(".cat-text").innerText = messages[Math.floor(Math.random() * messages.length)];
+
+    // Script lật thẻ
     document.querySelectorAll(".idiom-card").forEach(card => {
-        card.onclick = function () {
-            this.classList.toggle("flip");
-        }
+        card.onclick = function () { this.classList.toggle("flip"); }
     });
 </script>

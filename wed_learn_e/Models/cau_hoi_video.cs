@@ -12,12 +12,15 @@ namespace wed_learn_e.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Vocabulary
+    public partial class cau_hoi_video
     {
-        public int Id { get; set; }
-        public string Word { get; set; }
-        public string Meaning { get; set; }
-        public string Example { get; set; }
-        public Nullable<int> id_cap_do { get; set; }
+        public int id_cau_hoi { get; set; }
+        public Nullable<int> id_video { get; set; }
+        public string noi_dung_cau_hoi { get; set; }
+        public string dap_an_a { get; set; }
+        public string dap_an_b { get; set; }
+        public string dap_an_c { get; set; }
+        public string dap_an_d { get; set; }
+        public string dap_an_dung { get; set; }
     }
 }

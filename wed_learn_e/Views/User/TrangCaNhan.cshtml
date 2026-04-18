@@ -200,14 +200,62 @@
             position: absolute;
             left: 0;
         }
+    /* Hiệu ứng Đổi ảnh Avatar */
+    .avatar-wrapper {
+        position: relative;
+        width: 80px;
+        height: 80px;
+        margin: 0 auto;
+        border-radius: 50%;
+        overflow: hidden;
+        cursor: pointer;
+        border: 3px solid #eef7ff;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+        .avatar-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .avatar-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 35%;
+        background: rgba(0, 0, 0, 0.6);
+        color: white;
+        font-size: 11px;
+        font-weight: bold;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transition: 0.3s;
+    }
+
+    .avatar-wrapper:hover .avatar-overlay {
+        opacity: 1;
+    }
 </style>
 
 <div class="profile-container">
     <div class="sidebar">
         <div class="user-avatar">
-            <img src="https://ui-avatars.com/api/?name=@Model.ho_va_ten&background=0D8ABC&color=fff" alt="Avatar">
+            <form id="form-avatar" action="@Url.Action("CapNhatAvatar", "User")" method="post" enctype="multipart/form-data">
+                <label for="file_anh_sidebar" class="avatar-wrapper" title="Nhấn để đổi ảnh đại diện">
+                    <img src="@(Session["Avatar"] == null ? "https://ui-avatars.com/api/?name=" + Session["HoTen"]?.ToString().Replace(" ", "+") + "&background=random" : Url.Content("~/Images/Avatars/" + Session["Avatar"]))" alt="Avatar">
+
+                    <div class="avatar-overlay" style="height:50px">
+                    📷 Đổi ảnh</div>
+                </label>
+                <input type="file" name="file_anh" id="file_anh_sidebar" accept="image/*" style="display: none;" onchange="submitAvatar()">
+            </form>
             <h3>@Model.ho_va_ten</h3>
         </div>
+
         <div class="menu-item active" onclick="switchTab('thong-tin', this)">👤 Thông tin cá nhân</div>
         <div class="menu-item" onclick="switchTab('doi-mat-khau', this)">🔑 Đổi mật khẩu</div>
         <div class="menu-item" onclick="switchTab('khoa-hoc', this)">📚 Lộ trình học tập</div>
@@ -215,11 +263,48 @@
 
     <div class="content-area">
 
-        <div id="thong-tin" class="tab-content active">
+        <div id="thong-tin" class="tab-content @(TempData["ActiveTab"] == null || TempData["ActiveTab"].ToString() == "thong-tin" ? "active" : "")">
             <h2 style="color:#1a73e8; margin-top:0;">Thông Tin Cá Nhân</h2>
-            <p><b>Họ và tên:</b> @Model.ho_va_ten</p>
-            <p><b>Tài khoản:</b> @Model.ten_dang_nhap</p>
-            <p><b>Ngày tham gia:</b> @Model.ngay_tao</p>
+
+            @if (TempData["LoiThongTin"] != null)
+            {
+                <div style="color: #dc3545; background: #f8d7da; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-weight: bold;">
+                    ❌ @TempData["LoiThongTin"]
+                </div>
+            }
+            @if (TempData["ThanhCongThongTin"] != null)
+            {
+                <div style="color: #155724; background: #d4edda; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-weight: bold;">
+                    ✔ @TempData["ThanhCongThongTin"]
+                </div>
+            }
+
+            <form action="@Url.Action("CapNhatThongTin", "User")" method="post">
+
+                <div style="margin-bottom:15px;">
+                    <label style="font-weight: bold; color: #555;">Tài khoản đăng nhập:</label><br>
+                    <input type="text" value="@Model.ten_dang_nhap" readonly style="width:100%; padding:12px; border: 1px solid #ccc; border-radius: 8px; background: #e9ecef; cursor: not-allowed; color: #666; font-weight: bold; margin-top: 5px; box-sizing: border-box;">
+                    <small style="color: #888; font-style: italic;">* Tài khoản là cố định, không thể thay đổi</small>
+                </div>
+
+                <div style="margin-bottom:15px;">
+                    <label style="font-weight: bold; color: #555;">Họ và tên:</label><br>
+                    <input type="text" name="ho_va_ten" value="@Model.ho_va_ten" style="width:100%; padding:12px; border: 1px solid #ccc; border-radius: 8px; margin-top: 5px; transition: 0.3s; box-sizing: border-box;" required>
+                </div>
+
+                <div style="margin-bottom:15px;">
+                    <label style="font-weight: bold; color: #555;">Email liên hệ:</label><br>
+                    <input type="email" name="email" value="@Model.email" style="width:100%; padding:12px; border: 1px solid #ccc; border-radius: 8px; margin-top: 5px; transition: 0.3s; box-sizing: border-box;" required>
+                </div>
+
+                <div style="margin-bottom:20px; color:#666; font-size: 14px;">
+                    <b>Ngày tham gia:</b> @(Model.ngay_tao.HasValue ? Model.ngay_tao.Value.ToString("dd/MM/yyyy") : "N/A")
+                </div>
+
+                <button type="submit" style="background:#28a745; color:white; padding:12px 25px; border:none; border-radius:8px; font-weight:bold; cursor:pointer; transition: 0.3s; width: 100%; font-size: 16px;">
+                    💾 Lưu Thông Tin
+                </button>
+            </form>
         </div>
 
         <div id="doi-mat-khau" class="tab-content @(TempData["ActiveTab"] != null && TempData["ActiveTab"].ToString() == "doi-mat-khau" ? "active" : "")">
@@ -394,5 +479,10 @@
             document.querySelectorAll('.card-details').forEach(el => el.style.display = 'none');
             detailDiv.style.display = "block";
         }
+    }
+    // Tự động nộp Form lên server ngay khi người dùng chọn xong ảnh
+    function submitAvatar() {
+        document.querySelector(".avatar-overlay").innerText = "Đang tải...";
+        document.getElementById("form-avatar").submit();
     }
 </script>

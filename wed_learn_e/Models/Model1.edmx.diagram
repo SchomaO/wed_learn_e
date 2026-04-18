@@ -71,6 +71,9 @@
         <EntityTypeShape EntityType="wed_learn_eModel.binh_luan" Width="1.5" PointX="3.375" PointY="0.75" />
         <AssociationConnector Association="wed_learn_eModel.FK_BinhLuan_CapDo" />
         <AssociationConnector Association="wed_learn_eModel.FK_BinhLuan_NguoiDung" />
+        <EntityTypeShape EntityType="wed_learn_eModel.Vocabulary" Width="1.5" PointX="0.75" PointY="3.75" />
+        <EntityTypeShape EntityType="wed_learn_eModel.Idiom" Width="1.5" PointX="3.375" PointY="4.75" />
+        <EntityTypeShape EntityType="wed_learn_eModel.cau_hoi_video" Width="1.5" PointX="5.375" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -83,6 +83,26 @@
         .logo:hover .img-1 {
             opacity: 0; /* Ẩn ảnh 1 đi */
         }
+    /* CSS cho khối Avatar và Tên trên thanh Nav */
+    .user-profile-nav {
+        display: flex;
+        align-items: center;
+        gap: 8px; /* Khoảng cách giữa ảnh và chữ */
+        padding: 5px 10px !important; /* Ép padding nhỏ lại một chút cho cân đối với ảnh */
+    }
+
+        .user-profile-nav img {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid white; /* Thêm viền trắng mỏng cho ảnh nổi bật */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+    .user-profile-name {
+        font-size: 15px;
+    }
 </style>
 
 <nav>
@@ -101,8 +121,10 @@
             <li><a href="@Url.Action("khoadaotao", "Page")">Khóa đào tạo</a></li>
 
             <li>
-                <a href="@Url.Action("TrangCaNhan", "User")" style="color: #d4edda;">
-                    👤 Xin chào: @Session["HoTen"]
+                <a href="@Url.Action("TrangCaNhan", "User")" class="user-profile-nav">
+                    <img src="@(Session["Avatar"] == null ? "https://ui-avatars.com/api/?name=" + Session["HoTen"]?.ToString().Replace(" ", "+") + "&background=random" : Url.Content("~/Images/Avatars/" + Session["Avatar"]))" alt="Avatar">
+
+                    <span class="user-profile-name">@Session["HoTen"]</span>
                 </a>
             </li>
             <li><a href="@Url.Action("DangXuat", "User")">Đăng xuất</a></li>

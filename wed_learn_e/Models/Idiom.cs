@@ -12,10 +12,10 @@ namespace wed_learn_e.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Vocabulary
+    public partial class Idiom
     {
         public int Id { get; set; }
-        public string Word { get; set; }
+        public string IdiomText { get; set; }
         public string Meaning { get; set; }
         public string Example { get; set; }
         public Nullable<int> id_cap_do { get; set; }

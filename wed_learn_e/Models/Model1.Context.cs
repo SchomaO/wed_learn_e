@@ -53,5 +53,8 @@ namespace wed_learn_e.Models
         public DbSet<game_kho_bau> game_kho_bau { get; set; }
         public DbSet<lich_su_kho_bau> lich_su_kho_bau { get; set; }
         public DbSet<binh_luan> binh_luan { get; set; }
+        public DbSet<Vocabulary> Vocabularies { get; set; }
+        public DbSet<Idiom> Idioms { get; set; }
+        public DbSet<cau_hoi_video> cau_hoi_video { get; set; }
     }
 }

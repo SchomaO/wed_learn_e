@@ -1,11 +1,10 @@
 ﻿@model List<wed_learn_e.Models.Vocabulary>
 @{
-    ViewBag.Title = "1000 Từ Vựng Thông Dụng";
+    ViewBag.Title = "Từ Vựng Khóa Học";
     Layout = "~/Views/Shared/_Layoutcauhoi.cshtml";
 }
 
 <style>
-
     .page-title {
         text-align: center;
         font-size: 34px;
@@ -40,6 +39,7 @@
         border: none;
         border-radius: 6px;
         margin-left: 5px;
+        cursor: pointer;
     }
 
     .vocab-container {
@@ -101,7 +101,6 @@
         }
 
     /* mèo mascot */
-
     .cat-mascot {
         position: fixed;
         bottom: 20px;
@@ -119,38 +118,32 @@
         border-radius: 10px;
         font-size: 14px;
         box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        white-space: nowrap;
     }
 
     @@keyframes floatCat {
-        0% {
-            transform: translateY(0);
-        }
-
-        50% {
-            transform: translateY(-8px);
-        }
-
-        100% {
-            transform: translateY(0);
-        }
+        0% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+        100% { transform: translateY(0); }
     }
 </style>
 
-
 @Html.Partial("_NutQuayLai", new ViewDataDictionary {
-  // Thêm đoạn new { id = ... } để hệ thống tạo ra link có đuôi /1
-  { "LinkQuayVe", Url.Action("thong_tin_khoa_hoc", "Page", new { id = Request.QueryString["id_cap_do"] }) },
-  { "TieuDe", "1000 Từ Vựng Tiếng Anh Thông Dụng "  }
+  { "LinkQuayVe", Url.Action("thong_tin_khoa_hoc", "Page", new { id = ViewBag.IdCapDo }) },
+  { "TieuDe", "Từ Vựng Tiếng Anh Theo Khóa Học"  }
 })
 
 <div class="page-desc">
-
     Học mỗi ngày một ít để cải thiện vốn từ vựng của bạn.
 </div>
 
 <div class="search-box">
-
     <form method="get" action="@Url.Action("_1000TuVung","Page")">
+
+        @if (ViewBag.IdCapDo != null)
+        {
+            <input type="hidden" name="id_cap_do" value="@ViewBag.IdCapDo" />
+        }
 
         <input type="text"
                name="search"
@@ -159,69 +152,60 @@
                value="@ViewBag.Search"
                list="vocabList">
 
-        <button type="submit" class="search-btn">
-            Tìm
-        </button>
+        <button type="submit" class="search-btn">Tìm</button>
 
     </form>
-    <datalist id="vocabList">
 
+    <datalist id="vocabList">
         @foreach (var item in Model)
         {
             <option value="@item.Word - @item.Meaning"></option>
         }
-
     </datalist>
-
 </div>
 
 <div class="vocab-container">
-
-    @foreach (var item in Model)
+    @if (Model != null && Model.Count > 0)
     {
-        <div class="vocab-card">
-
-            <div class="word">@item.Word</div>
-
-            <div class="meaning">@item.Meaning</div>
-
-            <div class="example">@item.Example</div>
-
+        foreach (var item in Model)
+        {
+            <div class="vocab-card">
+                <div class="word">@item.Word</div>
+                <div class="meaning">@item.Meaning</div>
+                <div class="example">@item.Example</div>
+            </div>
+        }
+    }
+    else
+    {
+        <div style="grid-column: 1 / -1; text-align: center; color: #888; padding: 40px;">
+            Không tìm thấy từ vựng nào!
         </div>
     }
-
 </div>
 
-
 <div class="control">
-
     @if (ViewBag.Page > 1)
     {
-        <a class="btn-vocab" href="@Url.Action("_1000TuVung","Page", new { page = ViewBag.Page - 1, search = ViewBag.Search })">
+        <a class="btn-vocab" href="@Url.Action("_1000TuVung","Page", new { id_cap_do = ViewBag.IdCapDo, page = ViewBag.Page - 1, search = ViewBag.Search })">
             ← Previous
         </a>
     }
 
     @if (ViewBag.Page < ViewBag.TotalPage)
     {
-        <a class="btn-vocab" href="@Url.Action("_1000TuVung","Page", new { page = ViewBag.Page + 1, search = ViewBag.Search })">
+        <a class="btn-vocab" href="@Url.Action("_1000TuVung","Page", new { id_cap_do = ViewBag.IdCapDo, page = ViewBag.Page + 1, search = ViewBag.Search })">
             Next →
         </a>
     }
-
 </div>
 
-
-
 <div class="cat-mascot">
-    <img src="https://cdn-icons-png.flaticon.com/512/763/763704.png" width="50">
+    <img src="https://cdn-icons-png.flaticon.com/512/763/763704.png" width="50" alt="Mascot Cat">
     <div class="cat-text" id="catText">Learn new words today!</div>
 </div>
 
-
-
 <script>
-
     var texts = [
         "Learn new words today!",
         "English is fun!",
@@ -236,5 +220,4 @@
     }
 
     setInterval(changeText, 10000);
-
 </script>

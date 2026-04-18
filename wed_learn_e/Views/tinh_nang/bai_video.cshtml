@@ -70,26 +70,7 @@
         justify-content: space-between;
     }
 
-    /* Khung bài tập bên dưới */
-    .exercise-box {
-        background: #ffffff;
-        border-radius: 16px;
-        padding: 30px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        text-align: center;
-        border-top: 5px solid #28a745;
-    }
-
-        .exercise-box h3 {
-            color: #333;
-            margin-top: 0;
-            font-size: 22px;
-        }
-
-        .exercise-box p {
-            color: #666;
-            margin-bottom: 25px;
-        }
+    
 
     .btn-start-quiz {
         background: #28a745;
@@ -127,13 +108,180 @@
         </div>
     </div>
 
+    <style>
+        /* CSS cho Bài Test Video */
+        .quiz-section {
+            display: none;
+            margin-top: 20px;
+            text-align: left;
+            border-top: 1px dashed #ccc;
+            padding-top: 20px;
+        }
+
+        .question-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #1a73e8;
+        }
+
+        .question-title {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: #333;
+        }
+
+        .answer-options label {
+            display: block;
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+            .answer-options label:hover {
+                background: #eef7ff;
+                border-color: #1a73e8;
+            }
+
+        .answer-options input[type="radio"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        /* Màu khi chấm điểm */
+        .answer-options label.correct-ans {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+            font-weight: bold;
+        }
+
+        .answer-options label.wrong-ans {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        #btn-submit-quiz {
+            background: #1a73e8;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto 0;
+            transition: 0.3s;
+        }
+
+            #btn-submit-quiz:hover {
+                background: #155dbb;
+            }
+
+        #quiz-result-msg {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+    </style>
+
     <div class="exercise-box">
         <h3>Bài Tập Áp Dụng</h3>
         <p>Sau khi nghe xong đoạn hội thoại ở trên, hãy làm bài test nhỏ để kiểm tra mức độ nghe hiểu của bạn nhé.</p>
 
-        <a href="@Url.Action("bai_test", "bai_test")" class="btn-start-quiz">
+        <button id="btn-show-quiz" class="btn-start-quiz" style="border:none;" onclick="hienThiBaiTest()">
             📝 Làm bài trắc nghiệm ngay
-        </a>
+        </button>
+
+        <div class="quiz-section" id="khu-vuc-quiz">
+            @{
+                var listCauHoi = ViewBag.ListCauHoi as List<wed_learn_e.Models.cau_hoi_video>;
+                if (listCauHoi != null && listCauHoi.Count > 0)
+                {
+                    int i = 1;
+                    foreach (var q in listCauHoi)
+                    {
+                        <div class="question-item" data-correct="@q.dap_an_dung" id="cau_@q.id_cau_hoi">
+                            <div class="question-title">Câu @i: @q.noi_dung_cau_hoi</div>
+                            <div class="answer-options">
+                                <label><input type="radio" name="q_@q.id_cau_hoi" value="A"> A. @q.dap_an_a</label>
+                                <label><input type="radio" name="q_@q.id_cau_hoi" value="B"> B. @q.dap_an_b</label>
+                                <label><input type="radio" name="q_@q.id_cau_hoi" value="C"> C. @q.dap_an_c</label>
+                                <label><input type="radio" name="q_@q.id_cau_hoi" value="D"> D. @q.dap_an_d</label>
+                            </div>
+                        </div>
+                        i++;
+                    }
+                    <button id="btn-submit-quiz" onclick="chamDiemVideo()">Nộp bài & Chấm điểm</button>
+                    <div id="quiz-result-msg"></div>
+                }
+                else
+                {
+                    <div style="text-align:center; color: #dc3545; font-weight:bold; padding: 20px;">
+                        ⚠️ Video này hiện chưa có bài tập nào!
+                    </div>
+                }
+            }
+        </div>
     </div>
 
-</div>
+    <script>
+        // Hàm mở bài test
+        function hienThiBaiTest() {
+            document.getElementById("btn-show-quiz").style.display = "none"; // Ẩn nút đi
+            document.getElementById("khu-vuc-quiz").style.display = "block"; // Hiện câu hỏi ra
+        }
+
+        // Hàm chấm điểm tại chỗ
+        function chamDiemVideo() {
+            let questions = document.querySelectorAll('.question-item');
+            let diem = 0;
+            let tongSo = questions.length;
+
+            questions.forEach(q => {
+                let id = q.id;
+                let correctAns = q.getAttribute('data-correct').toUpperCase().trim();
+                let labels = q.querySelectorAll('label');
+                let checkedRadio = q.querySelector('input[type="radio"]:checked');
+
+                // Xóa màu cũ nếu người dùng bấm nộp lại
+                labels.forEach(lbl => {
+                    lbl.classList.remove('correct-ans', 'wrong-ans');
+                });
+
+                if (checkedRadio) {
+                    let userAns = checkedRadio.value;
+                    if (userAns === correctAns) {
+                        diem++;
+                        checkedRadio.parentElement.classList.add('correct-ans'); // Tô xanh câu đúng
+                    } else {
+                        checkedRadio.parentElement.classList.add('wrong-ans'); // Tô đỏ câu chọn sai
+                        // Tô xanh câu đúng để người dùng biết
+                        q.querySelector(`input[value="${correctAns}"]`).parentElement.classList.add('correct-ans');
+                    }
+                } else {
+                    // Nếu bỏ trống thì chỉ bôi xanh đáp án đúng
+                    q.querySelector(`input[value="${correctAns}"]`).parentElement.classList.add('correct-ans');
+                }
+            });
+
+            // Khóa không cho bấm lại radio sau khi đã nộp
+            document.querySelectorAll('.answer-options input[type="radio"]').forEach(radio => {
+                radio.disabled = true;
+            });
+
+            document.getElementById('btn-submit-quiz').style.display = "none";
+
+            let resultMsg = document.getElementById('quiz-result-msg');
+            resultMsg.innerHTML = `🎉 Bạn đã trả lời đúng <span style="color:#28a745; font-size:24px;">${diem} / ${tongSo}</span> câu hỏi!`;
+        }
+    </script>

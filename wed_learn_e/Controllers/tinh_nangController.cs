@@ -14,7 +14,14 @@ namespace wed_learn_e.Controllers
         public ActionResult list_hoc_video(int? id_cap_do, string searchString, int? page)
         {
             if (Session["user_id"] == null) return RedirectToAction("dangnhap", "User");
-            if (id_cap_do == null && Session["id_cap_do_hien_tai"] != null)
+
+            // 1. CẬP NHẬT & LẤY SESSION CẤP ĐỘ
+            if (id_cap_do != null)
+            {
+                // Ghi nhớ lại ID cấp độ mới nhất người dùng vừa chọn
+                Session["id_cap_do_hien_tai"] = id_cap_do;
+            }
+            else if (Session["id_cap_do_hien_tai"] != null)
             {
                 id_cap_do = Convert.ToInt32(Session["id_cap_do_hien_tai"]);
             }
@@ -29,10 +36,12 @@ namespace wed_learn_e.Controllers
                 queryVideo = queryVideo.Where(v => v.id_khoa_hoc != null && listIdKhoaHoc.Contains(v.id_khoa_hoc.Value));
             }
 
-            // --- BỘ LỌC TÌM KIẾM ---
+            // 2. ÉP VỀ TRANG 1 KHI TÌM KIẾM
             if (!String.IsNullOrEmpty(searchString))
             {
                 queryVideo = queryVideo.Where(v => v.tieu_de.Contains(searchString));
+                // Fix lỗi: Khi gõ tìm kiếm, tự động reset về trang 1
+                page = 1;
             }
 
             ViewBag.CurrentFilter = searchString;
@@ -40,35 +49,36 @@ namespace wed_learn_e.Controllers
             ViewBag.TenCapDo = db.cap_do.FirstOrDefault(c => c.id_cap_do == id_cap_do)?.ten_cap_do ?? "Tất cả";
 
             // --- PHÂN TRANG ---
-            queryVideo = queryVideo.OrderBy(v => v.id_video); // Sắp xếp trước khi cắt trang
-            int pageSize = 5; // Số video trên 1 trang (bạn có thể đổi thành 6 hoặc 9 cho đẹp)
+            queryVideo = queryVideo.OrderBy(v => v.id_video);
+
+            // 3. SỬA PAGESIZE CHO ĐẸP GIAO DIỆN LƯỚI
+            int pageSize = 6; // Mình khuyên dùng 6, 9 hoặc 12
             int pageNumber = (page ?? 1);
 
             return View(queryVideo.ToPagedList(pageNumber, pageSize));
-        
         }
         public ActionResult bai_video(int? id_video)
         {
-            // 1. Kiểm tra đăng nhập (Bắt buộc)
             if (Session["user_id"] == null)
             {
                 return RedirectToAction("dangnhap", "User");
             }
 
-            // 2. Lấy bài nghe từ Database theo ID
             var baiNghe = db.bai_giang_video.FirstOrDefault(x => x.id_video == id_video);
 
-            // Nếu không truyền ID vào (người dùng bấm bừa), lấy tạm bài nghe đầu tiên trong DB để test
             if (baiNghe == null)
             {
                 baiNghe = db.bai_giang_video.FirstOrDefault();
             }
 
-            // Nếu Database hoàn toàn trống, báo lỗi
             if (baiNghe == null)
             {
-                return HttpNotFound("Hệ thống chưa có bài luyện nghe nào. Vui lòng thêm vào Database!");
+                return HttpNotFound("Hệ thống chưa có bài luyện nghe nào.");
             }
+
+            // --- ĐOẠN THÊM MỚI ---
+            // Lấy danh sách câu hỏi thuộc về đúng video này
+            ViewBag.ListCauHoi = db.cau_hoi_video.Where(x => x.id_video == baiNghe.id_video).ToList();
 
             return View(baiNghe);
         }

@@ -80,6 +80,10 @@ namespace wed_learn_e.Controllers
                 Session["HoTen"] = user.ho_va_ten;
                 Session["VaiTro"] = user.vai_tro; // Quan trọng: Lưu lại vai trò để các trang khác kiểm tra
                 Session["Email"] = user.email; // Nhớ
+                Session["Avatar"] = user.anh_dai_dien;
+                string[] bangMau = { "1a73e8", "f39c12", "28a745", "dc3545", "6f42c1", "e83e8c" };
+                // Dùng ID của user chia lấy dư để chọn màu -> Đảm bảo màu luôn cố định với user đó!
+                Session["AvatarColor"] = bangMau[user.id_nguoi_dung % bangMau.Length];
                 // Lấy cấp độ hiện tại nếu có (Dành cho User)
                 if (user.id_cap_do_hien_tai != null)
                 {
@@ -325,6 +329,75 @@ namespace wed_learn_e.Controllers
                 TempData["ActiveTab"] = "doi-mat-khau";
             }
 
+            return RedirectToAction("TrangCaNhan");
+        }
+        [HttpPost]
+        public ActionResult CapNhatThongTin(string ho_va_ten, string email)
+        {
+            // Kiểm tra đăng nhập
+            if (Session["user_id"] == null)
+            {
+                return RedirectToAction("dangnhap");
+            }
+
+            int userId = Convert.ToInt32(Session["user_id"]);
+            var user = db.nguoi_dung.Find(userId);
+
+            if (user != null)
+            {
+                // Cập nhật Database
+                user.ho_va_ten = ho_va_ten;
+                user.email = email;
+                db.SaveChanges();
+
+                // Cập nhật lại Session để Header hiển thị đúng tên/email mới
+                Session["HoTen"] = ho_va_ten;
+                Session["Email"] = email;
+
+                TempData["ThanhCongThongTin"] = "Cập nhật thông tin cá nhân thành công!";
+            }
+            else
+            {
+                TempData["LoiThongTin"] = "Lỗi hệ thống, không tìm thấy tài khoản!";
+            }
+
+            // Đánh dấu Tab Thông tin là tab đang mở để khi load lại trang không bị nhảy sang tab khác
+            TempData["ActiveTab"] = "thong-tin";
+
+            return RedirectToAction("TrangCaNhan");
+        }
+        [HttpPost]
+        public ActionResult CapNhatAvatar(HttpPostedFileBase file_anh)
+        {
+            // Kiểm tra đăng nhập
+            if (Session["user_id"] == null) return RedirectToAction("dangnhap");
+
+            int userId = Convert.ToInt32(Session["user_id"]);
+            var user = db.nguoi_dung.Find(userId);
+
+            // Kiểm tra xem có file gửi lên không
+            if (user != null && file_anh != null && file_anh.ContentLength > 0)
+            {
+                string folderPath = Server.MapPath("~/Images/Avatars/");
+                if (!System.IO.Directory.Exists(folderPath))
+                {
+                    System.IO.Directory.CreateDirectory(folderPath);
+                }
+
+                string fileName = DateTime.Now.Ticks.ToString() + "_" + System.IO.Path.GetFileName(file_anh.FileName);
+                string fullPath = System.IO.Path.Combine(folderPath, fileName);
+
+                // Lưu ảnh
+                file_anh.SaveAs(fullPath);
+                user.anh_dai_dien = fileName;
+                db.SaveChanges();
+
+                // Cập nhật lại Session
+                Session["Avatar"] = fileName;
+                TempData["ThanhCongThongTin"] = "Đã cập nhật ảnh đại diện mới!";
+            }
+
+            // Đổi ảnh xong thì tự load lại đúng trang cá nhân
             return RedirectToAction("TrangCaNhan");
         }
     }
