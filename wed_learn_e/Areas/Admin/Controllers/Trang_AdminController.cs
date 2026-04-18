@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using wed_learn_e.Models;
-
+using System.Data.Entity;
 namespace wed_learn_e.Areas.Admin.Controllers
 {
     public class Trang_AdminController : Controller
@@ -13,6 +13,7 @@ namespace wed_learn_e.Areas.Admin.Controllers
         // GET: Admin/Trang_Admin
         public ActionResult Index()
         {
+            ViewBag.Title = "Admin - Quản lý người dùng";
             // Chặn người chưa đăng nhập hoặc không phải admin
             if (Session["VaiTro"] == null || Session["VaiTro"].ToString() != "quan_tri_vien")
             {
@@ -24,6 +25,139 @@ namespace wed_learn_e.Areas.Admin.Controllers
 
             // 4. Truyền biến 'users' vào View
             return View(users);
+        }
+        public ActionResult Course_Setting()
+        {
+            ViewBag.Title = "Admin - Quản lý khóa học";
+            // Kiểm tra quyền Admin (giống hàm Index của bạn)
+            if (Session["VaiTro"] == null || Session["VaiTro"].ToString() != "quan_tri_vien")
+                return RedirectToAction("DangNhap", "User", new { area = "" });
+
+            var listCapDo = db.cap_do.ToList();
+            return View(listCapDo);
+        }
+        [HttpGet]
+        public JsonResult GetContentByLevel(int id)
+        {
+            db.Configuration.ProxyCreationEnabled = false;
+            try
+            {
+                // 1. Lấy danh sách ID các khóa học thuộc Level này (A1, A2...)
+                var ids = db.khoa_hoc.Where(x => x.id_cap_do == id).Select(x => x.id_khoa_hoc).ToList();
+
+                // 2. Lấy dữ liệu từ tất cả các bảng liên quan
+                var noi = db.bai_luyen_noi.Where(x => ids.Contains((int)x.id_khoa_hoc))
+                            .Select(x => new { x.id_bai_noi, x.noi_dung_goc, x.nghia_tieng_viet }).ToList();
+
+                var nghe = db.bai_luyen_nghe.Where(x => ids.Contains((int)x.id_khoa_hoc))
+                             .Select(x => new { x.id_bai_nghe, x.tieu_de, x.file_am_thanh }).ToList();
+
+                var video = db.bai_giang_video.Where(x => ids.Contains((int)x.id_khoa_hoc))
+                              .Select(x => new { x.id_video, x.tieu_de, x.duong_dan_video }).ToList();
+
+                var viet = db.bai_luyen_viet.Where(x => ids.Contains((int)x.id_khoa_hoc))
+                             .Select(x => new { x.id_bai_viet, x.tieu_de, x.lich_su_luyen_viet }).ToList();
+
+                // Giả sử bảng từ vựng của bạn là 'tu_vung'
+                var tuvung = db.tu_vung.Where(x => ids.Contains((int)x.id_khoa_hoc))
+                               .Select(x => new { x.id_tu_vung, x.tu_tieng_anh, x.nghia_tieng_viet }).ToList();
+
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        noi = noi,
+                        nghe = nghe,
+                        video = video,
+                        viet = viet,
+                        tu_vung = tuvung
+                    }
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        // Hàm xóa "Vạn năng"
+        [HttpPost]
+        public JsonResult DeleteItem(string type, int id)
+        {
+            try
+            {
+                if (type == "noi")
+                {
+                    var item = db.bai_luyen_noi.Find(id);
+                    if (item != null) db.bai_luyen_noi.Remove(item);
+                }
+                else if (type == "nghe")
+                {
+                    var item = db.bai_luyen_nghe.Find(id);
+                    if (item != null)
+                    {
+                        // Xóa câu hỏi con trước khi xóa bài nghe (tránh lỗi khóa ngoại)
+                        var questions = db.cau_hoi_luyen_nghe.Where(q => q.id_bai_nghe == id);
+                        foreach (var q in questions) db.cau_hoi_luyen_nghe.Remove(q);
+                        db.bai_luyen_nghe.Remove(item);
+                    }
+                }
+                else if (type == "video")
+                {
+                    var item = db.bai_giang_video.Find(id);
+                    if (item != null) db.bai_giang_video.Remove(item);
+                }
+                db.SaveChanges();
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+        [HttpPost]
+        public JsonResult CreateNoi(int id_cap_do, string noi_dung_goc, string nghia_tieng_viet)
+        {
+            // Tìm đại 1 khóa học "Luyện Nói" của cấp độ này để gán vào
+            var khoaHoc = db.khoa_hoc.FirstOrDefault(x => x.id_cap_do == id_cap_do && x.ten_khoa_hoc.Contains("Nói"));
+
+            if (khoaHoc == null) return Json(new { success = false, message = "Không tìm thấy khóa học Luyện Nói cho cấp độ này" });
+
+            var moi = new bai_luyen_noi
+            {
+                id_khoa_hoc = khoaHoc.id_khoa_hoc,
+                noi_dung_goc = noi_dung_goc,
+                nghia_tieng_viet = nghia_tieng_viet,
+                loai_bai_noi = "Vocabulary" // Mặc định
+            };
+
+            db.bai_luyen_noi.Add(moi);
+            db.SaveChanges();
+            return Json(new { success = true });
+        }
+        [HttpPost]
+        public JsonResult CreateNewCourse(int id_cap_do, string ten_khoa_hoc, string mo_ta)
+        {
+            try
+            {
+                // Tạo đối tượng khóa học mới
+                var moi = new khoa_hoc
+                {
+                    id_cap_do = id_cap_do,
+                    ten_khoa_hoc = ten_khoa_hoc,
+                    mo_ta = mo_ta
+                    // Nếu bạn có cột hình ảnh hoặc icon, có thể gán mặc định ở đây
+                };
+
+                db.khoa_hoc.Add(moi);
+                db.SaveChanges();
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Lỗi hệ thống: " + ex.Message });
+            }
         }
     }
 }

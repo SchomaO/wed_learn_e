@@ -1,0 +1,396 @@
+﻿@model IEnumerable<wed_learn_e.Models.cap_do>
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <div class="flex flex-col md:flex-row gap-6">
+
+        <div class="w-full md:w-1/3 lg:w-1/4">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <div class="p-4 bg-indigo-50 border-b border-gray-200 flex justify-between items-center">
+                    <h3 class="font-bold text-indigo-900">Cấp độ học</h3>
+                    <button onclick="$('#modalAddLevel').modal('show')" class="bg-indigo-600 text-white p-2 rounded-lg hover:bg-indigo-700 transition">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                <div class="divide-y divide-gray-100 max-h-[70vh] overflow-y-auto">
+                    @foreach (var item in Model)
+                    {
+                        <div class="p-4 hover:bg-gray-50 cursor-pointer transition level-item" id="level-@item.id_cap_do"
+                             onclick="loadFullData(@item.id_cap_do, '@item.ten_cap_do')">
+                            <div class="flex justify-between items-start">
+                                <span class="text-xs font-bold text-indigo-500 uppercase">#@item.id_cap_do</span>
+                                <button onclick="event.stopPropagation(); deleteLevel(@item.id_cap_do)" class="text-gray-400 hover:text-red-500">
+                                    <i class="fas fa-trash-alt text-xs"></i>
+                                </button>
+                            </div>
+                            <h4 class="font-semibold text-gray-800">@item.ten_cap_do</h4>
+                            <p class="text-xs text-gray-500 truncate">@item.mo_ta</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="w-full md:w-2/3 lg:w-3/4">
+            <div id="empty-state" class="bg-white rounded-xl shadow-sm border-2 border-dashed border-gray-300 p-20 text-center">
+                <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-mouse-pointer text-gray-400 text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-medium text-gray-600">Chọn một cấp độ để bắt đầu</h3>
+                <p class="text-gray-400 mt-2">Toàn bộ bài nghe, nói, viết và game sẽ hiện ở đây.</p>
+            </div>
+
+            <div id="main-panel" class="hidden animate-fade-in">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="p-6 border-b border-gray-200 flex justify-between items-center bg-white sticky top-0 z-10">
+                        <h2 class="text-2xl font-bold text-gray-800" id="current-level-name">Tên Cấp Độ</h2>
+                        <div class="flex gap-2" id="group-btns-add">
+                            <button type="button" onclick="NewCourse()" class="bg-indigo-600 text-white px-8 py-2 rounded-xl font-bold shadow-indigo-200 shadow-lg hover:bg-indigo-700 transition">
+                                Tạo khóa học ngay
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex border-b border-gray-200 bg-gray-50">
+                        <button onclick="switchTab('tu-vung')" class="tab-link px-6 py-3 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-indigo-600" id="link-tu-vung">📖 Từ Vựng</button>
+                        <button onclick="switchTab('noi')" class="tab-link active px-6 py-3 text-sm font-medium border-b-2 border-indigo-600 text-indigo-600" id="link-noi">🗣️ Luyện Nói</button>
+                        <button onclick="switchTab('nghe')" class="tab-link px-6 py-3 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-indigo-600" id="link-nghe">🎧 Luyện Nghe</button>
+                        <button onclick="switchTab('ngu-phap')" class="tab-link px-6 py-3 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-indigo-600" id="link-ngu-phap">📚 Ngữ Pháp</button>
+                        <button onclick="switchTab('game')" class="tab-link px-6 py-3 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-indigo-600" id="link-game">🏴‍☠️Mini Game</button>
+                        <button onclick="switchTab('video')" class="tab-link px-6 py-3 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-indigo-600" id="link-video">🎬 Học qua Video</button>
+                        <button onclick="switchTab('viet')" class="tab-link px-6 py-3 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-indigo-600" id="link-viet">✍️ Luyện Viết</button>
+                        <button onclick="switchTab('thanh-ngu')" class="tab-link px-6 py-3 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-indigo-600" id="link-thanh-ngu">💡 Thành Ngữ</button>
+                    </div>
+
+                    <div class="p-6">
+                        <div id="content-noi" class="tab-content overflow-x-auto">
+                            <table class="w-full text-left border-collapse bg-white">
+                                <thead>
+                                    <tr class="bg-gray-50 border-b">
+                                        <th class="p-4 text-xs font-bold uppercase text-gray-500">Nội dung câu / Từ vựng</th>
+                                        <th class="p-4 text-xs font-bold uppercase text-gray-500 text-right">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody-noi" class="divide-y divide-gray-100">
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div id="content-nghe" class="tab-content hidden">
+                            <div id="list-nghe" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            </div>
+                        </div>
+
+                        <div id="content-viet" class="tab-content hidden">
+                            <div id="list-viet" class="space-y-4">
+                            </div>
+                        </div>
+                        <div id="content-tu-vung" class="tab-content hidden overflow-x-auto">
+                            <table class="w-full text-left border-collapse bg-white">
+                                <thead>
+                                    <tr class="bg-gray-50 border-b border-gray-200">
+                                        <th class="p-4 text-xs font-bold uppercase text-gray-500">Từ vựng (EN)</th>
+                                        <th class="p-4 text-xs font-bold uppercase text-gray-500">Nghĩa (VI)</th>
+                                        <th class="p-4 text-xs font-bold uppercase text-gray-500 text-right">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody-tu-vung" class="divide-y divide-gray-100">
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div id="content-video" class="tab-content hidden">
+                            <div id="list-video" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        // CHỈ KHAI BÁO 1 LẦN Ở ĐẦU
+        let currentSelectedLevelId = null;
+
+        // --- NHÓM 1: CÁC HÀM RENDER (Đổ dữ liệu vào giao diện) ---
+
+        function renderTableNoi(data) {
+            let html = "";
+            if (!data || data.length === 0) {
+                html = '<tr><td colspan="3" class="text-center py-10 text-gray-400">Trống.</td></tr>';
+            } else {
+                html = data.map(item => `
+                            <tr class="border-b hover:bg-gray-50 transition">
+                                <td class="py-3 px-2 font-medium">${item.noi_dung_goc}</td>
+                                <td class="py-3 px-2 text-gray-600">${item.nghia_tieng_viet}</td>
+                                <td class="py-3 px-2 text-right">
+                                     <button class="text-blue-500 mr-3"><i class="fas fa-edit"></i></button>
+                                     <button onclick="deleteItem('noi', ${item.id_bai_noi})" class="text-red-500 hover:text-red-700 p-2">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>`).join('');
+            }
+            $("#tbody-noi").html(html);
+        }
+
+        function renderListNghe(data) {
+            if (!data || data.length === 0) {
+                $("#list-nghe").html("<div class='col-span-full text-center py-10 text-gray-400'>Chưa có bài nghe nào.</div>");
+                return;
+            }
+
+            let html = data.map(i => `
+            <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full min-w-0">
+                <div class="w-full">
+                    <h5 class="font-bold text-gray-800 text-lg mb-2 leading-tight">${i.tieu_de}</h5>
+
+                    <div class="flex items-start gap-2 text-indigo-500 bg-indigo-50 p-2 rounded-lg">
+                        <i class="fas fa-volume-up mt-1"></i>
+                        <span class="text-xs break-all leading-relaxed">${i.file_am_thanh}</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-end gap-3 mt-4 pt-3 border-t border-gray-100">
+                    <button title="Xem chi tiết" class="w-9 h-9 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-indigo-600 hover:text-white transition-colors">
+                        <i class="fas fa-eye text-sm"></i>
+                    </button>
+                    <button onclick="deleteItem('nghe', ${i.id_bai_nghe})" title="Xóa" class="w-9 h-9 flex items-center justify-center rounded-full bg-red-50 text-red-500 hover:bg-red-600 hover:text-white transition-colors">
+                        <i class="fas fa-trash-alt text-sm"></i>
+                    </button>
+                </div>
+            </div>
+        `).join('');
+
+            $("#list-nghe").html(html);
+        }
+
+        function renderTableTuVung(data) {
+            let html = "";
+            if (!data || data.length === 0) {
+                html = '<tr><td colspan="3" class="text-center py-10 text-gray-400 italic">Chưa có từ vựng nào trong cấp độ này.</td></tr>';
+            } else {
+                html = data.map(item => `<tr class="hover:bg-gray-50 transition border-b border-gray-100">
+                <td class="p-4">
+                    <span class="font-bold text-indigo-600">${item.tu_tieng_anh}</span>
+                </td>
+                <td class="p-4 text-gray-600">
+                    ${item.nghia_tieng_viet}
+                </td>
+                <td class="p-4 text-right">
+                    <button onclick="deleteItem('tu-vung', ${item.id_tu_vung})" class="text-gray-400 hover:text-red-500 transition">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </td>
+            </tr>`).join('');
+            }
+            $("#tbody-tu-vung").html(html);
+        }
+
+        function renderListVideo(data) {
+            let html = "";
+            if (!data || data.length === 0) {
+                html = '<div class="col-span-full text-center py-10 text-gray-400 italic">Chưa có video bài giảng nào.</div>';
+            } else {
+                html = data.map(v => `
+            <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition group">
+                <div class="aspect-video bg-gray-900 flex items-center justify-center relative">
+                    <i class="fas fa-play-circle text-white text-4xl opacity-80 group-hover:scale-110 transition"></i>
+                    <div class="absolute bottom-2 right-2 bg-black/60 text-white text-[10px] px-2 py-1 rounded">Video</div>
+                </div>
+                
+                <div class="p-4">
+                    <h5 class="font-bold text-gray-800 text-sm truncate mb-1" title="${v.tieu_de}">
+                        ${v.tieu_de}
+                    </h5>
+                    <p class="text-[11px] text-indigo-500 truncate mb-3">
+                        <i class="fas fa-link mr-1"></i>${v.duong_dan_video}
+                    </p>
+                    
+                    <div class="flex justify-between items-center pt-3 border-t border-gray-50">
+                        <button class="text-xs font-bold text-indigo-600 hover:text-indigo-800">XEM BÀI GIẢNG</button>
+                        <button onclick="deleteItem('video', ${v.id_video})" class="text-gray-300 hover:text-red-500 p-1">
+                            <i class="fas fa-trash-alt text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>`).join('');
+            }
+            $("#list-video").html(html);
+        }
+        // Hàm vẽ danh sách Luyện Viết
+        function renderListViet(data) {
+            let html = "";
+            if (!data || data.length === 0) {
+                html = "<div class='text-center py-10 text-gray-400'>Chưa có bài luyện viết.</div>";
+            } else {
+                html = data.map(item => `
+            <div class="p-4 border rounded-xl flex justify-between items-center bg-white shadow-sm hover:border-indigo-200">
+                <div>
+                    <h5 class="font-bold text-gray-800">${item.tieu_de}</h5>
+                    <p class="text-xs text-gray-500 italic">${item.goi_y || 'Không có gợi ý'}</p>
+                </div>
+                <button onclick="deleteItem('viet', ${item.id_bai_viet})" class="text-red-400 hover:text-red-600">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </div>`).join('');
+            }
+            $("#list-viet").html(html);
+        }
+
+        // --- NHÓM 2: CÁC HÀM ĐIỀU KHIỂN (Load, Switch, Delete) ---
+
+        function loadFullData(id, name) {
+            currentSelectedLevelId = id;
+
+            // 1. Hiển thị khung bảng, ẩn chữ "Chọn cấp độ"
+            $("#empty-state").addClass("hidden");
+            $("#main-panel").removeClass("hidden");
+            $("#current-level-name").text("Đang quản lý: " + name);
+
+            console.log("Đang gọi dữ liệu cho ID: " + id); // Kiểm tra xem hàm có chạy đến đây không
+
+            // 2. Gọi lên Controller
+            $.get("/Admin/Trang_Admin/GetContentByLevel", { id: id }, function (res) {
+                console.log("Kết quả từ server:", res); // Xem server trả về gì
+                if (res.success) {
+                    renderTableTuVung(res.data.tu_vung); 
+                    renderTableNoi(res.data.noi);
+                    renderListNghe(res.data.nghe);
+                    renderListVideo(res.data.video);    
+                    renderListViet(res.data.viet);
+                    switchTab('noi'); // Mặc định mở tab nói
+                } else {
+                    alert("Lỗi server: " + res.message);
+                }
+            }).fail(function (err) {
+                console.error("Lỗi kết nối:", err);
+                alert("Không thể kết nối đến Server. Kiểm tra lại đường dẫn URL!");
+            });
+        }
+
+        function switchTab(tabName) {
+            $(".tab-content").addClass("hidden");
+            $("#content-" + tabName).removeClass("hidden");
+
+            $(".tab-link").removeClass("active border-indigo-600 text-indigo-600").addClass("border-transparent text-gray-500");
+            $("#link-" + tabName).addClass("active border-indigo-600 text-indigo-600").removeClass("border-transparent text-gray-500");
+        }
+
+        function deleteItem(type, id) {
+            if (confirm("Bạn có chắc chắn muốn xóa mục này?")) {
+                $.post("/Admin/Trang_Admin/DeleteItem", { type: type, id: id }, function (res) {
+                    if (res.success) {
+                        // Sau khi xóa thành công, chỉ cần gọi lại hàm load dữ liệu để cập nhật giao diện
+                        let levelName = $("#current-level-name").text().replace("Đang quản lý: ", "");
+                        loadFullData(currentSelectedLevelId, levelName);
+                    } else {
+                        alert("Lỗi: " + res.message);
+                    }
+                });
+            }
+        }
+
+        // --- NHÓM 3: XỬ LÝ MODAL THÊM MỚI ---
+
+        function openAddNoi() {
+            if (!currentSelectedLevelId) {
+                alert("Vui lòng chọn một cấp độ trước!");
+                return;
+            }
+            $('#modalAddNoi').modal('show');
+        }
+
+        function saveNewNoi() {
+            var obj = {
+                id_cap_do: currentSelectedLevelId,
+                noi_dung_goc: $("#txtNoiDungGoc").val(),
+                nghia_tieng_viet: $("#txtNghiaViet").val()
+            };
+
+            $.post("/Admin/Trang_Admin/CreateNoi", obj, function (res) {
+                if (res.success) {
+                    $('#modalAddNoi').modal('hide');
+                    // Reset form
+                    $("#txtNoiDungGoc, #txtNghiaViet").val('');
+                    // Load lại dữ liệu
+                    loadFullData(currentSelectedLevelId, $("#current-level-name").text().replace("Đang quản lý: ", ""));
+                } else {
+                    alert(res.message);
+                }
+            });
+        }
+        function saveNewVideo() {
+            var obj = {
+                id_cap_do: currentSelectedLevelId,
+                tieu_de: $("#txtVideoTitle").val(),
+                url_video: $("#txtVideoUrl").val()
+            };
+
+            $.post("/Admin/Trang_Admin/CreateVideo", obj, function (res) {
+                if (res.success) {
+                    $('#modalAddVideo').modal('hide');
+                    loadFullData(currentSelectedLevelId, $("#current-level-name").text().replace("Đang quản lý: ", ""));
+                } else {
+                    alert(res.message);
+                }
+            });
+        }
+
+        // Hàm lưu Bài Nghe
+        function saveNewNghe() {
+            var obj = {
+                id_cap_do: currentSelectedLevelId,
+                tieu_de: $("#txtNgheTitle").val(),
+                file_am_thanh: $("#txtNgheFile").val()
+            };
+
+            $.post("/Admin/Trang_Admin/CreateNghe", obj, function (res) {
+                if (res.success) {
+                    $('#modalAddNghe').modal('hide');
+                    loadFullData(currentSelectedLevelId, $("#current-level-name").text().replace("Đang quản lý: ", ""));
+                } else {
+                    alert(res.message);
+                }
+            });
+        }
+        function openCreateCourse() {
+            if (!currentSelectedLevelId) {
+                alert("Bạn chưa chọn Cấp độ (A1, A2...) để thêm khóa học!");
+                return;
+            }
+            // Reset form
+            $("#txtCourseName, #txtCourseDesc").val('');
+            $('#modalCreateNewCourse').modal('show');
+        }
+
+        function NewCourse() {
+            let type = $("#selCourseType").val();
+            let name = $("#txtCourseName").val();
+            let desc = $("#txtCourseDesc").val();
+
+            if (!name) { alert("Vui lòng nhập tên!"); return; }
+
+            let dataObj = {
+                id_cap_do: currentSelectedLevelId,
+                type: type, // Gửi type: 'noi', 'nghe', 'tu-vung'...
+                content: name,
+                extra: desc
+            };
+
+            $.post("/Admin/Trang_Admin/CreateContent", dataObj, function (res) {
+                if (res.success) {
+                    $('#modalCreateNewCourse').modal('hide');
+                    // Load lại đúng cấp độ đang chọn
+                    loadFullData(currentSelectedLevelId, $("#current-level-name").text().replace("Đang quản lý: ", ""));
+                } else {
+                    alert(res.message);
+                }
+            });
+        }
+    </script>
+}

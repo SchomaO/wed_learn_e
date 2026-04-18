@@ -289,6 +289,7 @@
     </Content>
     <Content Include="Areas\Admin\Views\web.config" />
     <Content Include="Areas\Admin\Views\Trang_Admin\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Trang_Admin\Course_Setting.cshtml" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
     <Content Include="Scripts\jquery-3.7.0.min.js" />
