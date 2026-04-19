@@ -439,7 +439,7 @@
         else
         {
             <div class="login">
-                <a href="@Url.Action("Index","User")"><span> <b>Bạn đã có tài khoản? </b></span></a>
+                <a href="@Url.Action("dangky","User")"><span> <b>Bạn đã có tài khoản? </b></span></a>
                 <button onclick="location.href='@Url.Action("dangnhap","User")'">Đăng nhập</button>
             </div>
         }
@@ -467,9 +467,13 @@
             <button class="start-btn" onclick="location.href='@Url.Action("thong_tin_bai_test","bai_test")'">
                 Bắt đầu làm bài test
             </button>
-            <button class="start-btn" onclick="location.href='@Url.Action("khaosat","Page")'">
-                Làm khảo sát
-            </button>
+           @if (Session["TenDN"] != null)
+            {
+                <button class="start-btn" onclick="location.href='@Url.Action("TrangMuaVIP","Page")'">
+                    Nâng cấp tài khoản
+                </button>
+            }
+
         </div>
 
     </section>

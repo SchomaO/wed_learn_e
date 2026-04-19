@@ -4,62 +4,113 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using wed_learn_e.Models;
-
+using System.Net;
+using System.Net.Mail;
 namespace wed_learn_e.Controllers
 {
     public class UserController : Controller
     {
         wed_learn_eEntities db = new wed_learn_eEntities();
-        public ActionResult Index()
-        {
-            return View();
-        }
+       
         // đăng ký
         public ActionResult dangky()
         {
             return View();
         }
 
-
         [HttpPost]
-
-   
-        public ActionResult dangky(nguoi_dung model)
+        public ActionResult dangky(string ho_va_ten, string ten_dang_nhap, string mat_khau, string MatKhauNL, string email)
         {
-            // 1. Kiểm tra các điều kiện [Required] trong file .cs
-            if (ModelState.IsValid)
+            try
             {
-                // 2. Kiểm tra xem tên đăng nhập đã bị ai dùng chưa
-                var check = db.nguoi_dung.FirstOrDefault(s => s.ten_dang_nhap == model.ten_dang_nhap);
-
-                if (check == null)
+                // 1. KIỂM TRA MẬT KHẨU
+                if (mat_khau != MatKhauNL)
                 {
-                    // 3. GÁN CÁC GIÁ TRỊ MẶC ĐỊNH HỆ THỐNG TỰ SINH
-                    model.ngay_tao = DateTime.Now;
-                    model.vai_tro = "nguoi_dung";        // Vẫn giữ phân quyền là user
+                    // Thêm trường field = "MatKhauNL"
+                    return Json(new { success = false, field = "MatKhauNL", message = "❌ Mật khẩu nhập lại không giống nhau!" });
+                }
 
-                    // QUAN TRỌNG: Thiết lập mặc định cho tài khoản mới
-                    model.loai_tai_khoan = 1;            // 1: Tài khoản bản Thường (2 là VIP)
-                    model.so_luong_khoa_hoc = 0;         // Bắt đầu với 0 khóa học
+                // 2. KIỂM TRA TÊN ĐĂNG NHẬP
+                var checkUsername = db.nguoi_dung.FirstOrDefault(s => s.ten_dang_nhap == ten_dang_nhap);
+                if (checkUsername != null)
+                {
+                    return Json(new { success = false, message = "❌ Tên đăng nhập này đã có người dùng!" });
+                }
 
-                    db.nguoi_dung.Add(model);
-                    db.SaveChanges();
+                // ---> THÊM ĐOẠN NÀY VÀO ĐỂ KIỂM TRA TRÙNG EMAIL <---
+                var checkEmail = db.nguoi_dung.FirstOrDefault(s => s.email == email);
+                if (checkEmail != null)
+                {
+                    return Json(new { success = false, message = "❌ Email này đã được sử dụng cho tài khoản khác!" });
+                }
 
-                    // 4. Thông báo và chuyển hướng sang trang đăng nhập
-                    TempData["Success"] = "Đăng ký thành công! Mời bạn đăng nhập.";
-                    return RedirectToAction("dangnhap", "User");
+                // 3. LƯU DATABASE NẾU ĐÚNG HẾT
+                nguoi_dung newUser = new nguoi_dung();
+                newUser.ho_va_ten = ho_va_ten;
+                newUser.ten_dang_nhap = ten_dang_nhap;
+                newUser.mat_khau = mat_khau;
+                newUser.email = email;
+                newUser.vai_tro = "nguoi_dung";
+                newUser.ngay_tao = DateTime.Now;
+                newUser.so_luong_khoa_hoc = 0;
+                newUser.loai_tai_khoan = 1;
+
+                db.nguoi_dung.Add(newUser);
+                db.SaveChanges();
+
+                // 5. GỌI HÀM GỬI MAIL KHI ĐÃ LƯU THÀNH CÔNG
+                bool isMailSent = GuiMailChaoMung(email, ho_va_ten, ten_dang_nhap);
+
+                if (isMailSent)
+                {
+                    return Json(new { success = true, message = "✔ Đăng ký thành công! Vui lòng kiểm tra Email. Đang chuyển hướng..." });
                 }
                 else
                 {
-                    // Nếu trùng tên đăng nhập, báo lỗi cụ thể
-                    ViewBag.error = "Tên đăng nhập này đã tồn tại, vui lòng chọn tên khác!";
+                    // Tài khoản đã lưu DB, nhưng mail bị lỗi (ví dụ Google đổi chính sách bảo mật)
+                    return Json(new { success = true, message = "✔ Đăng ký thành công! (Không thể gửi mail xác nhận lúc này). Đang chuyển hướng..." });
                 }
             }
-
-            // Nếu có lỗi, trả về lại trang đăng ký kèm dữ liệu đã nhập
-            return View(model);
+            catch (Exception ex)
+            {
+                string loiChiTiet = ex.Message;
+                if (ex.InnerException != null) loiChiTiet = ex.InnerException.Message;
+                return Json(new { success = false, message = "❌ Lỗi hệ thống: " + loiChiTiet });
+            }
         }
-        // GET đăng nhập
+        // Hàm hỗ trợ gửi mail (đặt là private vì chỉ dùng nội bộ trong Controller này)
+        private bool GuiMailChaoMung(string emailNhan, string hoTen, string tenDangNhap)
+        {
+            try
+            {
+                string senderEmail = "2424802010340@student.tdmu.edu.vn";
+                string senderPassword = "bgpw qezn lsvu biyn";
+
+                MailMessage mail = new MailMessage();
+                mail.From = new MailAddress(senderEmail, "Hệ thống KityLearn");
+                mail.To.Add(emailNhan);
+                mail.Subject = "🎉 Chào mừng bạn gia nhập KityLearn!";
+
+                mail.Body = $"<h3>Xin chào {hoTen},</h3>" +
+                            $"<p>Chúc mừng bạn đã tạo tài khoản thành công trên hệ thống KityLearn.</p>" +
+                            $"<p>Tên đăng nhập của bạn là: <b>{tenDangNhap}</b></p>" +
+                            $"<p>Hãy đăng nhập ngay để trải nghiệm các khóa học và bài test thú vị nhé.</p>" +
+                            $"<p>Trân trọng,<br>Đội ngũ KityLearn.</p>";
+                mail.IsBodyHtml = true;
+
+                SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
+                smtp.Credentials = new NetworkCredential(senderEmail, senderPassword);
+                smtp.EnableSsl = true;
+
+                smtp.Send(mail);
+
+                return true; // Báo gửi mail thành công
+            }
+            catch (Exception)
+            {
+                return false; // Báo gửi mail thất bại (sai pass, mất mạng...)
+            }
+        }
         public ActionResult dangnhap()
         {
             return View();
@@ -79,34 +130,40 @@ namespace wed_learn_e.Controllers
                 Session["TenDN"] = user.ten_dang_nhap;
                 Session["HoTen"] = user.ho_va_ten;
                 Session["VaiTro"] = user.vai_tro; // Quan trọng: Lưu lại vai trò để các trang khác kiểm tra
-                Session["Email"] = user.email; // Nhớ
+                Session["Email"] = user.email;
                 Session["Avatar"] = user.anh_dai_dien;
+
                 string[] bangMau = { "1a73e8", "f39c12", "28a745", "dc3545", "6f42c1", "e83e8c" };
                 // Dùng ID của user chia lấy dư để chọn màu -> Đảm bảo màu luôn cố định với user đó!
                 Session["AvatarColor"] = bangMau[user.id_nguoi_dung % bangMau.Length];
+
                 // Lấy cấp độ hiện tại nếu có (Dành cho User)
                 if (user.id_cap_do_hien_tai != null)
                 {
                     Session["id_cap_do_hien_tai"] = user.id_cap_do_hien_tai;
                 }
 
-                // 2. BẺ LÁI DỰA TRÊN VAI TRÒ (PHÂN QUYỀN)
+                // 2. BẺ LÁI DỰA TRÊN VAI TRÒ (PHÂN QUYỀN) - XỬ LÝ CHO AJAX
+                string urlChuyenHuong = "";
+
                 if (user.vai_tro == "quan_tri_vien")
                 {
-                    // Đá sang hàm Index, của Controller Trang_Admin, nằm trong khu vực Area Admin
-                    return RedirectToAction("Index", "Trang_Admin", new { area = "Admin" });
+                    // Tạo link tới trang Admin
+                    urlChuyenHuong = Url.Action("Index", "Trang_Admin", new { area = "Admin" });
                 }
                 else
                 {
-                    // Nếu là User bình thường -> Đá về Trang Chủ
-                    return RedirectToAction("Index", "Trang_chu");
+                    // Tạo link tới Trang Chủ cho User bình thường
+                    urlChuyenHuong = Url.Action("Index", "Trang_chu");
                 }
+
+                // Trả về JSON thông báo thành công kèm đường link để Javascript tự động chuyển trang
+                return Json(new { success = true, redirectUrl = urlChuyenHuong });
             }
             else
             {
-                // Đăng nhập thất bại
-                ViewBag.Error = "Tài khoản hoặc mật khẩu không chính xác!";
-                return View();
+                // Đăng nhập thất bại -> Trả về JSON báo lỗi để Javascript hiển thị chữ đỏ
+                return Json(new { success = false, message = "❌ Tài khoản hoặc mật khẩu không chính xác!" });
             }
         }
         public ActionResult DangXuat()
@@ -399,6 +456,57 @@ namespace wed_learn_e.Controllers
 
             // Đổi ảnh xong thì tự load lại đúng trang cá nhân
             return RedirectToAction("TrangCaNhan");
+        }
+        // GET: Hiển thị giao diện trang Quên mật khẩu riêng biệt
+        public ActionResult QuenMatKhau()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult QuenMatKhau(string email)
+        {
+            try
+            {
+                // 1. Kiểm tra Email có tồn tại trong hệ thống không?
+                var user = db.nguoi_dung.FirstOrDefault(u => u.email == email);
+                if (user == null)
+                {
+                    return Json(new { success = false, message = "❌ Email này không tồn tại trong hệ thống!" });
+                }
+
+                // 2. Cấp mật khẩu mặc định mới
+                user.mat_khau = "123456";
+                db.SaveChanges(); // Lưu mật khẩu mới vào Database
+
+                // 3. Tiến hành gửi mail thông báo
+                string senderEmail = "2424802010340@student.tdmu.edu.vn";
+                string senderPassword = "bgpw qezn lsvu biyn";
+
+                MailMessage mail = new MailMessage();
+                mail.From = new MailAddress(senderEmail, "Hệ thống KityLearn");
+                mail.To.Add(email);
+                mail.Subject = "🔐 Khôi phục mật khẩu KityLearn";
+
+                // Nội dung mail
+                mail.Body = $"<h3>Xin chào {user.ho_va_ten},</h3>" +
+                            $"<p>Hệ thống đã nhận được yêu cầu cấp lại mật khẩu của bạn.</p>" +
+                            $"<p>Mật khẩu mới của bạn đã được đặt lại thành: <b style='color:red; font-size: 18px;'>123456</b></p>" +
+                            $"<p>Vui lòng đăng nhập và đổi lại mật khẩu cá nhân ngay để bảo mật tài khoản nhé!</p>" +
+                            $"<p>Trân trọng,<br>Đội ngũ KityLearn.</p>";
+                mail.IsBodyHtml = true;
+
+                SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
+                smtp.Credentials = new NetworkCredential(senderEmail, senderPassword);
+                smtp.EnableSsl = true;
+
+                smtp.Send(mail); // Thực thi gửi mail
+
+                return Json(new { success = true, message = "✔ Đã gửi mật khẩu mới về Email của bạn!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "❌ Hệ thống gửi mail đang gặp sự cố: " + ex.Message });
+            }
         }
     }
 }

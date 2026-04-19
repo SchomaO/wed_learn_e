@@ -22,7 +22,7 @@ namespace wed_learn_e.Controllers
             // Nếu không truyền số trang (mới vào) thì mặc định là trang 1
             int pageNumber = (page ?? 1);
             int pageSize = 3; // Cài đặt hiển thị 3 bình luận / 1 trang
-
+           
             // Lấy dữ liệu và cắt trang
             var listBinhLuan = db.binh_luan
                                  .Include(b => b.nguoi_dung)

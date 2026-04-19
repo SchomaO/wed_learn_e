@@ -4,31 +4,43 @@
     Layout = "~/Views/Shared/_LayoutUser.cshtml";
 }
 
-@section Scripts{
-    @Scripts.Render("~/bundles/jqueryval")
-}
-
 <style>
-    /* Chữ báo lỗi đỏ bên dưới mỗi ô nhập liệu */
     .field-validation-error {
         color: red;
         font-size: 13px;
         font-style: italic;
     }
 
-    /* Thông báo lỗi tổng quát từ Server (ViewBag.error) */
-    .alert-danger {
-        color: white;
-        background-color: #e74c3c;
-        padding: 10px;
+    /* Box thông báo AJAX */
+    #thongBaoAJAX {
+        display: none;
+        padding: 12px;
         margin-bottom: 15px;
-        border-radius: 4px;
-        list-style-type: none;
+        border-radius: 5px;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+
+    .alert-error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+
+    .btn-submit:disabled {
+        background-color: #95a5a6;
+        cursor: not-allowed;
     }
 </style>
 
 <div class="title">
-    <button class="close-btn" onclick="location.href='@Url.Action("Index","User")'">
+    <button class="close-btn" onclick="location.href='@Url.Action("Index","Trang_chu")'">
         <span>&times;</span>
     </button>
     <h2>Đăng ký</h2>
@@ -37,60 +49,113 @@
 <div class="content">
     <h2>Tạo tài khoản mới</h2>
 
-    @using (Html.BeginForm())
-    {
-        @Html.AntiForgeryToken()
+    <div id="thongBaoAJAX"></div>
 
-        @* 1. Hiển thị thông báo lỗi nếu trùng tên đăng nhập từ Controller *@
-        if (ViewBag.error != null)
-        {
-            <div class="alert-danger">
-                @ViewBag.error
-            </div>
-        }
+    <form id="registerForm" method="POST">
+        @Html.AntiForgeryToken()
 
         <table>
             <tr>
                 <td>Họ tên:</td>
                 <td>
-                    @Html.TextBoxFor(m => m.ho_va_ten, new { @placeholder = "Nhập họ và tên..." })<br>
+                    @Html.TextBoxFor(m => m.ho_va_ten, new { @placeholder = "Nhập họ và tên...", id = "ho_va_ten" })<br>
                     @Html.ValidationMessageFor(m => m.ho_va_ten)
                 </td>
             </tr>
-
             <tr>
                 <td>Tên đăng nhập:</td>
                 <td>
-                    @Html.TextBoxFor(m => m.ten_dang_nhap, new { @placeholder = "Tên đăng nhập..." })<br>
+                    @Html.TextBoxFor(m => m.ten_dang_nhap, new { @placeholder = "Tên đăng nhập...", id = "ten_dang_nhap", autocomplete = "username" })<br>
                     @Html.ValidationMessageFor(m => m.ten_dang_nhap)
                 </td>
             </tr>
-
             <tr>
                 <td>Mật khẩu:</td>
                 <td>
-                    @Html.PasswordFor(m => m.mat_khau, new { @placeholder = "Mật khẩu..." })<br>
+                    @Html.PasswordFor(m => m.mat_khau, new { @placeholder = "Mật khẩu...", id = "mat_khau", autocomplete = "new-password" })<br>
                     @Html.ValidationMessageFor(m => m.mat_khau)
                 </td>
             </tr>
-
             <tr>
                 <td>Nhập lại mật khẩu:</td>
                 <td>
-                    @Html.PasswordFor(m => m.MatKhauNL, new { @placeholder = "Nhập lại mật khẩu..." })<br>
+                    @Html.PasswordFor(m => m.MatKhauNL, new { @placeholder = "Nhập lại mật khẩu...", id = "MatKhauNL" })<br>
                     @Html.ValidationMessageFor(m => m.MatKhauNL)
                 </td>
             </tr>
-
             <tr>
                 <td>Email:</td>
                 <td>
-                    @Html.TextBoxFor(m => m.email, new { @placeholder = "Địa chỉ email...", @type = "email" })<br>
+                    @Html.TextBoxFor(m => m.email, new { @placeholder = "Địa chỉ email...", @type = "email", id = "email", autocomplete = "email" })<br>
                     @Html.ValidationMessageFor(m => m.email)
                 </td>
             </tr>
+
+
         </table>
 
-        <button type="submit" class="btn-submit">Đăng ký ngay</button>
-    }
+        <button type="submit" id="btnDangKy" class="btn-submit">Đăng ký ngay</button>
+        <p class="login">
+            Bạn đã có tài khoản?
+            <a href="@Url.Action("dangnhap","User")">Đăng nhập ngay</a>
+        </p>
+
+    </form>
 </div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#registerForm").submit(function (e) {
+                e.preventDefault(); // Chặn load lại trang thành công (vì đã có jQuery)
+
+                var btn = $("#btnDangKy");
+                btn.prop("disabled", true).text("Đang xử lý...");
+
+                var thongBao = $("#thongBaoAJAX");
+                thongBao.hide().removeClass("alert-success alert-error");
+
+                // Xóa hết các câu báo lỗi màu đỏ cũ dưới các ô nhập liệu mỗi khi bấm nút mới
+                $(".field-validation-error").text("");
+
+                // Gom dữ liệu gửi đi
+                var formData = $(this).serialize();
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("dangky", "User")',
+                    data: formData,
+                    dataType: "json",
+                    success: function (res) {
+                        if (res.success) {
+                            // Thành công -> Báo xanh ở trên cùng và chuyển trang
+                            thongBao.addClass("alert-success").text(res.message).fadeIn();
+                            setTimeout(function () {
+                                window.location.href = '@Url.Action("DangNhap", "User")';
+                            }, 1500);
+                        } else {
+                            // Thất bại
+                            if (res.field) {
+                                // Nếu Server chỉ điểm đích danh ô bị lỗi (VD: sai tên đăng nhập)
+                                // Nó sẽ tìm đúng thẻ <span data-valmsg-for="..."> dưới ô đó để in chữ đỏ ra
+                                $("span[data-valmsg-for='" + res.field + "']").text(res.message);
+                            } else {
+                                // Nếu là lỗi chung chung thì in ở cái hộp phía trên cùng
+                                thongBao.addClass("alert-error").text(res.message).fadeIn();
+                            }
+
+                            // Nhả nút ra cho người dùng bấm lại
+                            btn.prop("disabled", false).text("Đăng ký ngay");
+                        }
+                    },
+                    error: function () {
+                        thongBao.addClass("alert-error").text("Lỗi hệ thống, không gọi được hàm!").fadeIn();
+                        btn.prop("disabled", false).text("Đăng ký ngay");
+                    }
+                });
+            });
+        });
+    </script>
+}

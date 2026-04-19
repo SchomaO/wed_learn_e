@@ -249,9 +249,31 @@ namespace wed_learn_e.Controllers
 
             return View(data);
         }
-        public ActionResult _NguPhap()
+        // 1. Hàm hiển thị danh sách các bài ngữ pháp
+        public ActionResult _NguPhap(int? id_cap_do)
         {
-            return View();
+            wed_learn_eEntities db = new wed_learn_eEntities();
+            var listNguPhap = db.ngu_phap.AsQueryable();
+
+            if (id_cap_do.HasValue)
+            {
+                listNguPhap = listNguPhap.Where(x => x.id_cap_do == id_cap_do);
+            }
+
+            ViewBag.IdCapDo = id_cap_do;
+            return View(listNguPhap.ToList());
+        }
+
+        // 2. Hàm hiển thị nội dung chi tiết
+        public ActionResult ChiTietNguPhap(int id, int? id_cap_do)
+        {
+            wed_learn_eEntities db = new wed_learn_eEntities();
+            var baiHoc = db.ngu_phap.FirstOrDefault(x => x.id_ngu_phap == id);
+
+            if (baiHoc == null) return HttpNotFound();
+
+            ViewBag.IdCapDo = id_cap_do;
+            return View(baiHoc);
         }
         public ActionResult _ThanhNgu(int? id_cap_do, int? page, string search = "")
         {

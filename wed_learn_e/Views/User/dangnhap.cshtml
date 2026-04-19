@@ -7,45 +7,127 @@
     <button class="close-btn" onclick="location.href='@Url.Action("Index","Trang_chu")'">
         <span>×</span>
     </button>
-
     <h2>Đăng nhập</h2>
 </div>
 
 <div class="content">
     <h2>Đăng nhập tài khoản</h2>
 
-    @using (Html.BeginForm("dangnhap", "User", FormMethod.Post))
-    {
+    <form id="loginForm">
         <table>
             <tr>
                 <td class="canle_dk_noidung">Tên đăng nhập:</td>
-                <td><input type="text" name="ten_dang_nhap" required></td>
+                <td><input type="text" name="ten_dang_nhap" id="ten_dang_nhap" autocomplete="username" required></td>
             </tr>
 
             <tr>
                 <td class="canle_dk_noidung">Mật khẩu:</td>
-                <td><input type="password" name="mat_khau" required></td>
+                <td><input type="password" name="mat_khau" id="mat_khau" autocomplete="current-password" required></td>
             </tr>
         </table>
 
-        <p style="color:red">@ViewBag.ThongBao</p>
+        <p id="thongBaoLoi" style="color:red; display:none; font-weight: bold;"></p>
 
         <div style="height: 30px; text-align: justify; margin-left: 21px; ">
-            <input type="checkbox" name="RememberMe" style="padding: 0px 0px 5px 5px; width: 40px; margin-top: 10px;">
+            <input type="checkbox" name="RememberMe" id="RememberMe" style="padding: 0px 0px 5px 5px; width: 40px; margin-top: 10px;">
             <span>Lưu đăng nhập </span>
         </div>
 
         <button type="submit">Đăng nhập</button>
-    }
+    </form>
 
     <p>
         Bạn chưa có tài khoản?
         <a href="@Url.Action("Index","User")">Đăng ký ngay</a>
     </p>
+    <div style="text-align: center; margin-top: 15px;">
+        <a href="@Url.Action("QuenMatKhau", "User")" style="color: #e74c3c; font-weight: bold; text-decoration: underline;">Quên mật khẩu?</a>
+    </div>
 
-    <div style="display:flex; gap:10px;">
-        <button class="email">Đăng nhập bằng email</button>
-        <button class="email">Đăng nhập bằng gg</button>
+    <div id="forgotPasswordZone" style="display:none; margin-top:15px; padding:15px; background:#f9f9f9; border:1px solid #ddd; border-radius:8px;">
+        <p style="margin-top:0; font-size:14px; color:#555;">Nhập email đăng ký của bạn, hệ thống sẽ cấp lại mật khẩu mới.</p>
+        <input type="email" id="emailNhanMK" placeholder="Nhập email..." style="width:90%; padding:8px; margin-bottom:10px; border: 1px solid #ccc; border-radius:4px;">
+        <button type="button" id="btnGuiMatKhau" style="width:100%; padding: 10px; background:#f39c12; color:white; border:none; border-radius:4px; font-weight:bold; cursor:pointer;">Gửi mật khẩu mới</button>
+        <p id="thongBaoForgot" style="margin-top:10px; font-size: 13px; font-weight:bold; display:none;"></p>
     </div>
 
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#loginForm").submit(function (e) {
+            e.preventDefault(); // Ngăn chặn hành vi tải lại trang mặc định của form
+
+            // Lấy dữ liệu từ form
+            var formData = {
+                ten_dang_nhap: $("#ten_dang_nhap").val(),
+                mat_khau: $("#mat_khau").val(),
+                RememberMe: $("#RememberMe").is(":checked")
+            };
+
+            // Gửi AJAX
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("dangnhap", "User")', // Trỏ tới hàm dangnhap trong UserController
+                data: formData,
+                dataType: "json", // Dữ liệu mong đợi trả về từ Server là JSON
+                success: function (response) {
+                    if (response.success) {
+                        // Đăng nhập thành công -> Chuyển hướng trang
+                        window.location.href = response.redirectUrl;
+                    } else {
+                        // Đăng nhập thất bại -> Hiện câu thông báo lỗi
+                        $("#thongBaoLoi").text(response.message).show();
+                    }
+                },
+                error: function () {
+                    // Lỗi kết nối mạng hoặc lỗi server
+                    $("#thongBaoLoi").text("Có lỗi xảy ra, vui lòng thử lại sau!").show();
+                }
+            });
+    $("#btnShowForgot").click(function (e) {
+            e.preventDefault();
+            $("#forgotPasswordZone").slideToggle();
+        });
+
+        // 2. Xử lý nút Gửi mật khẩu mới
+        $("#btnGuiMatKhau").click(function () {
+            var email = $("#emailNhanMK").val();
+            var btn = $(this);
+            var thongBao = $("#thongBaoForgot");
+
+            if (!email) {
+                thongBao.css("color", "red").text("❌ Vui lòng nhập địa chỉ email!").show();
+                return;
+            }
+
+            // Hiển thị trạng thái đang gửi
+            btn.prop("disabled", true).css("background", "#95a5a6").text("Đang xử lý & gửi mail...");
+            thongBao.hide();
+
+            // Gửi AJAX xuống Controller
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("QuenMatKhau", "User")',
+                data: { email: email },
+                dataType: "json",
+                success: function (res) {
+                    if (res.success) {
+                        thongBao.css("color", "green").text(res.message).fadeIn();
+                        $("#emailNhanMK").val(''); // Xóa trắng ô nhập
+                    } else {
+                        thongBao.css("color", "red").text(res.message).fadeIn();
+                    }
+                    // Nhả nút ra
+                    btn.prop("disabled", false).css("background", "#f39c12").text("Gửi mật khẩu mới");
+                },
+                error: function () {
+                    thongBao.css("color", "red").text("❌ Lỗi kết nối đến máy chủ!").fadeIn();
+                    btn.prop("disabled", false).css("background", "#f39c12").text("Gửi mật khẩu mới");
+                }
+            });
+        });
+        });
+    });
+</script>

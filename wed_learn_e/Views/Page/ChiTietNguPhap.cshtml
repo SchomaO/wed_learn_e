@@ -1,0 +1,111 @@
+﻿@model wed_learn_e.Models.ngu_phap
+@{
+    ViewBag.Title = Model.tieu_de;
+    Layout = "~/Views/Shared/_Layoutcauhoi.cshtml";
+}
+
+<style>
+    body {
+        background: #f4f7fb;
+    }
+
+    .detail-container {
+        max-width: 800px;
+        margin: 40px auto;
+        background: white;
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        border-top: 5px solid #0d6efd;
+    }
+
+    .lesson-header {
+        text-align: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 1px dashed #ccc;
+    }
+
+        .lesson-header h1 {
+            color: #0d6efd;
+            font-size: 32px;
+            margin: 10px 0;
+        }
+
+    /* Định dạng cho nội dung bài học từ CSDL đổ ra */
+    .lesson-content h4 {
+        color: #333;
+        margin: 25px 0 10px;
+        font-size: 18px;
+    }
+
+    .formula-box {
+        background: #fff3cd;
+        border: 1px solid #ffeeba;
+        color: #856404;
+        padding: 15px;
+        border-radius: 8px;
+        font-family: 'Courier New', monospace;
+        font-size: 20px;
+        font-weight: bold;
+        text-align: center;
+        letter-spacing: 1px;
+    }
+
+    .grammar-list {
+        padding-left: 20px;
+        color: #555;
+        line-height: 1.8;
+        font-size: 16px;
+    }
+
+    .example-text {
+        color: #0d6efd;
+        font-style: italic;
+        background: #eef7ff;
+        padding: 12px 15px;
+        border-radius: 6px;
+        border-left: 4px solid #0d6efd;
+        margin-bottom: 10px;
+    }
+</style>
+
+@Html.Partial("_NutQuayLai", new ViewDataDictionary {
+  { "LinkQuayVe", Url.Action("KhoaHocNguPhap", "Page", new { id_cap_do = ViewBag.IdCapDo }) },
+  { "TieuDe", "Chi Tiết Ngữ Pháp" }
+})
+
+<div class="detail-container">
+    <div class="lesson-header">
+        <div style="font-size: 50px;">@Model.icon</div>
+        <h1>@Model.tieu_de</h1>
+        <div style="color: #666; font-style: italic;">@Model.mo_ta_ngan</div>
+    </div>
+
+    <div class="lesson-content">
+
+        <h4>💡 Cấu trúc:</h4>
+        <div class="formula-box">
+            @Html.Raw(Model.cong_thuc)
+        </div>
+
+        <h4>🎯 Cách sử dụng:</h4>
+        <div class="grammar-list">
+            @Html.Raw(Model.cach_dung)
+        </div>
+
+        <h4>📝 Ví dụ:</h4>
+        <div class="example-text">
+            @Html.Raw(Model.vi_du)
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.luu_y_them))
+        {
+            <h4>⚠️ Lưu ý:</h4>
+            <div style="color: red; font-style: italic;">
+                @Html.Raw(Model.luu_y_them)
+            </div>
+        }
+
+    </div>
+</div>

@@ -1,4 +1,7 @@
-﻿@{
+﻿@model List<wed_learn_e.Models.ngu_phap>
+
+
+@{
     ViewBag.Title = "Khóa Học Ngữ Pháp";
     Layout = "~/Views/Shared/_Layoutcauhoi.cshtml";
 }
@@ -41,6 +44,18 @@
 
     /* card */
 
+    /* container */
+    .grammar-container {
+        width: 90%;
+        margin: 50px auto;
+        /* CHUYỂN SANG FLEXBOX ĐỂ CỐ ĐỊNH KÍCH THƯỚC */
+        display: flex;
+        flex-wrap: wrap; /* Cho phép rớt dòng nếu hết chỗ */
+        justify-content: center; /* Căn giữa toàn bộ các thẻ */
+        gap: 25px;
+    }
+
+    /* card */
     .grammar-card {
         background: white;
         border-radius: 15px;
@@ -49,12 +64,14 @@
         box-shadow: 0 6px 15px rgba(0,0,0,0.1);
         transition: 0.3s;
         position: relative;
+        /* CỐ ĐỊNH KÍCH THƯỚC THẺ TẠI ĐÂY */
+        width: 260px; /* Chiều rộng cố định */
+        flex: 0 0 auto; /* Không cho phép bóp méo hay kéo giãn thẻ */
+        /* (Mẹo nhỏ) Giúp nút "Học ngay" luôn nằm ở dưới cùng cho dù phần mô tả dài ngắn khác nhau */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
     }
-
-        .grammar-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 12px 25px rgba(0,0,0,0.15);
-        }
 
     /* icon */
 
@@ -133,64 +150,26 @@
 
 
 <div class="grammar-container">
+    @if (Model != null && Model.Count > 0)
+    {
+        foreach (var item in Model)
+        {
+            <div class="grammar-card">
+                <div class="icon">@item.icon</div>
+                <div class="lesson-title">@item.tieu_de</div>
+                <div class="lesson-desc">@item.mo_ta_ngan</div>
 
-    <div class="grammar-card">
-        <div class="icon">📘</div>
-        <div class="lesson-title">Present Simple</div>
-        <div class="lesson-desc">
-            Thì hiện tại đơn và cách sử dụng.
-        </div>
-        <a href="#" class="btn-learn">Học ngay</a>
-    </div>
-
-    <div class="grammar-card">
-        <div class="icon">📗</div>
-        <div class="lesson-title">Present Continuous</div>
-        <div class="lesson-desc">
-            Thì hiện tại tiếp diễn.
-        </div>
-        <a href="#" class="btn-learn">Học ngay</a>
-    </div>
-
-    <div class="grammar-card">
-        <div class="icon">📙</div>
-        <div class="lesson-title">Past Simple</div>
-        <div class="lesson-desc">
-            Thì quá khứ đơn.
-        </div>
-        <a href="#" class="btn-learn">Học ngay</a>
-    </div>
-
-    <div class="grammar-card">
-        <div class="icon">📕</div>
-        <div class="lesson-title">Future Tense</div>
-        <div class="lesson-desc">
-            Các thì trong tương lai.
-        </div>
-        <a href="#" class="btn-learn">Học ngay</a>
-    </div>
-
-    <div class="grammar-card">
-        <div class="icon">⚖️</div>
-        <div class="lesson-title">Comparatives</div>
-        <div class="lesson-desc">
-            So sánh hơn và so sánh nhất.
-        </div>
-        <a href="#" class="btn-learn">Học ngay</a>
-    </div>
-
-    <div class="grammar-card">
-        <div class="icon">🔄</div>
-        <div class="lesson-title">Passive Voice</div>
-        <div class="lesson-desc">
-            Câu bị động trong tiếng Anh.
-        </div>
-        <a href="#" class="btn-learn">Học ngay</a>
-    </div>
-
+                <a href="@Url.Action("ChiTietNguPhap", "Page", new { id = item.id_ngu_phap, id_cap_do = ViewBag.IdCapDo })" class="btn-learn">
+                    Học ngay
+                </a>
+            </div>
+        }
+    }
+    else
+    {
+        <div style="text-align: center; grid-column: 1 / -1; color: #888;">Chưa có bài ngữ pháp nào!</div>
+    }
 </div>
-
-
 
 <div class="cat-mascot">
 

@@ -230,6 +230,9 @@
     <Compile Include="Models\nguoi_dung.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ngu_phap.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\nhat_ky_quan_tri.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -311,7 +314,6 @@
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Views\User\dangky.cshtml" />
     <Content Include="Views\User\dangnhap.cshtml" />
-    <Content Include="Views\User\Index.cshtml" />
     <Content Include="Views\User\TrangCaNhan.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -355,6 +357,8 @@
     <Content Include="Views\Shared\_LayoutAdmin.cshtml" />
     <Content Include="Views\Trang_chu\LienHe.cshtml" />
     <Content Include="Views\Shared\_NutQuayLai.cshtml" />
+    <Content Include="Views\Page\ChiTietNguPhap.cshtml" />
+    <Content Include="Views\User\QuenMatKhau.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
