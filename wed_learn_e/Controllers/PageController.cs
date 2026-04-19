@@ -177,9 +177,25 @@ namespace wed_learn_e.Controllers
 
             return View(user); // Truyền model user ra để điền sẵn tên vào form thanh toán
         }
+        // Hàm hỗ trợ tự động kiểm tra và tước quyền VIP nếu hết hạn
+        private void KiemTraVaThuHoiVIP(nguoi_dung user)
+        {
+            // CẬP NHẬT: Kiểm tra nếu là VIP loại 2 (Tháng) HOẶC loại 3 (Năm)
+            if ((user.loai_tai_khoan == 2 || user.loai_tai_khoan == 3) && user.ngay_het_han_vip != null)
+            {
+                // Nếu ngày hiện tại đã vượt qua ngày hết hạn
+                if (DateTime.Now > user.ngay_het_han_vip)
+                {
+                    user.loai_tai_khoan = 1;      // Đưa về tài khoản thường (1)
+                    user.ngay_het_han_vip = null; // Xóa ngày hết hạn đi
 
+                    db.SaveChanges(); // Lưu cập nhật xuống Database
+                }
+            }
+        }
         // 2. Hàm xử lý AJAX khi bấm nút "Thanh toán"
         [HttpPost]
+     
         public JsonResult XuLyThanhToan(string goi_vip, string phuong_thuc)
         {
             if (Session["user_id"] == null)
@@ -190,14 +206,31 @@ namespace wed_learn_e.Controllers
 
             if (user != null)
             {
-                // GIẢ LẬP GỌI API THANH TOÁN (VNPAY/MOMO) Ở ĐÂY
-                // ... (Sau khi API báo giao dịch thành công thì chạy code bên dưới)
+                // GIẢ LẬP: Ở đây thường sẽ gọi API VNPAY/MOMO. 
+                // Sau khi API trả về kết quả thành công, chúng ta mới cập nhật DB:
 
-                // Cập nhật loại tài khoản lên VIP (loai_tai_khoan = 2)
-                user.loai_tai_khoan = 2;
+                if (goi_vip == "VIP_THANG")
+                {
+                    // Cập nhật gói Tháng (Loại 2)
+                    user.loai_tai_khoan = 2;
+                    user.ngay_het_han_vip = DateTime.Now.AddDays(30);
+                }
+                else if (goi_vip == "VIP_NAM")
+                {
+                    // Cập nhật gói Năm (Loại 3)
+                    user.loai_tai_khoan = 3;
+                    user.ngay_het_han_vip = DateTime.Now.AddDays(365);
+                }
+                else
+                {
+                    return Json(new { success = false, message = "Gói VIP không hợp lệ!" });
+                }
+
                 db.SaveChanges();
 
-                // Trả về thông báo thành công
+                // Cập nhật lại Session ngay lập tức để giao diện thay đổi mà không cần đăng nhập lại
+                Session["LoaiTaiKhoan"] = user.loai_tai_khoan;
+
                 return Json(new
                 {
                     success = true,
@@ -206,7 +239,7 @@ namespace wed_learn_e.Controllers
                 });
             }
 
-            return Json(new { success = false, message = "Lỗi hệ thống!" });
+            return Json(new { success = false, message = "Không tìm thấy thông tin người dùng!" });
         }
         //Khóa học bổ sung 
         // Thêm tham số id_cap_do vào hàm

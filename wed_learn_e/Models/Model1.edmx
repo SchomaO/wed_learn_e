@@ -301,9 +301,10 @@
           <Property Name="id_cap_do_hien_tai" Type="int" />
           <Property Name="ngay_tao" Type="datetime" />
           <Property Name="MatKhauNL" Type="varchar" MaxLength="255" />
-          <Property Name="loai_tai_khoan" Type="int" />
           <Property Name="so_luong_khoa_hoc" Type="int" />
           <Property Name="anh_dai_dien" Type="nvarchar" MaxLength="255" />
+          <Property Name="ngay_het_han_vip" Type="datetime" />
+          <Property Name="loai_tai_khoan" Type="int" />
         </EntityType>
         <EntityType Name="nhat_ky_quan_tri">
           <Key>
@@ -1146,6 +1147,7 @@
           <Property Name="so_luong_khoa_hoc" Type="Int32" />
           <NavigationProperty Name="binh_luan" Relationship="wed_learn_eModel.FK_BinhLuan_NguoiDung" FromRole="nguoi_dung" ToRole="binh_luan" />
           <Property Name="anh_dai_dien" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ngay_het_han_vip" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="nhat_ky_quan_tri">
           <Key>
@@ -2180,6 +2182,7 @@
           <EntitySetMapping Name="nguoi_dung">
             <EntityTypeMapping TypeName="wed_learn_eModel.nguoi_dung">
               <MappingFragment StoreEntitySet="nguoi_dung">
+                <ScalarProperty Name="ngay_het_han_vip" ColumnName="ngay_het_han_vip" />
                 <ScalarProperty Name="anh_dai_dien" ColumnName="anh_dai_dien" />
                 <ScalarProperty Name="so_luong_khoa_hoc" ColumnName="so_luong_khoa_hoc" />
                 <ScalarProperty Name="loai_tai_khoan" ColumnName="loai_tai_khoan" />

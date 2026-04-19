@@ -44,6 +44,7 @@ namespace wed_learn_e.Models
         public Nullable<int> loai_tai_khoan { get; set; }
         public Nullable<int> so_luong_khoa_hoc { get; set; }
         public string anh_dai_dien { get; set; }
+        public Nullable<System.DateTime> ngay_het_han_vip { get; set; }
     
         public virtual ICollection<bai_kiem_tra_dau_vao> bai_kiem_tra_dau_vao { get; set; }
         public virtual cap_do cap_do { get; set; }

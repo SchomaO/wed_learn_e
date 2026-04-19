@@ -115,7 +115,22 @@ namespace wed_learn_e.Controllers
         {
             return View();
         }
+        // Hàm hỗ trợ tự động kiểm tra và tước quyền VIP nếu hết hạn
+        private void KiemTraVaThuHoiVIP(nguoi_dung user)
+        {
+            // CẬP NHẬT: Kiểm tra nếu là VIP loại 2 (Tháng) HOẶC loại 3 (Năm)
+            if ((user.loai_tai_khoan == 2 || user.loai_tai_khoan == 3) && user.ngay_het_han_vip != null)
+            {
+                // Nếu ngày hiện tại đã vượt qua ngày hết hạn
+                if (DateTime.Now > user.ngay_het_han_vip)
+                {
+                    user.loai_tai_khoan = 1;      // Đưa về tài khoản thường (1)
+                    user.ngay_het_han_vip = null; // Xóa ngày hết hạn đi
 
+                    db.SaveChanges(); // Lưu cập nhật xuống Database
+                }
+            }
+        }
         // POST đăng nhập
         [HttpPost]
         public ActionResult DangNhap(string ten_dang_nhap, string mat_khau)
@@ -125,6 +140,7 @@ namespace wed_learn_e.Controllers
 
             if (user != null)
             {
+                KiemTraVaThuHoiVIP(user);
                 // 1. Lưu các thông tin cần thiết vào Session
                 Session["user_id"] = user.id_nguoi_dung;
                 Session["TenDN"] = user.ten_dang_nhap;
