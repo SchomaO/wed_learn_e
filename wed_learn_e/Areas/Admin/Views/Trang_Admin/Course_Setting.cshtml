@@ -110,7 +110,41 @@
         </div>
     </div>
 </div>
+<div id="modalCreateContent" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center z-[100] transition-all duration-300">
+    <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl transform transition-all overflow-hidden">
+        <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-indigo-50/50">
+            <h3 class="text-xl font-bold text-indigo-900 flex items-center gap-2">
+                <i class="fas fa-plus-circle"></i> Tạo Khóa Học Mới
+            </h3>
+            <button onclick="closeModal()" class="text-gray-400 hover:text-red-500 transition">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
 
+        <div class="p-6 space-y-4">
+            <div>
+                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Tên khóa học mới</label>
+                <input type="text" id="txtNewCourseName" placeholder="Ví dụ: Tiếng Anh giao tiếp nâng cao..."
+                       class="w-full border-2 border-gray-100 rounded-xl p-3 focus:border-indigo-500 outline-none transition">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Mô tả khóa học</label>
+                <textarea id="txtNewCourseDesc" rows="3" placeholder="Tóm tắt nội dung khóa học này..."
+                          class="w-full border-2 border-gray-100 rounded-xl p-3 focus:border-indigo-500 outline-none transition"></textarea>
+            </div>
+        </div>
+
+        <div class="p-6 border-t border-gray-50 flex gap-3">
+            <button onclick="closeModal()" class="flex-1 py-3 px-4 rounded-xl font-bold text-gray-500 hover:bg-gray-100 transition">
+                Hủy bỏ
+            </button>
+            <button onclick="saveContent()" class="flex-1 py-3 px-4 rounded-xl font-bold text-white bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition">
+                Tạo khóa học
+            </button>
+        </div>
+    </div>
+</div>
 @section scripts {
     <script>
         // CHỈ KHAI BÁO 1 LẦN Ở ĐẦU
@@ -241,13 +275,40 @@
             }
             $("#list-viet").html(html);
         }
-
+        function renderListNguPhap(data) {
+            let html = "";
+            if (!data || data.length === 0) {
+                html = "<div class='col-span-full text-center py-10 text-gray-400'>Chưa có bài ngữ pháp nào.</div>";
+            } else {
+                html = data.map(item => `
+            <div class="bg-indigo-50/50 border border-indigo-100 rounded-2xl p-5 hover:shadow-md transition">
+                <div class="flex justify-between mb-3">
+                    <h5 class="font-bold text-indigo-900 text-lg">${item.tieu_de}</h5>
+                    <button onclick="deleteItem('ngu-phap', ${item.id_ngu_phap})" class="text-red-400 hover:text-red-600">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </div>
+                <div class="space-y-2 text-sm text-gray-700">
+                    <p><strong>💡 Cách dùng:</strong> ${item.cach_dung || '...'}</p>
+                    <p class="bg-white p-2 rounded-lg border border-indigo-50 font-mono text-indigo-600">
+                        <strong>🧪 CT:</strong> ${item.cong_thuc || '...'}
+                    </p>
+                    <p class="italic text-gray-500 font-serif">"${item.vi_du || 'Chưa có ví dụ'}"</p>
+                </div>
+            </div>
+        `).join('');
+            }
+            $("#list-ngu-phap").html(html);
+        }
         // --- NHÓM 2: CÁC HÀM ĐIỀU KHIỂN (Load, Switch, Delete) ---
 
         function loadFullData(id, name) {
             currentSelectedLevelId = id;
 
             // 1. Hiển thị khung bảng, ẩn chữ "Chọn cấp độ"
+            $(".level-item").removeClass("bg-indigo-100 border-l-4 border-indigo-600");
+            $("#level-" + id).addClass("bg-indigo-100 border-l-4 border-indigo-600");
+            $("#main-panel").removeClass("hidden");
             $("#empty-state").addClass("hidden");
             $("#main-panel").removeClass("hidden");
             $("#current-level-name").text("Đang quản lý: " + name);
@@ -263,6 +324,7 @@
                     renderListNghe(res.data.nghe);
                     renderListVideo(res.data.video);    
                     renderListViet(res.data.viet);
+                    renderListNguPhap(res.data.ngu_phap);
                     switchTab('noi'); // Mặc định mở tab nói
                 } else {
                     alert("Lỗi server: " + res.message);
@@ -294,103 +356,62 @@
                 });
             }
         }
-
-        // --- NHÓM 3: XỬ LÝ MODAL THÊM MỚI ---
-
-        function openAddNoi() {
-            if (!currentSelectedLevelId) {
-                alert("Vui lòng chọn một cấp độ trước!");
-                return;
-            }
-            $('#modalAddNoi').modal('show');
-        }
-
-        function saveNewNoi() {
-            var obj = {
-                id_cap_do: currentSelectedLevelId,
-                noi_dung_goc: $("#txtNoiDungGoc").val(),
-                nghia_tieng_viet: $("#txtNghiaViet").val()
-            };
-
-            $.post("/Admin/Trang_Admin/CreateNoi", obj, function (res) {
-                if (res.success) {
-                    $('#modalAddNoi').modal('hide');
-                    // Reset form
-                    $("#txtNoiDungGoc, #txtNghiaViet").val('');
-                    // Load lại dữ liệu
-                    loadFullData(currentSelectedLevelId, $("#current-level-name").text().replace("Đang quản lý: ", ""));
-                } else {
-                    alert(res.message);
-                }
-            });
-        }
-        function saveNewVideo() {
-            var obj = {
-                id_cap_do: currentSelectedLevelId,
-                tieu_de: $("#txtVideoTitle").val(),
-                url_video: $("#txtVideoUrl").val()
-            };
-
-            $.post("/Admin/Trang_Admin/CreateVideo", obj, function (res) {
-                if (res.success) {
-                    $('#modalAddVideo').modal('hide');
-                    loadFullData(currentSelectedLevelId, $("#current-level-name").text().replace("Đang quản lý: ", ""));
-                } else {
-                    alert(res.message);
-                }
-            });
-        }
-
-        // Hàm lưu Bài Nghe
-        function saveNewNghe() {
-            var obj = {
-                id_cap_do: currentSelectedLevelId,
-                tieu_de: $("#txtNgheTitle").val(),
-                file_am_thanh: $("#txtNgheFile").val()
-            };
-
-            $.post("/Admin/Trang_Admin/CreateNghe", obj, function (res) {
-                if (res.success) {
-                    $('#modalAddNghe').modal('hide');
-                    loadFullData(currentSelectedLevelId, $("#current-level-name").text().replace("Đang quản lý: ", ""));
-                } else {
-                    alert(res.message);
-                }
-            });
-        }
-        function openCreateCourse() {
-            if (!currentSelectedLevelId) {
-                alert("Bạn chưa chọn Cấp độ (A1, A2...) để thêm khóa học!");
-                return;
-            }
-            // Reset form
-            $("#txtCourseName, #txtCourseDesc").val('');
-            $('#modalCreateNewCourse').modal('show');
-        }
-
+        // Hàm mở Modal
         function NewCourse() {
-            let type = $("#selCourseType").val();
-            let name = $("#txtCourseName").val();
-            let desc = $("#txtCourseDesc").val();
+            if (!currentSelectedLevelId) {
+                alert("⚠️ Bạn ơi, phải chọn một Cấp độ (A1, A2...) ở bên trái trước đã!");
+                return;
+            }
+            // Hiện modal
+            $("#modalCreateContent").removeClass("hidden").addClass("flex");
+            // Reset form cho sạch sẽ
+            $("#txtCourseName, #txtCourseDesc").val('');
+        }
 
-            if (!name) { alert("Vui lòng nhập tên!"); return; }
+        // Hàm đóng Modal
+        function closeModal() {
+            $("#modalCreateContent").addClass("hidden").removeClass("flex");
+        }
+
+        // Hàm Lưu (Gọi đến CreateContent trong Controller)
+        function saveContent() {
+            // Sửa ID ở đây cho khớp với HTML (Thêm chữ "New")
+            let name = $("#txtNewCourseName").val();
+            let desc = $("#txtNewCourseDesc").val();
+
+            // Kiểm tra nếu rỗng
+            if (!name || name.trim() === "" || !desc || desc.trim() === "") {
+                alert("Vui lòng nhập đầy đủ Tên và Mô tả khóa học nha!");
+                return;
+            }
 
             let dataObj = {
                 id_cap_do: currentSelectedLevelId,
-                type: type, // Gửi type: 'noi', 'nghe', 'tu-vung'...
+                // Lưu ý: Kiểm tra xem biến 'type' bạn lấy từ đâu 
+                // Nếu không có dropdown chọn type, bạn có thể để mặc định hoặc bổ sung
+                type: "noi", // Ví dụ mặc định là bài nói, hoặc lấy từ tab hiện tại
                 content: name,
                 extra: desc
             };
 
             $.post("/Admin/Trang_Admin/CreateContent", dataObj, function (res) {
                 if (res.success) {
-                    $('#modalCreateNewCourse').modal('hide');
-                    // Load lại đúng cấp độ đang chọn
-                    loadFullData(currentSelectedLevelId, $("#current-level-name").text().replace("Đang quản lý: ", ""));
+                    closeModal();
+                    let levelName = $("#current-level-name").text().replace("Đang quản lý: ", "");
+                    loadFullData(currentSelectedLevelId, levelName);
+                    alert("✅ Đã tạo khóa học thành công!");
                 } else {
-                    alert(res.message);
+                    alert("Lỗi rồi: " + res.message);
                 }
             });
+        }
+
+        // Đóng modal khi bấm ra ngoài vùng trắng
+        window.onclick = function (event) {
+            let modal = document.getElementById('modalCreateContent');
+            if (event.target == modal) {
+                closeModal();
+            }
         }
     </script>
 }

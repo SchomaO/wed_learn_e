@@ -42,10 +42,9 @@ namespace wed_learn_e.Areas.Admin.Controllers
             db.Configuration.ProxyCreationEnabled = false;
             try
             {
-                // 1. Lấy danh sách ID các khóa học thuộc Level này (A1, A2...)
+                // Lấy danh sách ID các khóa học thuộc Level này
                 var ids = db.khoa_hoc.Where(x => x.id_cap_do == id).Select(x => x.id_khoa_hoc).ToList();
 
-                // 2. Lấy dữ liệu từ tất cả các bảng liên quan
                 var noi = db.bai_luyen_noi.Where(x => ids.Contains((int)x.id_khoa_hoc))
                             .Select(x => new { x.id_bai_noi, x.noi_dung_goc, x.nghia_tieng_viet }).ToList();
 
@@ -56,23 +55,20 @@ namespace wed_learn_e.Areas.Admin.Controllers
                               .Select(x => new { x.id_video, x.tieu_de, x.duong_dan_video }).ToList();
 
                 var viet = db.bai_luyen_viet.Where(x => ids.Contains((int)x.id_khoa_hoc))
-                             .Select(x => new { x.id_bai_viet, x.tieu_de, x.lich_su_luyen_viet }).ToList();
+                             .Select(x => new { x.id_bai_viet, x.tieu_de, x.mo_ta }).ToList();
 
-                // Giả sử bảng từ vựng của bạn là 'tu_vung'
                 var tuvung = db.tu_vung.Where(x => ids.Contains((int)x.id_khoa_hoc))
                                .Select(x => new { x.id_tu_vung, x.tu_tieng_anh, x.nghia_tieng_viet }).ToList();
+
+                // SỬA LỖI NGỮ PHÁP: Ngữ pháp đi theo id_cap_do chứ không phải ids của khóa học
+                var nguphap = db.ngu_phap.Where(x => x.id_cap_do == id)
+                               .Select(x => new { x.id_ngu_phap, x.tieu_de, x.cach_dung, x.cong_thuc, x.vi_du })
+                               .ToList();
 
                 return Json(new
                 {
                     success = true,
-                    data = new
-                    {
-                        noi = noi,
-                        nghe = nghe,
-                        video = video,
-                        viet = viet,
-                        tu_vung = tuvung
-                    }
+                    data = new { noi, nghe, video, viet, tu_vung = tuvung, ngu_phap = nguphap }
                 }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
@@ -107,6 +103,21 @@ namespace wed_learn_e.Areas.Admin.Controllers
                     var item = db.bai_giang_video.Find(id);
                     if (item != null) db.bai_giang_video.Remove(item);
                 }
+                else if (type == "tu-vung")
+                {
+                    var item = db.tu_vung.Find(id);
+                    if (item != null) db.tu_vung.Remove(item);
+                }
+                else if (type == "viet")
+                {
+                    var item = db.bai_luyen_viet.Find(id);
+                    if (item != null) db.bai_luyen_viet.Remove(item);
+                }
+                else if (type == "ngu-phap")
+                {
+                    var item = db.ngu_phap.Find(id);
+                    if (item != null) db.ngu_phap.Remove(item);
+                }
                 db.SaveChanges();
                 return Json(new { success = true });
             }
@@ -116,37 +127,16 @@ namespace wed_learn_e.Areas.Admin.Controllers
             }
         }
         [HttpPost]
-        public JsonResult CreateNoi(int id_cap_do, string noi_dung_goc, string nghia_tieng_viet)
-        {
-            // Tìm đại 1 khóa học "Luyện Nói" của cấp độ này để gán vào
-            var khoaHoc = db.khoa_hoc.FirstOrDefault(x => x.id_cap_do == id_cap_do && x.ten_khoa_hoc.Contains("Nói"));
-
-            if (khoaHoc == null) return Json(new { success = false, message = "Không tìm thấy khóa học Luyện Nói cho cấp độ này" });
-
-            var moi = new bai_luyen_noi
-            {
-                id_khoa_hoc = khoaHoc.id_khoa_hoc,
-                noi_dung_goc = noi_dung_goc,
-                nghia_tieng_viet = nghia_tieng_viet,
-                loai_bai_noi = "Vocabulary" // Mặc định
-            };
-
-            db.bai_luyen_noi.Add(moi);
-            db.SaveChanges();
-            return Json(new { success = true });
-        }
-        [HttpPost]
-        public JsonResult CreateNewCourse(int id_cap_do, string ten_khoa_hoc, string mo_ta)
+        public JsonResult CreateContent(int id_cap_do, string type, string content, string extra)
         {
             try
             {
-                // Tạo đối tượng khóa học mới
+                // Ở đây View của bạn đang gửi 'content' làm tên và 'extra' làm mô tả
                 var moi = new khoa_hoc
                 {
                     id_cap_do = id_cap_do,
-                    ten_khoa_hoc = ten_khoa_hoc,
-                    mo_ta = mo_ta
-                    // Nếu bạn có cột hình ảnh hoặc icon, có thể gán mặc định ở đây
+                    ten_khoa_hoc = content, // Khớp với biến 'content' từ JS gửi lên
+                    mo_ta = extra           // Khớp với biến 'extra' từ JS gửi lên
                 };
 
                 db.khoa_hoc.Add(moi);
@@ -156,7 +146,8 @@ namespace wed_learn_e.Areas.Admin.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = "Lỗi hệ thống: " + ex.Message });
+                // Ghi log lỗi nếu cần và trả về thông báo
+                return Json(new { success = false, message = "Lỗi Database: " + ex.Message });
             }
         }
     }
