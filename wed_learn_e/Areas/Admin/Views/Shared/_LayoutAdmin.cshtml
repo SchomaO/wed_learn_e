@@ -37,8 +37,12 @@
                    class="flex items-center gap-3 p-3 rounded-lg transition shadow-sm @(currentAction == "Index" ? "bg-indigo-700 font-medium" : "hover:bg-indigo-800")">
                     <i class="fas fa-users w-5"></i> Users Management
                 </a>
-
-                <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-indigo-800 transition">
+                <a href="@Url.Action("QuanLyBinhLuan", "Trang_Admin", new { area = "Admin" })"
+                   class="flex items-center gap-3 p-3 rounded-lg transition shadow-sm @(currentAction == "QuanLyBinhLuan" ? "bg-indigo-700 font-medium" : "hover:bg-indigo-800")">
+                    <i class="fas fa-comments w-5"></i> Comments & Support
+                </a>  
+                <a href="@Url.Action("Analytics", "Trang_Admin", new { area = "Admin" })"
+                   class="flex items-center gap-3 p-3 rounded-lg transition shadow-sm @(currentAction == "Analytics" ? "bg-indigo-700 font-medium" : "hover:bg-indigo-800")">
                     <i class="fas fa-chart-line w-5"></i> Analytics
                 </a>
                 <a href="@Url.Action("CaiDat", "Trang_Admin", new { area = "Admin" })" class="flex items-center gap-3 p-3 rounded-lg hover:bg-indigo-800 transition">
@@ -52,7 +56,7 @@
                     <img src="https://ui-avatars.com/api/?name=@(Session["HoTen"] ?? "Admin")&background=6366f1&color=fff"
                          class="w-10 h-10 rounded-full border-2 border-indigo-400">
                     <div class="text-left flex-1">
-                        <p class="text-sm font-semibold truncate w-32">@(Session["HoTen"] ?? "Admin Account")</p>
+                        <p class="text-sm font-semibold truncate w-32">@(Session["Admin_HoTen"] ?? "Admin Account")</p>
                         <p class="text-[10px] text-indigo-300">Super Admin</p>
                     </div>
                     <i class="fas fa-chevron-up text-xs text-indigo-400 transition-transform duration-300" id="chevronIcon"></i>

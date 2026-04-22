@@ -143,50 +143,51 @@ namespace wed_learn_e.Controllers
         [HttpPost]
         public ActionResult DangNhap(string ten_dang_nhap, string mat_khau)
         {
-            // Tìm người dùng có tài khoản và mật khẩu khớp với dữ liệu nhập vào
             var user = db.nguoi_dung.FirstOrDefault(u => u.ten_dang_nhap == ten_dang_nhap && u.mat_khau == mat_khau);
 
-           if(user!= null)
+            if (user != null)
             {
-                KiemTraVaThuHoiVIP(user);
-                // 1. Lưu các thông tin cần thiết vào Session
-                Session["user_id"] = user.id_nguoi_dung;
-                Session["TenDN"] = user.ten_dang_nhap;
-                Session["HoTen"] = user.ho_va_ten;
-                Session["VaiTro"] = user.vai_tro; // Quan trọng: Lưu lại vai trò để các trang khác kiểm tra
-                Session["Email"] = user.email;
-                Session["Avatar"] = user.anh_dai_dien;
-
-                string[] bangMau = { "1a73e8", "f39c12", "28a745", "dc3545", "6f42c1", "e83e8c" };
-                // Dùng ID của user chia lấy dư để chọn màu -> Đảm bảo màu luôn cố định với user đó!
-                Session["AvatarColor"] = bangMau[user.id_nguoi_dung % bangMau.Length];
-
-                // Lấy cấp độ hiện tại nếu có (Dành cho User)
-                if (user.id_cap_do_hien_tai != null)
-                {
-                    Session["id_cap_do_hien_tai"] = user.id_cap_do_hien_tai;
-                }
-
-                // 2. BẺ LÁI DỰA TRÊN VAI TRÒ (PHÂN QUYỀN) - XỬ LÝ CHO AJAX
                 string urlChuyenHuong = "";
 
+                // TÁCH BIỆT SESSION DỰA TRÊN VAI TRÒ
                 if (user.vai_tro == "quan_tri_vien")
                 {
-                    // Tạo link tới trang Admin
+                    // 1. NẾU LÀ ADMIN: Tạo Session có tiền tố "Admin_"
+                    Session["Admin_ID"] = user.id_nguoi_dung;
+                    Session["Admin_TenDN"] = user.ten_dang_nhap;
+                    Session["Admin_HoTen"] = user.ho_va_ten;
+                    Session["Admin_VaiTro"] = user.vai_tro;
+
+                    // Chuyển hướng về Admin
                     urlChuyenHuong = Url.Action("Index", "Trang_Admin", new { area = "Admin" });
                 }
                 else
                 {
-                    // Tạo link tới Trang Chủ cho User bình thường
+                    // 2. NẾU LÀ HỌC VIÊN: Tạo Session bình thường như cũ
+                    KiemTraVaThuHoiVIP(user);
+                    Session["user_id"] = user.id_nguoi_dung;
+                    Session["TenDN"] = user.ten_dang_nhap;
+                    Session["HoTen"] = user.ho_va_ten;
+                    Session["VaiTro"] = user.vai_tro;
+                    Session["Email"] = user.email;
+                    Session["Avatar"] = user.anh_dai_dien;
+
+                    string[] bangMau = { "1a73e8", "f39c12", "28a745", "dc3545", "6f42c1", "e83e8c" };
+                    Session["AvatarColor"] = bangMau[user.id_nguoi_dung % bangMau.Length];
+
+                    if (user.id_cap_do_hien_tai != null)
+                    {
+                        Session["id_cap_do_hien_tai"] = user.id_cap_do_hien_tai;
+                    }
+
+                    // Chuyển hướng về User
                     urlChuyenHuong = Url.Action("Index", "Trang_chu");
                 }
 
-                // Trả về JSON thông báo thành công kèm đường link để Javascript tự động chuyển trang
                 return Json(new { success = true, redirectUrl = urlChuyenHuong });
             }
             else
             {
-                // Đăng nhập thất bại -> Trả về JSON báo lỗi để Javascript hiển thị chữ đỏ
                 return Json(new { success = false, message = "❌ Tài khoản hoặc mật khẩu không chính xác!" });
             }
         }

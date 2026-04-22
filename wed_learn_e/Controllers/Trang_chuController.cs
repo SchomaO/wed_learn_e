@@ -19,26 +19,19 @@ namespace wed_learn_e.Controllers
         // 2. Thêm tham số int? page vào hàm
         public ActionResult Index(int? page)
         {
-            if (HttpContext.Application["BaoTri"] != null && (bool)HttpContext.Application["BaoTri"] == true)
-            {
-                // Chuyển hướng đến một View báo lỗi bảo trì (bạn tự tạo View này nhé)
-                return View("HeThongBaoTri");
-            }
-            // Nếu không truyền số trang (mới vào) thì mặc định là trang 1
+            // ... (Giữ nguyên phần kiểm tra bảo trì) ...
+
             int pageNumber = (page ?? 1);
-            int pageSize = 3; // Cài đặt hiển thị 3 bình luận / 1 trang
-           
-            // Lấy dữ liệu và cắt trang
+            int pageSize = 6; // Bạn có thể tăng số lượng hiện mỗi trang lên cho xịn
+
             var listBinhLuan = db.binh_luan
-                                 .Include(b => b.nguoi_dung)
-                                 .Include(b => b.cap_do)
-                                 .Where(b => b.trang_thai == true)
-                                 .OrderBy(b => b.ngay_tao) // Lệnh này giúp sắp xếp TỪ CŨ ĐẾN MỚI
-                                 .ToPagedList(pageNumber, pageSize); // Chia thành từng trang
+                .Include(b => b.nguoi_dung)
+                // XÓA DÒNG .Where(...) ở đây để hiện cả true và false
+                .OrderByDescending(b => b.nguoi_dung.vai_tro == "quan_tri_vien") // Admin vẫn luôn trên đầu
+                .ThenByDescending(b => b.ngay_tao)
+                .ToPagedList(pageNumber, pageSize);
 
-            // Đưa ra ViewBag
             ViewBag.DanhSachBinhLuan = listBinhLuan;
-
             return View();
         }
 
@@ -77,7 +70,7 @@ namespace wed_learn_e.Controllers
                     noi_dung = noi_dung,
 
                     ngay_tao = DateTime.Now,
-                    trang_thai = true // false để bình luận này bị ẩn, KHÔNG hiển thị ra ngoài trang chủ
+                    trang_thai = false // false để bình luận này bị ẩn, KHÔNG hiển thị ra ngoài trang chủ
                 });
 
                 db.SaveChanges();

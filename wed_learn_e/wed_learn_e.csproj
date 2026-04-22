@@ -303,6 +303,8 @@
     <Content Include="Areas\Admin\Views\Trang_Admin\Course_Setting.cshtml" />
     <Content Include="Areas\Admin\Views\Trang_Admin\ChiTietKhoaHoc.cshtml" />
     <Content Include="Areas\Admin\Views\Trang_Admin\CaiDat.cshtml" />
+    <Content Include="Areas\Admin\Views\Trang_Admin\QuanLyBinhLuan.cshtml" />
+    <Content Include="Areas\Admin\Views\Trang_Admin\Analytics.cshtml" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
     <Content Include="Scripts\jquery-3.7.0.min.js" />

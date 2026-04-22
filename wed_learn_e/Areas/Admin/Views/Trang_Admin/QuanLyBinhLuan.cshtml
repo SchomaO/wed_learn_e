@@ -1,0 +1,154 @@
+﻿@{
+    ViewBag.Title = "Quản lý Bình luận";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    var listChuDe = ViewBag.ListChuDe as List<string>;
+    var listHocVien = ViewBag.ListHocVien as List<wed_learn_e.Models.binh_luan>;
+    var listAdmin = ViewBag.ListAdmin as List<wed_learn_e.Models.binh_luan>;
+}
+
+<div class="mb-8 flex justify-between items-end">
+    <div>
+        <h2 class="text-2xl font-bold text-gray-800">Quản lý Bình luận</h2>
+        <p class="text-gray-500">Theo dõi, kiểm duyệt và giải đáp cho học viên</p>
+    </div>
+
+    <form action="@Url.Action("QuanLyBinhLuan")" method="get" class="flex gap-2">
+        <select name="chuDe" class="p-2 border rounded-lg outline-none focus:border-indigo-500">
+            <option value="">-- Tất cả chủ đề --</option>
+            @foreach (var cd in listChuDe)
+            {
+                if (cd != null)
+                {
+                    <option value="@cd" @(ViewBag.ChuDeHienTai == cd ? "selected" : "")>@cd</option>
+                }
+            }
+        </select>
+        <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 transition text-white px-5 py-2 rounded-lg font-bold">Lọc</button>
+    </form>
+</div>
+
+<h3 class="text-xl font-bold text-gray-700 mb-4 border-b pb-2"><i class="fas fa-users text-indigo-500 mr-2"></i>Câu hỏi từ Học viên</h3>
+<div class="space-y-4 mb-10">
+    @if (listHocVien != null && listHocVien.Any())
+    {
+        foreach (var item in listHocVien)
+        {
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 relative">
+                <button onclick="xoaCmt(@item.id_binh_luan)" class="absolute top-4 right-4 text-red-400 hover:text-red-600 hover:bg-red-50 p-2 rounded-lg transition" title="Xóa bình luận này">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+
+                <div class="flex items-start gap-4 mb-3">
+                    <div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold">
+                        @(string.IsNullOrEmpty(item.nguoi_dung?.ho_va_ten) ? "U" : item.nguoi_dung.ho_va_ten.Substring(0, 1).ToUpper())
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-800">
+                            @item.nguoi_dung.ho_va_ten
+                            <span class="text-xs text-gray-400 font-normal ml-2">@item.ngay_tao.Value.ToString("dd/MM/yyyy HH:mm")</span>
+                        </h4>
+                        <span class="inline-block bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-xs mt-1 border">
+                            <i class="fas fa-tag mr-1"></i> Chủ đề: @(item.chu_de ?? "Thảo luận")
+                        </span>
+                    </div>
+                </div>
+
+                <p class="text-gray-700 bg-gray-50 p-4 rounded-lg border-l-4 border-indigo-400 mb-4 ml-14">@item.noi_dung</p>
+
+                <div class="ml-14">
+                    @if (item.trang_thai == true)
+                    {
+                        <div class="bg-green-50 p-4 rounded-lg border border-green-100 flex justify-between items-center">
+                            <p class="text-xs text-green-600 font-bold uppercase"><i class="fas fa-check-circle mr-1"></i> Đã duyệt & Phản hồi</p>
+                            <span class="text-xs text-green-500 font-medium">Bình luận của bạn đã được đẩy lên hệ thống</span>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="flex gap-2">
+                            <input type="text" id="txtRep-@item.id_binh_luan" class="flex-1 p-2.5 border rounded-lg focus:border-indigo-500 outline-none" placeholder="Nhập câu trả lời để đăng lên hệ thống..." />
+                            <button onclick="guiTraLoi(@item.id_binh_luan)" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-lg font-bold transition whitespace-nowrap">
+                                <i class="fas fa-paper-plane mr-1"></i> Gửi phản hồi
+                            </button>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <p class="text-gray-500 italic">Không có bình luận nào từ học viên.</p>
+    }
+</div>
+
+<h3 class="text-xl font-bold text-gray-700 mb-4 border-b pb-2"><i class="fas fa-user-shield text-red-500 mr-2"></i>Thông báo từ Admin</h3>
+<div class="space-y-4">
+    @if (listAdmin != null && listAdmin.Any())
+    {
+        foreach (var item in listAdmin)
+        {
+            <div class="bg-orange-50 p-6 rounded-xl shadow-sm border border-orange-200 relative">
+                <button onclick="xoaCmt(@item.id_binh_luan)" class="absolute top-4 right-4 text-red-400 hover:text-red-600 hover:bg-red-50 p-2 rounded-lg transition" title="Xóa bình luận này">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+
+                <div class="flex items-start gap-4 mb-3">
+                    <div class="w-10 h-10 rounded-full bg-red-500 text-white flex items-center justify-center font-bold">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-red-600">
+                            @item.nguoi_dung.ho_va_ten ✔
+                            <span class="text-xs text-gray-400 font-normal ml-2">@item.ngay_tao.Value.ToString("dd/MM/yyyy HH:mm")</span>
+                        </h4>
+                        <span class="inline-block bg-white text-orange-600 px-2 py-0.5 rounded text-xs mt-1 border border-orange-200 font-bold">
+                            <i class="fas fa-thumbtack mr-1"></i> @(item.chu_de ?? "Thông báo")
+                        </span>
+                    </div>
+                </div>
+
+                <p class="text-gray-800 font-medium ml-14">@item.noi_dung</p>
+            </div>
+        }
+    }
+    else
+    {
+        <p class="text-gray-500 italic">Chưa có thông báo nào từ Admin.</p>
+    }
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function xoaCmt(id) {
+        if (confirm("Bạn có chắc chắn muốn xóa bình luận này không?")) {
+            $.post('@Url.Action("XoaBinhLuan", "Trang_Admin", new { area = "Admin" })', { id: id }, function(res) {
+                if (res.success) {
+                    location.reload();
+                } else {
+                    alert(res.message);
+                }
+            });
+        }
+    }
+
+    function guiTraLoi(id) {
+        var noiDung = $("#txtRep-" + id).val();
+
+        if (noiDung.trim() === "") {
+            alert("Vui lòng nhập nội dung câu trả lời!");
+            return;
+        }
+
+        $.post('@Url.Action("TraLoiBinhLuan", "Trang_Admin", new { area = "Admin" })', {
+            id_binh_luan: id,
+            noi_dung: noiDung
+        }, function(res) {
+            if (res.success) {
+                location.reload();
+            } else {
+                alert(res.message);
+            }
+        });
+    }
+</script>

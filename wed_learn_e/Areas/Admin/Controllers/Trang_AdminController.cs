@@ -15,22 +15,16 @@ namespace wed_learn_e.Areas.Admin.Controllers
         {
             ViewBag.Title = "Admin - Quản lý người dùng";
 
-            // 1. Chặn người chưa đăng nhập hoặc không phải admin
-            if (Session["VaiTro"] == null || Session["VaiTro"].ToString() != "quan_tri_vien")
+            // Đổi chữ Session["VaiTro"] thành Session["Admin_VaiTro"]
+            if (Session["Admin_VaiTro"] == null || Session["Admin_VaiTro"].ToString() != "quan_tri_vien")
             {
                 return RedirectToAction("DangNhap", "User", new { area = "" });
             }
 
-            ViewBag.ho_va_ten = Session["HoTen"];
+            // Đổi thành Session Admin
+            ViewBag.ho_va_ten = Session["Admin_HoTen"];
 
-            // 2. LẤY DỮ LIỆU ĐÃ LỌC TỪ DATABASE
-            // Dùng .Where() để bảo SQL Server chỉ lấy những người KHÔNG PHẢI là "quan_tri_vien"
             var users = db.nguoi_dung.Where(u => u.vai_tro != "quan_tri_vien").ToList();
-
-            // Hoặc nếu bạn muốn chỉ đích danh luôn: 
-            // var users = db.nguoi_dung.Where(u => u.vai_tro == "hoc_vien" || u.vai_tro == "nguoi_dung").ToList();
-
-            // 3. Truyền biến 'users' đã lọc sạch sẽ vào View
             return View(users);
         }
         // 1. Hàm GET: Lấy ra danh sách khóa học CỦA 1 HỌC VIÊN CỤ THỂ
@@ -112,8 +106,10 @@ namespace wed_learn_e.Areas.Admin.Controllers
         {
             ViewBag.Title = "Admin - Quản lý khóa học";
             // Kiểm tra quyền Admin (giống hàm Index của bạn)
-            if (Session["VaiTro"] == null || Session["VaiTro"].ToString() != "quan_tri_vien")
+            if (Session["Admin_VaiTro"] == null || Session["Admin_VaiTro"].ToString() != "quan_tri_vien")
+            {
                 return RedirectToAction("DangNhap", "User", new { area = "" });
+            }
 
             var listCapDo = db.cap_do.ToList();
             return View(listCapDo);
@@ -241,9 +237,9 @@ namespace wed_learn_e.Areas.Admin.Controllers
         public ActionResult CaiDat()
         {
             // Kiểm tra quyền Admin (nên có)
-            if (Session["VaiTro"] == null || Session["VaiTro"].ToString() != "quan_tri_vien")
+            if (Session["Admin_VaiTro"] == null || Session["Admin_VaiTro"].ToString() != "quan_tri_vien")
             {
-                return RedirectToAction("dangnhap", "User", new { area = "" });
+                return RedirectToAction("DangNhap", "User", new { area = "" });
             }
             return View();
         }
@@ -291,6 +287,168 @@ namespace wed_learn_e.Areas.Admin.Controllers
             catch (Exception ex)
             {
                 return Json(new { success = false, message = "Lỗi dọn dẹp: " + ex.Message });
+            }
+        }
+        public ActionResult QuanLyBinhLuan(string chuDe = "")
+        {
+            if (Session["Admin_VaiTro"] == null || Session["Admin_VaiTro"].ToString() != "quan_tri_vien")
+            {
+                return RedirectToAction("DangNhap", "User", new { area = "" });
+            }
+
+            var query = db.binh_luan.Include(b => b.nguoi_dung).AsQueryable();
+
+            if (!string.IsNullOrEmpty(chuDe))
+            {
+                query = query.Where(b => b.chu_de == chuDe);
+            }
+
+            // 1. TÁCH DANH SÁCH HỌC VIÊN (Không phải Admin)
+            ViewBag.ListHocVien = query.Where(b => b.nguoi_dung.vai_tro != "quan_tri_vien")
+                                       .OrderByDescending(b => b.ngay_tao).ToList();
+
+            // 2. TÁCH DANH SÁCH ADMIN
+            ViewBag.ListAdmin = query.Where(b => b.nguoi_dung.vai_tro == "quan_tri_vien")
+                                     .OrderByDescending(b => b.ngay_tao).ToList();
+
+            ViewBag.ListChuDe = db.binh_luan.Select(b => b.chu_de).Distinct().ToList();
+            ViewBag.ChuDeHienTai = chuDe;
+
+            // Không cần truyền Model nữa vì đã có ViewBag
+            return View();
+        }
+
+        [HttpPost]
+        public JsonResult XoaBinhLuan(int id)
+        {
+            try
+            {
+                var cmt = db.binh_luan.Find(id);
+                if (cmt != null)
+                {
+                    db.binh_luan.Remove(cmt);
+                    db.SaveChanges();
+                    return Json(new { success = true, message = "Đã xóa bình luận!" });
+                }
+                return Json(new { success = false, message = "Không tìm thấy bình luận." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Lỗi: " + ex.Message });
+            }
+        }
+        [HttpPost]
+        public JsonResult TraLoiBinhLuan(int id_binh_luan, string noi_dung)
+        {
+            try
+            {
+                if (Session["Admin_ID"] == null)
+                    return Json(new { success = false, message = "Vui lòng đăng nhập lại Admin!" });
+
+                var cmtGoc = db.binh_luan.Include(b => b.nguoi_dung).FirstOrDefault(b => b.id_binh_luan == id_binh_luan);
+
+                if (cmtGoc != null)
+                {
+                    // 1. Đánh dấu bình luận học viên đã được duyệt
+                    cmtGoc.trang_thai = true;
+
+                    // 2. Tạo bình luận mới của Admin
+                    binh_luan adminComment = new binh_luan();
+                    adminComment.id_nguoi_dung = Convert.ToInt32(Session["Admin_ID"]);
+                    adminComment.id_cap_do = cmtGoc.id_cap_do;
+                    adminComment.chu_de = cmtGoc.chu_de;
+
+                    // ---> MẸO KHÔNG SỬA DATABASE NẰM Ở ĐÂY <---
+                    // Lấy tên học viên đang được trả lời
+                    string tenHocVien = (cmtGoc.nguoi_dung != null) ? cmtGoc.nguoi_dung.ho_va_ten : "Học viên";
+
+                    // Ghép nối chuỗi: "Trả lời @Tên_Học_Viên: Nội dung"
+                    adminComment.noi_dung = $"👉 Trả lời @{tenHocVien}: {noi_dung}";
+                    // ------------------------------------------
+
+                    adminComment.ngay_tao = DateTime.Now;
+                    adminComment.trang_thai = true;
+
+                    db.binh_luan.Add(adminComment);
+                    db.SaveChanges();
+
+                    return Json(new { success = true, message = "Đã đăng phản hồi lên hệ thống!" });
+                }
+
+                return Json(new { success = false, message = "Không tìm thấy bình luận." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Lỗi Database: " + ex.Message });
+            }
+        }
+        public ActionResult Analytics()
+        {
+            // 1. Chặn người dùng lạ
+            if (Session["Admin_VaiTro"] == null || Session["Admin_VaiTro"].ToString() != "quan_tri_vien")
+            {
+                return RedirectToAction("DangNhap", "User", new { area = "" });
+            }
+
+            try
+            {
+                // ==========================================
+                // PHẦN 1: KPI CARDS (Giữ nguyên)
+                // ==========================================
+                ViewBag.TongHocVien = db.nguoi_dung.Count(u => u.vai_tro != "quan_tri_vien");
+                ViewBag.TongKhoaHoc = db.khoa_hoc.Count();
+                ViewBag.BinhLuanCho = db.binh_luan.Count(b => b.trang_thai == false);
+
+                // ==========================================
+                // PHẦN 2: DỮ LIỆU BIỂU ĐỒ CỘT (Khắc phục lỗi SQL)
+                // ==========================================
+                // BƯỚC 1: Lấy ID và số lượng (Chạy dưới SQL Server)
+                var topKhoaHocRaw = db.tien_do_hoc_tap
+                    .GroupBy(t => t.id_khoa_hoc)
+                    .Select(g => new {
+                        IdKhoaHoc = g.Key,
+                        SoLuong = g.Count()
+                    })
+                    .OrderByDescending(x => x.SoLuong)
+                    .Take(5)
+                    .ToList(); // <-- Ép thực thi ngay tại đây
+
+                // BƯỚC 2: Tìm tên khóa học tương ứng (Chạy trên RAM bằng C#)
+                var topKhoaHoc = topKhoaHocRaw.Select(x => new {
+                    TenKhoa = db.khoa_hoc.FirstOrDefault(k => k.id_khoa_hoc == x.IdKhoaHoc)?.ten_khoa_hoc ?? "Khóa học ẩn",
+                    SoLuong = x.SoLuong
+                }).ToList();
+
+                ViewBag.LabelKhoaHoc = topKhoaHoc.Select(k => k.TenKhoa).ToArray();
+                ViewBag.DataKhoaHoc = topKhoaHoc.Select(k => k.SoLuong).ToArray();
+
+                // ==========================================
+                // PHẦN 3: DỮ LIỆU BIỂU ĐỒ TRÒN (Khắc phục lỗi Nullable)
+                // ==========================================
+                // BƯỚC 1: Đếm số lượng theo Cấp độ (Chạy dưới SQL Server)
+                var phanBoCapDoRaw = db.nguoi_dung
+                    .Where(u => u.vai_tro != "quan_tri_vien" && u.id_cap_do_hien_tai != null)
+                    .GroupBy(u => u.id_cap_do_hien_tai)
+                    .Select(g => new {
+                        CapDo = g.Key,
+                        SoLuong = g.Count()
+                    })
+                    .ToList(); // <-- Ép thực thi ngay tại đây
+
+                // BƯỚC 2: Nối chữ "Cấp độ" (Chạy trên RAM bằng C#)
+                var phanBoCapDo = phanBoCapDoRaw.Select(c => new {
+                    TenCapDo = "Cấp độ " + c.CapDo,
+                    SoLuong = c.SoLuong
+                }).ToList();
+
+                ViewBag.LabelCapDo = phanBoCapDo.Select(c => c.TenCapDo).ToArray();
+                ViewBag.DataCapDo = phanBoCapDo.Select(c => c.SoLuong).ToArray();
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                return Content("Đã xảy ra lỗi khi thống kê dữ liệu: " + ex.Message);
             }
         }
     }

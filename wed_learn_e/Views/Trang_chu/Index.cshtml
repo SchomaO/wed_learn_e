@@ -544,18 +544,48 @@
 
                     foreach (var item in listBinhLuan)
                     {
-                        // Giữ nguyên toàn bộ code phần in HTML của từng cái Card ở đây (không đổi gì cả)
                         string tenHocVien = (item.nguoi_dung != null) ? item.nguoi_dung.ho_va_ten : "Học viên";
                         string tenAvatar = tenHocVien.Replace(" ", "+");
                         string bgColor = colors[colorIndex % colors.Length];
                         colorIndex++;
 
-                        <div class="testimonial-card">
+                        // Kiểm tra xem bình luận này có phải của Admin không
+                        bool isAdmin = (item.nguoi_dung != null && item.nguoi_dung.vai_tro == "quan_tri_vien");
+
+                        // Nếu là Admin thì thêm style viền vàng cho nổi bật
+                        <div class="testimonial-card" style="@(isAdmin ? "border: 2px solid #f4b400; background: #fffcf0;" : "")">
+
+                            @if (isAdmin)
+                            {
+                                <div style="position: absolute; top: -12px; left: 20px; background: #f4b400; color: white; padding: 3px 12px; border-radius: 12px; font-size: 12px; font-weight: bold;">
+                                    📌 Thông báo Admin
+                                </div>
+                            }
+
                             <div class="user-info">
-                                <img src="https://ui-avatars.com/api/?name=@tenAvatar&background=@bgColor&color=fff" alt="User">
+                                <img src="https://ui-avatars.com/api/?name=@tenAvatar&background=@(isAdmin ? "f4b400" : bgColor)&color=fff" alt="User">
                                 <div>
-                                    <div class="user-name">@tenHocVien</div>
-                                    <div class="user-role">Đánh giá ngày @(item.ngay_tao.HasValue ? item.ngay_tao.Value.ToString("dd/MM/yyyy") : "Gần đây")</div>
+                                    <div class="user-name" style="@(isAdmin ? "color: red;" : "")">
+                                        @tenHocVien @(isAdmin ? "✔" : "")
+                                    </div>
+                                    <div class="user-role">
+                                        @if (isAdmin)
+                                        {
+                                            <span>Quản trị viên KityLearn</span>
+                                        }
+                                        else
+                                        {
+                                            @* HIỂN THỊ TRẠNG THÁI TRẢ LỜI CHO USER *@
+                                            if (item.trang_thai == true)
+                                            {
+                                                <span style="color: #28a745; font-weight: bold;"><i class="fas fa-check-double"></i> Đã được hỗ trợ</span>
+                                            }
+                                            else
+                                            {
+                                                <span style="color: #888;">🕒 Đang chờ phản hồi</span>
+                                            }
+                                        }
+                                    </div>
                                 </div>
                             </div>
                             <div class="comment">"@item.noi_dung"</div>
