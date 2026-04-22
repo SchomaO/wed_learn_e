@@ -10,7 +10,7 @@
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                 <div class="p-4 bg-indigo-50 border-b border-gray-200 flex justify-between items-center">
                     <h3 class="font-bold text-indigo-900">Cấp độ học</h3>
-                    <button onclick="$('#modalAddLevel').modal('show')" class="bg-indigo-600 text-white p-2 rounded-lg hover:bg-indigo-700 transition">
+                    <button onclick="openModalAddLevel()" class="bg-indigo-600 text-white p-2 rounded-lg hover:bg-indigo-700 transition">
                         <i class="fas fa-plus"></i>
                     </button>
                 </div>
@@ -82,7 +82,14 @@
                             <div id="list-nghe" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                             </div>
                         </div>
-
+                        <div id="content-ngu-phap" class="tab-content hidden">
+                            <div id="list-ngu-phap" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            </div>
+                        </div>
+                        <div id="content-game" class="tab-content hidden">
+                            <div id="list-game" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            </div>
+                        </div>
                         <div id="content-viet" class="tab-content hidden">
                             <div id="list-viet" class="space-y-4">
                             </div>
@@ -145,9 +152,94 @@
         </div>
     </div>
 </div>
+<div id="modalAddLevel" class="fixed inset-0 z-[9999] hidden bg-black/60 backdrop-blur-sm pointer-events-auto">
+    <div class="flex items-center justify-center min-h-screen w-full p-4 pointer-events-none">
+
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden relative pointer-events-auto transform transition-all">
+
+            <button type="button" onclick="closeModalLevel()"
+                    class="absolute top-4 right-4 text-gray-400 hover:text-red-500 z-50 p-2 transition-colors">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+
+            <div class="p-6 border-b border-gray-100 bg-indigo-50/50">
+                <h3 class="text-xl font-bold text-indigo-900">✨ Thêm Cấp Độ Mới</h3>
+            </div>
+
+            <div class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Tên cấp độ</label>
+                    <input type="text" id="txtLevelName" placeholder="Ví dụ: A1 - Căn bản..."
+                           class="w-full border-2 border-gray-100 rounded-xl p-3 focus:border-indigo-500 outline-none transition-all">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Mô tả ngắn</label>
+                    <textarea id="txtLevelDesc" rows="3" placeholder="Mô tả mục tiêu của cấp độ này..."
+                              class="w-full border-2 border-gray-100 rounded-xl p-3 focus:border-indigo-500 outline-none transition-all"></textarea>
+                </div>
+            </div>
+
+            <div class="p-6 border-t border-gray-50 flex gap-3">
+                <button type="button" onclick="closeModalLevel()"
+                        class="flex-1 py-3 font-bold text-gray-500 hover:bg-gray-100 rounded-xl transition-all cursor-pointer">
+                    Hủy
+                </button>
+                <button type="button" onclick="saveLevel()"
+                        class="flex-1 py-3 font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-lg shadow-indigo-100 transition-all cursor-pointer">
+                    Lưu cấp độ
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 @section scripts {
     <script>
         // CHỈ KHAI BÁO 1 LẦN Ở ĐẦU
+        // Hàm mở modal (Thay thế cách gọi của nút cũ)
+        // Hàm mở Modal Cấp Độ
+        function openModalAddLevel() {
+            $("#modalAddLevel").removeClass("hidden").addClass("flex");
+            $("body").addClass("overflow-hidden");
+        }
+
+        // Hàm đóng Modal Cấp Độ
+        function closeModalLevel() {
+            $("#modalAddLevel").addClass("hidden").removeClass("flex");
+            $("body").removeClass("overflow-hidden");
+        }
+
+        // Hàm Lưu Cấp Độ
+        function saveLevel() {
+            let ten = $("#txtLevelName").val().trim();
+            let mota = $("#txtLevelDesc").val().trim();
+
+            if (!ten) {
+                alert("⚠️ Bạn ơi, nhập tên cấp độ đã nhé!");
+                return;
+            }
+
+            // Nút lưu đang gọi đúng Action AddLevel trong Controller của bạn
+            $.post("/Admin/Trang_Admin/AddLevel", { ten_cap_do: ten, mo_ta: mota }, function (res) {
+                if (res.success) {
+                    closeModalLevel();
+                    location.reload(); // Reload để sidebar cập nhật danh sách mới
+                } else {
+                    alert("Lỗi: " + res.message);
+                }
+            });
+        }
+        function deleteLevel(id) {
+            if (confirm("Xóa cấp độ sẽ xóa toàn bộ khóa học bên trong. Bạn có chắc không?")) {
+                $.post("/Admin/Trang_Admin/DeleteLevel", { id: id }, function (res) {
+                    if (res.success) {
+                        location.reload();
+                    } else {
+                        alert("Lỗi: " + res.message);
+                    }
+                });
+            }
+        }
+
         let currentSelectedLevelId = null;
 
         // --- NHÓM 1: CÁC HÀM RENDER (Đổ dữ liệu vào giao diện) ---
@@ -281,6 +373,7 @@
                 html = "<div class='col-span-full text-center py-10 text-gray-400'>Chưa có bài ngữ pháp nào.</div>";
             } else {
                 html = data.map(item => `
+
             <div class="bg-indigo-50/50 border border-indigo-100 rounded-2xl p-5 hover:shadow-md transition">
                 <div class="flex justify-between mb-3">
                     <h5 class="font-bold text-indigo-900 text-lg">${item.tieu_de}</h5>

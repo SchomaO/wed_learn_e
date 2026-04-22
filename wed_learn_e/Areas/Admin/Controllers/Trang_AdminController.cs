@@ -26,6 +26,48 @@ namespace wed_learn_e.Areas.Admin.Controllers
             // 4. Truyền biến 'users' vào View
             return View(users);
         }
+        [HttpPost]
+        public JsonResult AddLevel(string ten_cap_do, string mo_ta)
+        {
+            try
+            {
+                var moi = new cap_do
+                {
+                    ten_cap_do = ten_cap_do,
+                    mo_ta = mo_ta
+                };
+                db.cap_do.Add(moi);
+                db.SaveChanges();
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+        [HttpPost]
+        public JsonResult DeleteLevel(int id)
+        {
+            try
+            {
+                var cp = db.cap_do.Find(id);
+                if (cp != null)
+                {
+                    // Lưu ý: Nếu có ràng buộc khóa ngoại, bạn phải xóa các khóa học thuộc cấp độ này trước
+                    var khoaHocs = db.khoa_hoc.Where(x => x.id_cap_do == id);
+                    foreach (var k in khoaHocs) db.khoa_hoc.Remove(k);
+
+                    db.cap_do.Remove(cp);
+                    db.SaveChanges();
+                }
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
         public ActionResult Course_Setting()
         {
             ViewBag.Title = "Admin - Quản lý khóa học";
@@ -60,15 +102,16 @@ namespace wed_learn_e.Areas.Admin.Controllers
                 var tuvung = db.tu_vung.Where(x => ids.Contains((int)x.id_khoa_hoc))
                                .Select(x => new { x.id_tu_vung, x.tu_tieng_anh, x.nghia_tieng_viet }).ToList();
 
-                // SỬA LỖI NGỮ PHÁP: Ngữ pháp đi theo id_cap_do chứ không phải ids của khóa học
                 var nguphap = db.ngu_phap.Where(x => x.id_cap_do == id)
                                .Select(x => new { x.id_ngu_phap, x.tieu_de, x.cach_dung, x.cong_thuc, x.vi_du })
                                .ToList();
+                var games = db.game_kho_bau.Where(x => x.id_cap_do == id)
+                               .Select(x => new { x.id_game, x.cau_hoi_kho_bau, x.mo_ta }).ToList();
 
                 return Json(new
                 {
                     success = true,
-                    data = new { noi, nghe, video, viet, tu_vung = tuvung, ngu_phap = nguphap }
+                    data = new { noi, nghe, video, viet, game = games, tu_vung = tuvung, ngu_phap = nguphap }
                 }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
@@ -117,6 +160,11 @@ namespace wed_learn_e.Areas.Admin.Controllers
                 {
                     var item = db.ngu_phap.Find(id);
                     if (item != null) db.ngu_phap.Remove(item);
+                }
+                else if (type == "game")
+                {
+                    var item = db.game_kho_bau.Find(id);
+                    if (item != null) db.game_kho_bau.Remove(item);
                 }
                 db.SaveChanges();
                 return Json(new { success = true });
