@@ -19,6 +19,11 @@ namespace wed_learn_e.Controllers
         // 2. Thêm tham số int? page vào hàm
         public ActionResult Index(int? page)
         {
+            if (HttpContext.Application["BaoTri"] != null && (bool)HttpContext.Application["BaoTri"] == true)
+            {
+                // Chuyển hướng đến một View báo lỗi bảo trì (bạn tự tạo View này nhé)
+                return View("HeThongBaoTri");
+            }
             // Nếu không truyền số trang (mới vào) thì mặc định là trang 1
             int pageNumber = (page ?? 1);
             int pageSize = 3; // Cài đặt hiển thị 3 bình luận / 1 trang

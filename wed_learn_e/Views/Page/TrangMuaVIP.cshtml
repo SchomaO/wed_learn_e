@@ -89,7 +89,10 @@
     <div class="pricing-card card-green">
         <div>
             <div class="pkg-name">VIP 1 Tháng</div>
-            <div class="pkg-price">99.000đ <span>/tháng</span></div>
+            <div class="pkg-price">
+                @(HttpContext.Current.Application["GiaVipThang"] != null ? string.Format("{0:N0}", HttpContext.Current.Application["GiaVipThang"]) : "99,000")đ
+                <span>/tháng</span>
+            </div>
             <ul class="pkg-features">
                 <li>Mở khóa tất cả bài học</li>
                 <li>Luyện nói với AI không giới hạn</li>
@@ -103,7 +106,10 @@
         <div class="best-value">HOT NHẤT</div>
         <div>
             <div class="pkg-name">VIP 1 Năm</div>
-            <div class="pkg-price">799.000đ <span>/năm</span></div>
+            <div class="pkg-price">
+                @(HttpContext.Current.Application["GiaVipNam"] != null ? string.Format("{0:N0}", HttpContext.Current.Application["GiaVipNam"]) : "799,000")đ
+                <span>/năm</span>
+            </div>
             <ul class="pkg-features">
                 <li>Tất cả đặc quyền VIP Tháng</li>
                 <li>Tiết kiệm hơn 30% so với mua lẻ</li>

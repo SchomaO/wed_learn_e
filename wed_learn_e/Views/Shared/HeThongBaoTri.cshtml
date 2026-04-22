@@ -1,0 +1,12 @@
+﻿
+@{
+    Layout = null;
+}
+
+@if (HttpContext.Current.Application["ThongBaoBanner"] != null && !string.IsNullOrEmpty(HttpContext.Current.Application["ThongBaoBanner"].ToString()))
+{
+    <div style="background: #ffc107; color: #000; padding: 10px; text-align: center; font-weight: bold; position: relative; z-index: 9999;">
+        <i class="fas fa-bullhorn" style="margin-right: 10px;"></i>
+        @HttpContext.Current.Application["ThongBaoBanner"].ToString()
+    </div>
+}

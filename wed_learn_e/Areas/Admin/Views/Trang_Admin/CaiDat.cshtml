@@ -1,0 +1,118 @@
+﻿@{
+    ViewBag.Title = "Cấu hình KityLearn";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="p-6">
+    <div class="flex justify-between items-center mb-8">
+        <h2 class="text-2xl font-bold text-gray-800">Cài đặt hệ thống</h2>
+        <button id="btnSave" class="bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-indigo-700 transition">
+            Lưu thay đổi
+        </button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex justify-between items-center">
+            <div>
+                <p class="font-bold text-gray-700">Chế độ bảo trì</p>
+                <p class="text-sm text-gray-500">Tắt toàn bộ trang web đối với học viên.</p>
+            </div>
+            <input type="checkbox" id="chkBaoTri" class="w-6 h-6">
+        </div>
+
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex justify-between items-center">
+            <div>
+                <p class="font-bold text-gray-700">Cho phép đăng ký mới</p>
+                <p class="text-sm text-gray-500">Mở/Đóng chức năng tạo tài khoản.</p>
+            </div>
+            <input type="checkbox" id="chkDangKy" checked class="w-6 h-6">
+        </div>
+    </div>
+
+    <div class="mt-6 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <p class="font-bold text-gray-700 mb-2">Thông báo toàn hệ thống</p>
+        <textarea id="txtBanner" class="w-full p-3 border rounded-lg" rows="3" placeholder="Nhập nội dung thông báo..."></textarea>
+    </div>
+</div>
+@* KHỐI 3: CẤU HÌNH GIÁ BÁN VIP *@
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mt-8">
+    <div class="bg-yellow-50 border-b border-yellow-100 p-4">
+        <h3 class="font-bold text-yellow-700 text-lg"><i class="fas fa-tags mr-2"></i> Bảng giá VIP</h3>
+    </div>
+    <div class="p-6 grid grid-cols-2 gap-6">
+        <div>
+            <label class="block font-bold text-gray-700 mb-2">Giá VIP 1 Tháng (VNĐ)</label>
+            <input type="number" id="txtGiaThang" value="@(HttpContext.Current.Application["GiaVipThang"] ?? 99000)" class="w-full p-3 border rounded-lg">
+        </div>
+        <div>
+            <label class="block font-bold text-gray-700 mb-2">Giá VIP 1 Năm (VNĐ)</label>
+            <input type="number" id="txtGiaNam" value="@(HttpContext.Current.Application["GiaVipNam"] ?? 799000)" class="w-full p-3 border rounded-lg">
+        </div>
+    </div>
+</div>
+
+@* KHỐI 4: BẢO TRÌ DỮ LIỆU (DỌN RÁC) *@
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mt-8">
+    <div class="bg-gray-50 border-b border-gray-200 p-4">
+        <h3 class="font-bold text-gray-700 text-lg"><i class="fas fa-database mr-2"></i> Dọn dẹp hệ thống</h3>
+    </div>
+    <div class="p-6 flex justify-between items-center">
+        <div>
+            <h4 class="font-bold text-gray-800">Xóa bản ghi cũ hơn 1 năm</h4>
+            <p class="text-sm text-gray-500">Dọn dẹp các bình luận, lịch sử hoạt động cũ để làm nhẹ Database.</p>
+        </div>
+        <button id="btnDonDep" class="bg-red-600 hover:bg-red-700 text-white px-5 py-2.5 rounded-lg font-bold transition">
+            <i class="fas fa-trash-alt mr-1"></i> Dọn dẹp ngay
+        </button>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $("#btnSave").click(function() {
+        var data = {
+            BaoTri: $("#chkBaoTri").is(":checked"),
+            ChoPhepDangKy: $("#chkDangKy").is(":checked"),
+            TrangThaiVNPAY: true, // Bạn có thể thêm checkbox tương tự
+            TrangThaiMomo: true,
+            ThongBaoBanner: $("#txtBanner").val()
+        };
+
+        $.ajax({
+            url: '@Url.Action("LuuCaiDat")',
+            type: 'POST',
+            data: data,
+            success: function(res) {
+                alert(res.message);
+            }
+        });
+    });
+    // Gửi thêm 2 biến giá tiền khi bấm Lưu
+var configData = {
+    BaoTri: $("#chkBaoTri").is(":checked"), // (Các biến cũ giữ nguyên)
+    ChoPhepDangKy: $("#chkDangKy").is(":checked"),
+    ThongBaoBanner: $("#txtBanner").val(),
+    // THÊM MỚI:
+    GiaVipThang: $("#txtGiaThang").val(),
+    GiaVipNam: $("#txtGiaNam").val()
+};
+
+// ... (Giữ nguyên AJAX gọi LuuCaiDat cũ) ...
+
+// CHỨC NĂNG DỌN DẸP RÁC
+$("#btnDonDep").click(function () {
+    if (confirm("Hành động này sẽ xóa dữ liệu cũ hơn 1 năm và không thể phục hồi. Chắc chắn dọn dẹp?")) {
+        var btn = $(this);
+        btn.prop("disabled", true).text("Đang dọn dẹp...");
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("DonDepDuLieuCu", "AdminHeThong")',
+            success: function (res) {
+                alert(res.message);
+                btn.prop("disabled", false).html('<i class="fas fa-trash-alt mr-1"></i> Dọn dẹp ngay');
+            }
+        });
+    }
+});
+</script>

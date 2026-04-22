@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<wed_learn_e.Models.nguoi_dung>
 
 @{
-    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-@* 1. Phần thống kê nhanh (Tùy chọn) *@
+@* 1. Phần thống kê nhanh *@
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
     <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
         <p class="text-gray-500 text-sm font-medium">Tổng người dùng</p>
@@ -13,7 +13,7 @@
     </div>
 </div>
 
-@* 2. Bảng hiển thị danh sách người dùng lấy từ SQL *@
+@* 2. Bảng hiển thị danh sách người dùng *@
 <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
     <div class="p-6 border-b border-gray-50 flex justify-between items-center">
         <h3 class="font-bold text-lg text-gray-700">Danh sách tài khoản</h3>
@@ -26,10 +26,11 @@
         <table class="w-full text-left border-collapse">
             <thead>
                 <tr class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider font-semibold">
-                    <th class="px-6 py-4">Họ và tên</th>
-                    <th class="px-6 py-4">Tên đăng nhập</th>
-                    <th class="px-6 py-4">Email</th>
-                    <th class="px-6 py-4">Vai trò</th>
+                    <th class="px-6 py-4">Người dùng</th>
+                    <th class="px-6 py-4">Tài khoản & Ngày tạo</th>
+                    <th class="px-6 py-4 text-center">Vai trò</th>
+                    <th class="px-6 py-4">Trạng thái VIP</th>
+                    <th class="px-6 py-4 text-center">Khóa học</th>
                     <th class="px-6 py-4 text-right">Thao tác</th>
                 </tr>
             </thead>
@@ -37,18 +38,39 @@
                 @foreach (var item in Model)
                 {
                     <tr class="hover:bg-gray-50 transition">
+
+                        @* CỘT 1: AVATAR + HỌ TÊN + EMAIL *@
                         <td class="px-6 py-4">
                             <div class="flex items-center gap-3">
-                                @* Tạo vòng tròn tên viết tắt cho đẹp *@
-                                <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-xs">
-                                    @(string.IsNullOrEmpty(item.ho_va_ten) ? "U" : item.ho_va_ten.Substring(0, 1).ToUpper())
+                                @* Kiểm tra có ảnh đại diện chưa *@
+                                @if (!string.IsNullOrEmpty(item.anh_dai_dien))
+                                {
+                                    <img src="@Url.Content("~/Images/Avatars/" + item.anh_dai_dien)" class="w-10 h-10 rounded-full object-cover border border-gray-200" alt="Avatar" />
+                                }
+                                else
+                                {
+                                    <div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-sm">
+                                        @(string.IsNullOrEmpty(item.ho_va_ten) ? "U" : item.ho_va_ten.Substring(0, 1).ToUpper())
+                                    </div>
+                                }
+
+                                <div>
+                                    <div class="font-bold text-gray-800">@item.ho_va_ten</div>
+                                    <div class="text-xs text-gray-500 mt-0.5">@item.email</div>
                                 </div>
-                                <span class="font-bold text-gray-800">@item.ho_va_ten</span>
                             </div>
                         </td>
-                        <td class="px-6 py-4 text-gray-600">@item.ten_dang_nhap</td>
-                        <td class="px-6 py-4 text-gray-500">@item.email</td>
+
+                        @* CỘT 2: TÊN ĐĂNG NHẬP + NGÀY TẠO *@
                         <td class="px-6 py-4">
+                            <div class="font-medium text-gray-700">@item.ten_dang_nhap</div>
+                            <div class="text-xs text-gray-400 mt-0.5">
+                                Tham gia: @(item.ngay_tao.HasValue ? item.ngay_tao.Value.ToString("dd/MM/yyyy") : "Chưa cập nhật")
+                            </div>
+                        </td>
+
+                        @* CỘT 3: VAI TRÒ *@
+                        <td class="px-6 py-4 text-center">
                             @if (item.vai_tro == "quan_tri_vien")
                             {
                                 <span class="bg-red-100 text-red-600 px-3 py-1 rounded-full text-[10px] font-bold uppercase">Admin</span>
@@ -58,9 +80,47 @@
                                 <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-[10px] font-bold uppercase">Học viên</span>
                             }
                         </td>
+
+                        @* CỘT 4: LOẠI TÀI KHOẢN (VIP) + NGÀY HẾT HẠN *@
+                        <td class="px-6 py-4">
+                            @if (item.loai_tai_khoan == 2)
+                            {
+                                <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold border border-green-200">VIP THÁNG</span>
+                            }
+                            else if (item.loai_tai_khoan == 3)
+                            {
+                                <span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs font-bold border border-yellow-200">VIP NĂM</span>
+                            }
+                            else
+                            {
+                                <span class="bg-gray-100 text-gray-500 px-2 py-1 rounded text-xs font-bold border border-gray-200">THƯỜNG</span>
+                            }
+
+                            @if (item.ngay_het_han_vip != null)
+                            {
+                                <div class="text-[11px] text-gray-500 mt-1.5">
+                                    <i class="fas fa-clock mr-1"></i>HSD: @item.ngay_het_han_vip.Value.ToString("dd/MM/yyyy")
+                                </div>
+                            }
+                        </td>
+
+                        @* CỘT 5: SỐ LƯỢNG KHÓA HỌC *@
+                        <td class="px-6 py-4 text-center">
+                            <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 font-bold text-gray-700">
+                                @(item.so_luong_khoa_hoc ?? 0)
+                            </span>
+                        </td>
+
+                        @* CỘT 6: THAO TÁC *@
                         <td class="px-6 py-4 text-right space-x-3">
-                            <button class="text-indigo-600 hover:text-indigo-900 font-medium">Sửa</button>
-                            <button class="text-red-600 hover:text-red-900 font-medium">Xóa</button>
+                            <button class="text-indigo-600 hover:text-indigo-900 font-medium transition">Sửa</button>
+                            <button class="text-red-600 hover:text-red-900 font-medium transition">Xóa</button>
+                        </td>
+                        <td class="px-6 py-4 text-right space-x-3">
+                            <a href="@Url.Action("ChiTietKhoaHoc", "Trang_Admin", new { id_nguoi_dung = item.id_nguoi_dung })"
+                               class="text-indigo-600 hover:text-indigo-900 font-medium transition">
+                                Cấp/Gỡ Khóa Học
+                            </a>
                         </td>
                     </tr>
                 }

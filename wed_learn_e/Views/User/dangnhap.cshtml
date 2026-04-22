@@ -36,10 +36,19 @@
         <button type="submit">Đăng nhập</button>
     </form>
 
+    
     <p>
         Bạn chưa có tài khoản?
-        <a href="@Url.Action("Index","User")">Đăng ký ngay</a>
+        @if (HttpContext.Current.Application["ChoPhepDangKy"] != null && (bool)HttpContext.Current.Application["ChoPhepDangKy"] == false)
+        {
+            <span style="color: gray; font-style: italic;">(Đăng ký hiện đang đóng)</span>
+        }
+        else
+        {
+            <a href="@Url.Action("dangky","User")">Đăng ký ngay</a>
+        }
     </p>
+   
     <div style="text-align: center; margin-top: 15px;">
         <a href="@Url.Action("QuenMatKhau", "User")" style="color: #e74c3c; font-weight: bold; text-decoration: underline;">Quên mật khẩu?</a>
     </div>

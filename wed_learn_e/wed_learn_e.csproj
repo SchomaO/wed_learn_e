@@ -301,6 +301,8 @@
     <Content Include="Areas\Admin\Views\web.config" />
     <Content Include="Areas\Admin\Views\Trang_Admin\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Trang_Admin\Course_Setting.cshtml" />
+    <Content Include="Areas\Admin\Views\Trang_Admin\ChiTietKhoaHoc.cshtml" />
+    <Content Include="Areas\Admin\Views\Trang_Admin\CaiDat.cshtml" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
     <Content Include="Scripts\jquery-3.7.0.min.js" />
@@ -354,16 +356,16 @@
     <Content Include="Views\tinh_nang\BanDoKhoBau.cshtml" />
     <Content Include="Views\tinh_nang\GiaiMaCauHoi.cshtml" />
     <Content Include="Views\Page\TrangMuaVIP.cshtml" />
-    <Content Include="Views\Shared\_LayoutAdmin.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\_LayoutAdmin.cshtml" />
     <Content Include="Views\Trang_chu\LienHe.cshtml" />
     <Content Include="Views\Shared\_NutQuayLai.cshtml" />
     <Content Include="Views\Page\ChiTietNguPhap.cshtml" />
     <Content Include="Views\User\QuenMatKhau.cshtml" />
+    <Content Include="Views\Shared\HeThongBaoTri.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Admin\Data\" />
-    <Folder Include="Areas\Admin\Views\Shared\" />
     <Folder Include="Data\" />
     <Folder Include="Views\Default\" />
   </ItemGroup>

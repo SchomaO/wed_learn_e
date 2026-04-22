@@ -14,17 +14,99 @@ namespace wed_learn_e.Areas.Admin.Controllers
         public ActionResult Index()
         {
             ViewBag.Title = "Admin - Quản lý người dùng";
-            // Chặn người chưa đăng nhập hoặc không phải admin
+
+            // 1. Chặn người chưa đăng nhập hoặc không phải admin
             if (Session["VaiTro"] == null || Session["VaiTro"].ToString() != "quan_tri_vien")
             {
                 return RedirectToAction("DangNhap", "User", new { area = "" });
-                // area = "" nghĩa là đá ngược ra ngoài phần User bình thường
             }
-            ViewBag.ho_va_ten = Session["HoTen"];
-            var users = db.nguoi_dung.ToList();
 
-            // 4. Truyền biến 'users' vào View
+            ViewBag.ho_va_ten = Session["HoTen"];
+
+            // 2. LẤY DỮ LIỆU ĐÃ LỌC TỪ DATABASE
+            // Dùng .Where() để bảo SQL Server chỉ lấy những người KHÔNG PHẢI là "quan_tri_vien"
+            var users = db.nguoi_dung.Where(u => u.vai_tro != "quan_tri_vien").ToList();
+
+            // Hoặc nếu bạn muốn chỉ đích danh luôn: 
+            // var users = db.nguoi_dung.Where(u => u.vai_tro == "hoc_vien" || u.vai_tro == "nguoi_dung").ToList();
+
+            // 3. Truyền biến 'users' đã lọc sạch sẽ vào View
             return View(users);
+        }
+        // 1. Hàm GET: Lấy ra danh sách khóa học CỦA 1 HỌC VIÊN CỤ THỂ
+        public ActionResult ChiTietKhoaHoc(int id_nguoi_dung)
+        {
+            // Lấy thông tin học viên để in ra tên
+            var user = db.nguoi_dung.Find(id_nguoi_dung);
+            ViewBag.HocVien = user;
+
+            // Lấy danh sách các khóa học mà học viên này ĐÃ đăng ký
+            var listKhoaDaHoc = db.tien_do_hoc_tap.Where(t => t.id_nguoi_dung == id_nguoi_dung).ToList();
+
+            // Lấy TẤT CẢ khóa học trong hệ thống (để hiện ra cái Dropdown cho Admin chọn thêm mới)
+            // Mẹo: Lọc ra những khóa chưa học để Admin không thêm trùng
+            var listIdDaHoc = listKhoaDaHoc.Select(t => t.id_khoa_hoc).ToList();
+            ViewBag.KhoaChuaHoc = db.khoa_hoc.Where(k => !listIdDaHoc.Contains(k.id_khoa_hoc)).ToList();
+
+            return View(listKhoaDaHoc);
+        }
+
+        // 2. Hàm POST: Thêm khóa học mới cho học viên
+        [HttpPost]
+        public ActionResult ThemKhoaHocChoHocVien(int id_nguoi_dung, int id_khoa_hoc)
+        {
+            try
+            {
+                // Kiểm tra xem đã có chưa (đề phòng bấm trùng)
+                var check = db.tien_do_hoc_tap.FirstOrDefault(t => t.id_nguoi_dung == id_nguoi_dung && t.id_khoa_hoc == id_khoa_hoc);
+                if (check == null)
+                {
+                    tien_do_hoc_tap tienDoMoi = new tien_do_hoc_tap();
+                    tienDoMoi.id_nguoi_dung = id_nguoi_dung;
+                    tienDoMoi.id_khoa_hoc = id_khoa_hoc;
+                    // Nếu bảng tiến độ của bạn có ngày đăng ký, gán thêm: tienDoMoi.ngay_dang_ky = DateTime.Now;
+
+                    db.tien_do_hoc_tap.Add(tienDoMoi);
+
+                    // Tăng số lượng khóa học của user lên 1
+                    var user = db.nguoi_dung.Find(id_nguoi_dung);
+                    if (user != null) { user.so_luong_khoa_hoc = (user.so_luong_khoa_hoc ?? 0) + 1; }
+
+                    db.SaveChanges();
+                    return Json(new { success = true, message = "Thêm khóa học thành công!" });
+                }
+                return Json(new { success = false, message = "Học viên này đã có khóa học này rồi!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Lỗi hệ thống: " + ex.Message });
+            }
+        }
+
+        // 3. Hàm POST: Xóa khóa học khỏi học viên
+        [HttpPost]
+        public ActionResult XoaKhoaHocCuaHocVien(int id_nguoi_dung, int id_khoa_hoc)
+        {
+            try
+            {
+                var tienDo = db.tien_do_hoc_tap.FirstOrDefault(t => t.id_nguoi_dung == id_nguoi_dung && t.id_khoa_hoc == id_khoa_hoc);
+                if (tienDo != null)
+                {
+                    db.tien_do_hoc_tap.Remove(tienDo);
+
+                    // Giảm số lượng khóa học xuống 1
+                    var user = db.nguoi_dung.Find(id_nguoi_dung);
+                    if (user != null && user.so_luong_khoa_hoc > 0) { user.so_luong_khoa_hoc -= 1; }
+
+                    db.SaveChanges();
+                    return Json(new { success = true, message = "Đã gỡ khóa học!" });
+                }
+                return Json(new { success = false, message = "Không tìm thấy dữ liệu khóa học này!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Lỗi hệ thống: " + ex.Message });
+            }
         }
         public ActionResult Course_Setting()
         {
@@ -157,6 +239,61 @@ namespace wed_learn_e.Areas.Admin.Controllers
             catch (Exception ex)
             {
                 return Json(new { success = false, message = "Lỗi hệ thống: " + ex.Message });
+            }
+        }
+        public ActionResult CaiDat()
+        {
+            // Kiểm tra quyền Admin (nên có)
+            if (Session["VaiTro"] == null || Session["VaiTro"].ToString() != "quan_tri_vien")
+            {
+                return RedirectToAction("dangnhap", "User", new { area = "" });
+            }
+            return View();
+        }
+
+        [HttpPost]
+        public JsonResult LuuCaiDat(bool BaoTri, bool ChoPhepDangKy, string ThongBaoBanner, int GiaVipThang, int GiaVipNam)
+        {
+            try
+            {
+                // Lưu vào bộ nhớ Application (tồn tại xuyên suốt phiên chạy của Server)
+                HttpContext.Application["BaoTri"] = BaoTri;
+                HttpContext.Application["ChoPhepDangKy"] = ChoPhepDangKy;
+              
+                HttpContext.Application["ThongBaoBanner"] = ThongBaoBanner;
+                HttpContext.Application["GiaVipThang"] = GiaVipThang;
+                HttpContext.Application["GiaVipNam"] = GiaVipNam;
+                return Json(new { success = true, message = "Hệ thống đã cập nhật cấu hình mới!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Lỗi: " + ex.Message });
+            }
+        }
+        [HttpPost]
+        public JsonResult DonDepDuLieuCu()
+        {
+            try
+            {
+                // Lấy thời điểm 1 năm trước
+                DateTime motNamTruoc = DateTime.Now.AddYears(-1);
+
+                // Ví dụ: Xóa các bình luận cũ hơn 1 năm (Bạn có thể thêm các bảng lịch sử khác vào đây)
+                var oldComments = db.binh_luan.Where(b => b.ngay_tao < motNamTruoc).ToList();
+
+                // Dùng vòng lặp để xóa từng dòng thay vì xóa 1 cục
+                foreach (var comment in oldComments)
+                {
+                    db.binh_luan.Remove(comment);
+                }
+
+                db.SaveChanges();
+
+                return Json(new { success = true, message = $"Đã dọn dẹp {oldComments.Count} bản ghi cũ thành công!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Lỗi dọn dẹp: " + ex.Message });
             }
         }
     }

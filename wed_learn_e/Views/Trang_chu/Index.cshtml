@@ -38,6 +38,7 @@
             color: white;
             cursor: pointer;
         }
+
         .logo {
             position: relative; /* Làm gốc tọa độ cho 2 ảnh bên trong */
             width: 80px; /* Khai báo chiều rộng cụ thể */
@@ -72,6 +73,7 @@
             .logo:hover .img-1 {
                 opacity: 0; /* Ẩn ảnh 1 đi */
             }
+
         .login {
             color: white;
             display: flex;
@@ -414,6 +416,11 @@
         .user-profile-name {
             font-size: 15px;
         }
+
+        .dk:hover {
+            color: #2295d682;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -438,10 +445,20 @@
         }
         else
         {
-            <div class="login">
-                <a href="@Url.Action("dangky","User")"><span> <b>Bạn đã có tài khoản? </b></span></a>
-                <button onclick="location.href='@Url.Action("dangnhap","User")'">Đăng nhập</button>
-            </div>
+    <div class="login">
+        <p>
+
+            @if (HttpContext.Current.Application["ChoPhepDangKy"] != null && (bool)HttpContext.Current.Application["ChoPhepDangKy"] == false)
+            {
+                <span style="color: gray; font-style: italic;">(Đăng ký hiện đang đóng)</span>
+            }
+            else
+            {
+                <a href="@Url.Action("dangky","User")" class="dk">Bạn đã có tài khoản?</a>
+            }
+        </p>
+        <button onclick="location.href='@Url.Action("dangnhap","User")'">Đăng nhập</button>
+    </div>
         }
 
     </header>

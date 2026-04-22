@@ -21,6 +21,14 @@ namespace wed_learn_e.Controllers
         [HttpPost]
         public ActionResult dangky(string ho_va_ten, string ten_dang_nhap, string mat_khau, string MatKhauNL, string email)
         {
+            if (HttpContext.Application["ChoPhepDangKy"] != null && (bool)HttpContext.Application["ChoPhepDangKy"] == false)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "⚠️ Hiện tại hệ thống đang tạm đóng chức năng đăng ký để bảo trì. Vui lòng quay lại sau!"
+                });
+            }
             try
             {
                 // 1. KIỂM TRA MẬT KHẨU
@@ -138,7 +146,7 @@ namespace wed_learn_e.Controllers
             // Tìm người dùng có tài khoản và mật khẩu khớp với dữ liệu nhập vào
             var user = db.nguoi_dung.FirstOrDefault(u => u.ten_dang_nhap == ten_dang_nhap && u.mat_khau == mat_khau);
 
-            if (user != null)
+            if (user != null && user.vai_tro == "nguoi_dung")
             {
                 KiemTraVaThuHoiVIP(user);
                 // 1. Lưu các thông tin cần thiết vào Session
