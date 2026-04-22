@@ -146,7 +146,7 @@ namespace wed_learn_e.Controllers
             // Tìm người dùng có tài khoản và mật khẩu khớp với dữ liệu nhập vào
             var user = db.nguoi_dung.FirstOrDefault(u => u.ten_dang_nhap == ten_dang_nhap && u.mat_khau == mat_khau);
 
-            if (user != null && user.vai_tro == "nguoi_dung")
+           if(user!= null)
             {
                 KiemTraVaThuHoiVIP(user);
                 // 1. Lưu các thông tin cần thiết vào Session
