@@ -23,6 +23,8 @@
           <Property Name="tieu_de" Type="nvarchar" MaxLength="200" Nullable="false" />
           <Property Name="mo_ta" Type="nvarchar(max)" />
           <Property Name="nguoi_tao" Type="int" />
+          <Property Name="thoi_gian_phut" Type="int" />
+          <Property Name="trang_thai" Type="int" />
         </EntityType>
         <EntityType Name="bai_luyen_nghe">
           <Key>
@@ -348,6 +350,14 @@
           <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="version" Type="int" />
           <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="thong_tin_khoa_hoc">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_khoa_hoc" Type="int" />
+          <Property Name="noi_dung_html" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="tien_do_hoc_tap">
           <Key>
@@ -840,6 +850,20 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ThongTin_KhoaHoc">
+          <End Role="khoa_hoc" Type="Self.khoa_hoc" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="thong_tin_khoa_hoc" Type="Self.thong_tin_khoa_hoc" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="khoa_hoc">
+              <PropertyRef Name="id_khoa_hoc" />
+            </Principal>
+            <Dependent Role="thong_tin_khoa_hoc">
+              <PropertyRef Name="id_khoa_hoc" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="wed_learn_eModelStoreContainer">
           <EntitySet Name="bai_giang_video" EntityType="Self.bai_giang_video" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="bai_kiem_tra_dau_vao" EntityType="Self.bai_kiem_tra_dau_vao" Schema="dbo" store:Type="Tables" />
@@ -872,6 +896,7 @@
           <EntitySet Name="nguoi_dung" EntityType="Self.nguoi_dung" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="nhat_ky_quan_tri" EntityType="Self.nhat_ky_quan_tri" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="thong_tin_khoa_hoc" EntityType="Self.thong_tin_khoa_hoc" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tien_do_hoc_tap" EntityType="Self.tien_do_hoc_tap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tu_vung" EntityType="Self.tu_vung" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Vocabulary" EntityType="Self.Vocabulary" Schema="dbo" store:Type="Tables" />
@@ -1027,6 +1052,10 @@
             <End Role="nguoi_dung" EntitySet="nguoi_dung" />
             <End Role="binh_luan" EntitySet="binh_luan" />
           </AssociationSet>
+          <AssociationSet Name="FK_ThongTin_KhoaHoc" Association="Self.FK_ThongTin_KhoaHoc">
+            <End Role="khoa_hoc" EntitySet="khoa_hoc" />
+            <End Role="thong_tin_khoa_hoc" EntitySet="thong_tin_khoa_hoc" />
+          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -1055,6 +1084,8 @@
           <NavigationProperty Name="nguoi_dung" Relationship="Self.FK__bai_kiem___nguoi__66603565" FromRole="bai_kiem_tra_dau_vao" ToRole="nguoi_dung" />
           <NavigationProperty Name="cau_hoi_kiem_tra" Relationship="Self.FK__cau_hoi_k__id_ba__693CA210" FromRole="bai_kiem_tra_dau_vao" ToRole="cau_hoi_kiem_tra" />
           <NavigationProperty Name="ket_qua_kiem_tra" Relationship="Self.FK__ket_qua_k__id_ba__6E01572D" FromRole="bai_kiem_tra_dau_vao" ToRole="ket_qua_kiem_tra" />
+          <Property Name="thoi_gian_phut" Type="Int32" />
+          <Property Name="trang_thai" Type="Int32" />
         </EntityType>
         <EntityType Name="bai_tap_thuc_hanh">
           <Key>
@@ -1137,6 +1168,7 @@
           <NavigationProperty Name="bai_luyen_nghe" Relationship="wed_learn_eModel.FK__bai_luyen__id_kh__2EDAF651" FromRole="khoa_hoc" ToRole="bai_luyen_nghe" />
           <NavigationProperty Name="bai_luyen_viet" Relationship="wed_learn_eModel.FK__bai_luyen__id_kh__3D2915A8" FromRole="khoa_hoc" ToRole="bai_luyen_viet" />
           <NavigationProperty Name="bai_sap_xep" Relationship="wed_learn_eModel.FK__bai_sap_x__id_kh__56E8E7AB" FromRole="khoa_hoc" ToRole="bai_sap_xep" />
+          <NavigationProperty Name="thong_tin_khoa_hoc" Relationship="wed_learn_eModel.FK_ThongTin_KhoaHoc" FromRole="khoa_hoc" ToRole="thong_tin_khoa_hoc" />
         </EntityType>
         <EntityType Name="nguoi_dung">
           <Key>
@@ -1614,6 +1646,11 @@
           <EntitySet Name="ngu_phap" EntityType="wed_learn_eModel.ngu_phap" />
           <EntitySet Name="feature_trang_chu" EntityType="wed_learn_eModel.feature_trang_chu" />
           <EntitySet Name="footer_cot" EntityType="wed_learn_eModel.footer_cot" />
+          <EntitySet Name="thong_tin_khoa_hoc" EntityType="wed_learn_eModel.thong_tin_khoa_hoc" />
+          <AssociationSet Name="FK_ThongTin_KhoaHoc" Association="wed_learn_eModel.FK_ThongTin_KhoaHoc">
+            <End Role="khoa_hoc" EntitySet="khoa_hoc" />
+            <End Role="thong_tin_khoa_hoc" EntitySet="thong_tin_khoa_hoc" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="bai_luyen_noi">
           <Key>
@@ -2131,6 +2168,29 @@
           <Property Name="noi_dung_html" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="thu_tu" Type="Int32" />
         </EntityType>
+        <EntityType Name="thong_tin_khoa_hoc">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_khoa_hoc" Type="Int32" />
+          <Property Name="noi_dung_html" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="khoa_hoc" Relationship="wed_learn_eModel.FK_ThongTin_KhoaHoc" FromRole="thong_tin_khoa_hoc" ToRole="khoa_hoc" />
+        </EntityType>
+        <Association Name="FK_ThongTin_KhoaHoc">
+          <End Type="wed_learn_eModel.khoa_hoc" Role="khoa_hoc" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="wed_learn_eModel.thong_tin_khoa_hoc" Role="thong_tin_khoa_hoc" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="khoa_hoc">
+              <PropertyRef Name="id_khoa_hoc" />
+            </Principal>
+            <Dependent Role="thong_tin_khoa_hoc">
+              <PropertyRef Name="id_khoa_hoc" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2151,6 +2211,8 @@
           <EntitySetMapping Name="bai_kiem_tra_dau_vao">
             <EntityTypeMapping TypeName="wed_learn_eModel.bai_kiem_tra_dau_vao">
               <MappingFragment StoreEntitySet="bai_kiem_tra_dau_vao">
+                <ScalarProperty Name="trang_thai" ColumnName="trang_thai" />
+                <ScalarProperty Name="thoi_gian_phut" ColumnName="thoi_gian_phut" />
                 <ScalarProperty Name="id_bai_kiem_tra" ColumnName="id_bai_kiem_tra" />
                 <ScalarProperty Name="tieu_de" ColumnName="tieu_de" />
                 <ScalarProperty Name="mo_ta" ColumnName="mo_ta" />
@@ -2546,6 +2608,15 @@
                 <ScalarProperty Name="thu_tu" ColumnName="thu_tu" />
                 <ScalarProperty Name="noi_dung_html" ColumnName="noi_dung_html" />
                 <ScalarProperty Name="tieu_de" ColumnName="tieu_de" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="thong_tin_khoa_hoc">
+            <EntityTypeMapping TypeName="wed_learn_eModel.thong_tin_khoa_hoc">
+              <MappingFragment StoreEntitySet="thong_tin_khoa_hoc">
+                <ScalarProperty Name="noi_dung_html" ColumnName="noi_dung_html" />
+                <ScalarProperty Name="id_khoa_hoc" ColumnName="id_khoa_hoc" />
                 <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>

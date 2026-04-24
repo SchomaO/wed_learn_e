@@ -14,20 +14,37 @@ namespace wed_learn_e.Controllers
     {
         // GET: bai_test
         wed_learn_eEntities db = new wed_learn_eEntities();
+        // 1. SỬA LẠI HÀM NÀY
         public ActionResult thong_tin_khoa_hoc(int? id)
         {
-            // Nếu không có id truyền vào thì đuổi về trang chọn cấp độ
             if (id == null) return RedirectToAction("khoadaotao");
 
-            // Lưu lại id_cap_do_hien_tai vào Session để các trang sau (Từ vựng, Luyện nghe...) biết đường lấy bài
             Session["id_cap_do_hien_tai"] = id;
 
-            // Lấy tên cấp độ để hiển thị ra View cho đẹp (Ví dụ: Khóa Học: Beginner (A1))
             var capDo = db.cap_do.FirstOrDefault(x => x.id_cap_do == id);
             ViewBag.TenCapDo = capDo != null ? capDo.ten_cap_do : "Khóa Học";
-            ViewBag.IdCapDo = id; // Truyền ID sang View để gắp vào link
+            ViewBag.IdCapDo = id;
 
-            return View(); // Không cần truyền List<khoa_hoc> sang nữa
+            // FIX: Đổi id_cap_do thành id. 
+            // Thêm OrderBy và Skip(9) để bỏ qua 9 khóa học cũ, chỉ lấy các khóa tạo thêm phía sau.
+            ViewBag.DanhSachKhoaHocMoi = db.khoa_hoc
+                                           .Where(k => k.id_cap_do == id)
+                                           .OrderBy(k => k.id_khoa_hoc) // Bắt buộc phải sắp xếp trước khi Skip
+                                           .Skip(9)
+                                           .ToList();
+            return View();
+        }
+
+        // 2. THÊM HÀM MỚI NÀY ĐỂ HIỂN THỊ NỘI DUNG (CKEDITOR)
+        public ActionResult NoiDungKhoaHoc(int id_khoa_hoc)
+        {
+            var khoaHoc = db.khoa_hoc.Find(id_khoa_hoc);
+            ViewBag.TenKhoaHoc = khoaHoc != null ? khoaHoc.ten_khoa_hoc : "Bài học mới";
+
+            // Lấy toàn bộ nội dung HTML Admin đã soạn
+            var danhSachNoiDung = db.thong_tin_khoa_hoc.Where(t => t.id_khoa_hoc == id_khoa_hoc).ToList();
+
+            return View(danhSachNoiDung);
         }
         public ActionResult Index()
         {

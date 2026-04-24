@@ -1,5 +1,6 @@
-﻿@{
-    ViewBag.Title = "Thông tin bài test";
+﻿@model wed_learn_e.Models.bai_kiem_tra
+@{
+    ViewBag.Title = Model.tieu_de;
     Layout = "~/Views/Shared/_Layoutcauhoi.cshtml";
 }
 
@@ -54,24 +55,24 @@
         border: 1px solid #e9ecef;
     }
 
-    .rules-box ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
+        .rules-box ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
 
-    .rules-box li {
-        margin-bottom: 15px;
-        font-size: 16px;
-        color: #333;
-        display: flex;
-        align-items: flex-start;
-        line-height: 1.5;
-    }
+        .rules-box li {
+            margin-bottom: 15px;
+            font-size: 16px;
+            color: #333;
+            display: flex;
+            align-items: flex-start;
+            line-height: 1.5;
+        }
 
-    .rules-box li:last-child {
-        margin-bottom: 0;
-    }
+            .rules-box li:last-child {
+                margin-bottom: 0;
+            }
 
     .rule-icon {
         margin-right: 12px;
@@ -95,16 +96,19 @@
         transition: all 0.3s ease;
     }
 
-    .start-btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 25px rgba(13, 110, 253, 0.4);
-    }
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(13, 110, 253, 0.4);
+        }
 
     /* --- POPUP XÁC NHẬN (MODAL) --- */
     .modal-overlay {
         display: none;
         position: fixed;
-        top: 0; left: 0; width: 100%; height: 100%;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
         background: rgba(0,0,0,0.6);
         backdrop-filter: blur(5px);
         z-index: 9999;
@@ -123,8 +127,15 @@
     }
 
     @@keyframes popUp {
-        from { transform: scale(0.8); opacity: 0; }
-        to { transform: scale(1); opacity: 1; }
+        from {
+            transform: scale(0.8);
+            opacity: 0;
+        }
+
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
     }
 
     .modal-title {
@@ -175,7 +186,9 @@
         flex: 1;
     }
 
-    .btn-cancel:hover { background: #e2e6ea; }
+        .btn-cancel:hover {
+            background: #e2e6ea;
+        }
 
     .btn-confirm {
         background: #28a745;
@@ -190,26 +203,30 @@
         box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3);
     }
 
-    .btn-confirm:hover {
-        background: #218838;
-        transform: translateY(-2px);
-    }
+        .btn-confirm:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
 </style>
 
 <div class="test-intro-container">
     <div class="test-header">
         <div class="test-icon">🎯</div>
-        <h1 class="test-title">Kiểm Tra Năng Lực</h1>
+        <h1 class="test-title">@Model.tieu_de</h1>
         <div class="test-subtitle">Đánh giá chính xác trình độ tiếng Anh của bạn</div>
     </div>
 
     <div class="rules-box">
-        <ul>
-            <li><span class="rule-icon">📝</span> <b>Cấu trúc:</b> Bài test gồm 20 câu hỏi trắc nghiệm khách quan (chọn 1 đáp án đúng nhất).</li>
-            <li><span class="rule-icon">⏱️</span> <b>Thời gian:</b> Thí sinh có tối đa 15 phút để hoàn thành. Hệ thống sẽ tự động nộp bài khi hết giờ.</li>
-            <li><span class="rule-icon">🏆</span> <b>Đánh giá:</b> Mỗi câu đúng tương ứng 1 điểm. Kết quả và gợi ý lộ trình học sẽ hiển thị ngay sau khi nộp bài.</li>
-            <li><span class="rule-icon">⚠️</span> <b>Lưu ý:</b> Vui lòng kết nối mạng ổn định và KHÔNG tải lại trang (F5) trong quá trình làm bài để tránh mất kết quả.</li>
-        </ul>
+        <div style="font-size: 16px; color: #333; line-height: 1.6;">
+            @if (!string.IsNullOrEmpty(Model.mo_ta))
+            {
+                @Html.Raw(Model.mo_ta.Replace("\n", "<br />"))
+            }
+            else
+            {
+                <p>Chưa có hướng dẫn cho bài kiểm tra này.</p>
+            }
+        </div>
     </div>
 
     <div class="btn-container">
@@ -223,8 +240,8 @@
         <div class="modal-text">Thời gian sẽ bắt đầu đếm ngược ngay khi bạn bấm nút Bắt đầu. Hãy tập trung nhé!</div>
 
         <div class="test-info-tags">
-            <div class="info-tag">⏱️ 15 Phút</div>
-            <div class="info-tag">📝 10 Câu hỏi</div>
+            <div class="info-tag">⏱️ @Model.thoi_gian_phut Phút</div>
+            <div class="info-tag">📝 @ViewBag.TongSoCau Câu hỏi</div>
         </div>
 
         <div class="modal-buttons">
@@ -233,7 +250,6 @@
         </div>
     </div>
 </div>
-
 <script>
     // Hàm mở bảng xác nhận
     function MoXacNhan() {

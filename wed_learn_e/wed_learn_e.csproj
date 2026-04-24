@@ -245,6 +245,9 @@
     <Compile Include="Models\sysdiagram.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\thong_tin_khoa_hoc.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\tien_do_hoc_tap.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -1219,6 +1222,7 @@
     <Content Include="ckeditor\samples\sample_posteddata.php" />
     <Content Include="ckeditor\skins\moono\readme.md" />
     <Content Include="ckfinder\plugins\fileeditor\codemirror\LICENSE" />
+    <Content Include="Areas\Admin\Views\Trang_Admin\QuanLyBaiTest.cshtml" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
     <Content Include="Scripts\jquery-3.7.0.min.js" />
@@ -1282,6 +1286,7 @@
     <Content Include="Views\User\QuenMatKhau.cshtml" />
     <Content Include="Views\Shared\HeThongBaoTri.cshtml" />
     <Content Include="Views\Trang_chu\nav_Trang_chu.cshtml" />
+    <Content Include="Views\Page\NoiDungKhoaHoc.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -9,7 +9,7 @@
         <EntityTypeShape EntityType="wed_learn_eModel.bai_kiem_tra_dau_vao" Width="1.5" PointX="5.25" PointY="23.625" IsExpanded="true" />
         <EntityTypeShape EntityType="wed_learn_eModel.bai_tap_thuc_hanh" Width="1.5" PointX="7.5" PointY="12.25" IsExpanded="true" />
         <EntityTypeShape EntityType="wed_learn_eModel.cap_do" Width="1.5" PointX="0.75" PointY="12.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="wed_learn_eModel.cau_hoi_kiem_tra" Width="1.5" PointX="7.5" PointY="24.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="wed_learn_eModel.cau_hoi_kiem_tra" Width="1.5" PointX="7.625" PointY="24.625" IsExpanded="true" />
         <EntityTypeShape EntityType="wed_learn_eModel.ket_qua_kiem_tra" Width="1.5" PointX="7.5" PointY="19.25" IsExpanded="true" />
         <EntityTypeShape EntityType="wed_learn_eModel.khoa_hoc" Width="1.5" PointX="5.25" PointY="18.625" IsExpanded="true" />
         <EntityTypeShape EntityType="wed_learn_eModel.nguoi_dung" Width="1.5" PointX="3" PointY="24.25" IsExpanded="true" />
@@ -77,6 +77,8 @@
         <EntityTypeShape EntityType="wed_learn_eModel.ngu_phap" Width="1.5" PointX="0.75" PointY="6.75" />
         <EntityTypeShape EntityType="wed_learn_eModel.feature_trang_chu" Width="1.5" PointX="7.375" PointY="0.75" />
         <EntityTypeShape EntityType="wed_learn_eModel.footer_cot" Width="1.5" PointX="3.375" PointY="7.75" />
+        <EntityTypeShape EntityType="wed_learn_eModel.thong_tin_khoa_hoc" Width="1.5" PointX="7.5" PointY="41.25" />
+        <AssociationConnector Association="wed_learn_eModel.FK_ThongTin_KhoaHoc" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

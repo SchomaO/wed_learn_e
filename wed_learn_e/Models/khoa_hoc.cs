@@ -24,6 +24,7 @@ namespace wed_learn_e.Models
             this.bai_luyen_nghe = new HashSet<bai_luyen_nghe>();
             this.bai_luyen_viet = new HashSet<bai_luyen_viet>();
             this.bai_sap_xep = new HashSet<bai_sap_xep>();
+            this.thong_tin_khoa_hoc = new HashSet<thong_tin_khoa_hoc>();
         }
     
         public int id_khoa_hoc { get; set; }
@@ -47,5 +48,6 @@ namespace wed_learn_e.Models
         public virtual ICollection<bai_luyen_nghe> bai_luyen_nghe { get; set; }
         public virtual ICollection<bai_luyen_viet> bai_luyen_viet { get; set; }
         public virtual ICollection<bai_sap_xep> bai_sap_xep { get; set; }
+        public virtual ICollection<thong_tin_khoa_hoc> thong_tin_khoa_hoc { get; set; }
     }
 }

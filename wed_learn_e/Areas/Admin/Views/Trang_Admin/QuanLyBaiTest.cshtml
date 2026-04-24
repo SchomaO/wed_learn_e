@@ -1,0 +1,296 @@
+﻿@{
+    ViewBag.Title = "Test Management";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-800"><i class="fas fa-file-signature text-indigo-600 mr-2"></i> Quản Lý Bài Test Năng Lực</h2>
+        <button onclick="openModalTest()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-xl font-bold shadow-md transition">
+            <i class="fas fa-plus mr-2"></i> Tạo Bài Test Mới
+        </button>
+    </div>
+
+    <div class="flex flex-col lg:flex-row gap-6">
+        <div class="w-full lg:w-1/3 bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden h-[80vh] flex flex-col">
+            <div class="p-4 bg-indigo-50 border-b font-bold text-indigo-900">Danh sách Bài Test</div>
+            <div id="listTests" class="p-4 overflow-y-auto space-y-3 flex-1">
+            </div>
+        </div>
+
+        <div class="w-full lg:w-2/3 bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden h-[80vh] flex flex-col relative">
+
+            <div id="emptyQuestions" class="absolute inset-0 flex flex-col items-center justify-center bg-gray-50 z-10">
+                <i class="fas fa-hand-pointer text-5xl text-gray-300 mb-3"></i>
+                <p class="text-gray-500 font-medium">Chọn một bài Test bên trái để quản lý câu hỏi</p>
+            </div>
+
+            <div id="panelQuestions" class="hidden flex-col h-full">
+                <div class="p-4 bg-blue-50 border-b flex justify-between items-center">
+                    <h3 class="font-bold text-blue-900" id="currentTestName">Đang cấu hình: Test...</h3>
+                    <button onclick="openModalQuestion()" class="bg-blue-600 text-white px-4 py-1.5 rounded-lg text-sm font-bold shadow hover:bg-blue-700">
+                        <i class="fas fa-plus mr-1"></i> Thêm Câu Hỏi
+                    </button>
+                </div>
+                <div id="listQuestions" class="p-5 overflow-y-auto flex-1 space-y-3 bg-gray-50">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalTest" class="fixed inset-0 z-[9999] hidden bg-black/60 backdrop-blur-sm items-center justify-center p-4">
+    <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl relative">
+        <div class="p-5 border-b bg-indigo-50 flex justify-between"><h3 class="text-xl font-bold text-indigo-900" id="testModalTitle">Tạo Bài Test</h3><button onclick="closeModalTest()"><i class="fas fa-times"></i></button></div>
+        <div class="p-5 space-y-4">
+            <input type="hidden" id="txtTestId">
+            <div><label class="text-xs font-bold text-gray-500">Tiêu đề bài test</label><input type="text" id="txtTestTitle" class="w-full border rounded-lg p-2 mt-1"></div>
+            <div><label class="text-xs font-bold text-gray-500">Mô tả quy chế / Hướng dẫn</label><textarea id="txtTestDesc" rows="3" class="w-full border rounded-lg p-2 mt-1"></textarea></div>
+            <div><label class="text-xs font-bold text-gray-500">Thời gian (Phút)</label><input type="number" id="txtTestTime" value="15" class="w-full border rounded-lg p-2 mt-1"></div>
+            <div class="flex gap-2 pt-2"><button onclick="closeModalTest()" class="flex-1 bg-gray-200 py-2 rounded-lg font-bold">Hủy</button><button onclick="saveTest()" class="flex-1 bg-indigo-600 text-white py-2 rounded-lg font-bold">Lưu Test</button></div>
+        </div>
+    </div>
+</div>
+
+<div id="modalQuestion" class="fixed inset-0 z-[9999] hidden bg-black/60 backdrop-blur-sm items-center justify-center p-4">
+    <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl relative">
+        <div class="p-5 border-b bg-blue-50 flex justify-between"><h3 class="text-xl font-bold text-blue-900" id="qModalTitle">Thêm Câu Hỏi Mới</h3><button onclick="closeModalQuestion()"><i class="fas fa-times"></i></button></div>
+        <div class="p-5 space-y-3">
+            <input type="hidden" id="txtQ_Id">
+            <div><label class="text-xs font-bold text-gray-500">Nội dung câu hỏi</label><textarea id="txtQ_Nd" rows="2" class="w-full border rounded-lg p-2 mt-1"></textarea></div>
+            <div class="grid grid-cols-2 gap-3">
+                <div><label class="text-xs font-bold text-gray-500">Đáp án A</label><input type="text" id="txtQ_A" class="w-full border rounded-lg p-2 mt-1"></div>
+                <div><label class="text-xs font-bold text-gray-500">Đáp án B</label><input type="text" id="txtQ_B" class="w-full border rounded-lg p-2 mt-1"></div>
+                <div><label class="text-xs font-bold text-gray-500">Đáp án C</label><input type="text" id="txtQ_C" class="w-full border rounded-lg p-2 mt-1"></div>
+                <div><label class="text-xs font-bold text-gray-500">Đáp án D</label><input type="text" id="txtQ_D" class="w-full border rounded-lg p-2 mt-1"></div>
+            </div>
+            <div>
+                <label class="text-xs font-bold text-gray-500">Đáp án ĐÚNG</label>
+                <select id="cboQ_Dung" class="w-full border rounded-lg p-2 mt-1 font-bold text-blue-700">
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                </select>
+            </div>
+            <div class="flex gap-2 pt-3"><button onclick="closeModalQuestion()" class="flex-1 bg-gray-200 py-2 rounded-lg font-bold">Hủy</button><button onclick="saveQuestion()" class="flex-1 bg-blue-600 text-white py-2 rounded-lg font-bold">Lưu Câu Hỏi</button></div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        function safeStr(s) { return s ? s.toString().replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/"/g, "&quot;").replace(/\n/g, "\\n").replace(/\r/g, "") : ""; }
+
+        let currentTestId = null; // Biến này cực kỳ quan trọng, luôn phải cập nhật đúng
+
+        $(document).ready(function () { loadTests(); });
+
+        // ==========================================
+        // 1. QUẢN LÝ BÀI TEST CHÍNH
+        // ==========================================
+        function loadTests() {
+            $.get("/Admin/Trang_Admin/GetDanhSachBaiTest", function (res) {
+                if (res.success) {
+                    let html = res.data.map(t => {
+                        let isActive = t.trang_thai === 1;
+
+                        // Giao diện Nút Bật/Tắt
+                        let badgeHtml = isActive
+                            ? `<span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold"><i class="fas fa-check-circle"></i> Đang hiển thị</span>`
+                            : `<button onclick="event.stopPropagation(); setTestActive(${t.id_bai_kiem_tra})" class="px-2 py-1 bg-gray-200 hover:bg-green-500 hover:text-white text-gray-600 transition rounded text-xs font-bold shadow-sm">Bật hiển thị</button>`;
+
+                        // Đổi màu box nếu đang được chọn để quản lý câu hỏi
+                        let isSelected = (currentTestId === t.id_bai_kiem_tra);
+                        let borderStyle = isSelected ? "border-blue-500 bg-blue-50 ring-2 ring-blue-200" : (isActive ? "border-green-300 bg-green-50/50" : "hover:border-indigo-400 hover:bg-indigo-50");
+
+                        return `
+                            <div id="test-card-${t.id_bai_kiem_tra}" class="border-2 rounded-xl p-4 cursor-pointer transition group ${borderStyle}" onclick="selectTest(${t.id_bai_kiem_tra}, '${safeStr(t.tieu_de)}')">
+                                <div class="flex justify-between items-start mb-1">
+                                    <h4 class="font-bold text-gray-800">${t.tieu_de}</h4>
+                                    ${badgeHtml}
+                                </div>
+                                <p class="text-sm text-gray-500 mb-3">⏳ ${t.thoi_gian_phut} phút</p>
+
+                                <div class="flex gap-2">
+                                    <button onclick="event.stopPropagation(); editTest(${t.id_bai_kiem_tra}, '${safeStr(t.tieu_de)}', '${safeStr(t.mo_ta)}', ${t.thoi_gian_phut})" class="px-3 py-1.5 bg-white text-blue-600 rounded-lg shadow-sm text-xs font-bold border hover:bg-blue-50"><i class="fas fa-edit"></i> Sửa Info</button>
+                                    <button onclick="event.stopPropagation(); deleteTest(${t.id_bai_kiem_tra})" class="px-3 py-1.5 bg-white text-red-500 rounded-lg shadow-sm text-xs font-bold border hover:bg-red-50"><i class="fas fa-trash"></i> Xóa</button>
+                                </div>
+                            </div>`;
+                    }).join('');
+
+                    $("#listTests").html(html || "<p class='text-center py-5 text-gray-400'>Chưa có bài test nào</p>");
+                }
+            });
+        }
+
+        // Bật một bài test làm Mặc định cho SV làm
+        function setTestActive(id) {
+            if (confirm("Chuyển bài Test này thành Mặc định cho Sinh viên làm? (Các bài khác sẽ tự động ẩn đi)")) {
+                $.post("/Admin/Trang_Admin/DoiTrangThaiBaiTest", { id: id }, function (res) {
+                    if (res.success) {
+                        loadTests();
+                    } else {
+                        alert("Lỗi: " + res.message);
+                    }
+                });
+            }
+        }
+
+        function openModalTest() {
+            $("#txtTestId, #txtTestTitle, #txtTestDesc").val("");
+            $("#txtTestTime").val(15);
+            $("#testModalTitle").text("Tạo Bài Test Mới");
+            $("#modalTest").removeClass("hidden").addClass("flex");
+        }
+
+        function closeModalTest() {
+            $("#modalTest").addClass("hidden").removeClass("flex");
+        }
+
+        function editTest(id, t, d, time) {
+            $("#txtTestId").val(id);
+            $("#txtTestTitle").val(t);
+            $("#txtTestDesc").val(d);
+            $("#txtTestTime").val(time);
+            $("#testModalTitle").text("Sửa Bài Test");
+            $("#modalTest").removeClass("hidden").addClass("flex");
+        }
+
+        function saveTest() {
+            let data = {
+                id: $("#txtTestId").val() || 0, // Đảm bảo lấy đúng ID (Thêm mới là rỗng)
+                tieu_de: $("#txtTestTitle").val(),
+                mo_ta: $("#txtTestDesc").val(),
+                thoi_gian: $("#txtTestTime").val()
+            };
+            if (!data.tieu_de) { alert("Vui lòng nhập tiêu đề!"); return; }
+
+            $.post("/Admin/Trang_Admin/LuuThongTinBaiTest", data, function (res) {
+                if (res.success) {
+                    closeModalTest();
+                    loadTests();
+                }
+            });
+        }
+
+        function deleteTest(id) {
+            if (confirm("LƯU Ý CỰC KỲ NGUY HIỂM!\nXóa bài Test này sẽ xóa LUÔN TOÀN BỘ câu hỏi bên trong nó.\nBạn chắc chắn muốn xóa chứ?")) {
+                $.post("/Admin/Trang_Admin/XoaBaiTest", { id: id }, function (res) {
+                    if (res.success) {
+                        // Nếu đang chọn đúng bài bị xóa thì reset lại màn hình bên phải
+                        if (currentTestId === id) {
+                            currentTestId = null;
+                            $("#panelQuestions").addClass("hidden").removeClass("flex");
+                            $("#emptyQuestions").removeClass("hidden");
+                        }
+                        loadTests();
+                    }
+                });
+            }
+        }
+
+        // ==========================================
+        // 2. QUẢN LÝ CÂU HỎI TRONG BÀI TEST CHỈ ĐỊNH
+        // ==========================================
+        function selectTest(id, name) {
+            // FIX LỖI: Gán chính xác ID bài test đang click vào biến toàn cục
+            currentTestId = id;
+
+            $("#currentTestName").text("Đang cấu hình câu hỏi: " + name);
+            $("#emptyQuestions").addClass("hidden");
+            $("#panelQuestions").removeClass("hidden").addClass("flex");
+
+            // Highlight lại giao diện cột trái
+            loadTests();
+
+            // Load danh sách câu hỏi của đúng ID bài test đó
+            loadQuestions();
+        }
+
+        function loadQuestions() {
+            if (!currentTestId) return; // Bảo vệ an toàn
+
+            $.get("/Admin/Trang_Admin/GetCauHoiKiemTra", { id_bai: currentTestId }, function (res) {
+                if (res.success) {
+                    let html = res.data.map((q, i) => `
+                            <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm group hover:border-blue-300 transition relative">
+                                <p class="font-bold text-gray-800 mb-3"><span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded mr-1">Câu ${i + 1}</span> ${q.noi_dung_cau_hoi}</p>
+
+                                <div class="grid grid-cols-2 gap-3 text-sm text-gray-600 mb-2">
+                                    <div class="${q.dap_an_dung == 'A' ? 'text-green-700 font-bold bg-green-50 p-1 rounded' : ''}">A. ${q.dap_an_a}</div>
+                                    <div class="${q.dap_an_dung == 'B' ? 'text-green-700 font-bold bg-green-50 p-1 rounded' : ''}">B. ${q.dap_an_b}</div>
+                                    <div class="${q.dap_an_dung == 'C' ? 'text-green-700 font-bold bg-green-50 p-1 rounded' : ''}">C. ${q.dap_an_c}</div>
+                                    <div class="${q.dap_an_dung == 'D' ? 'text-green-700 font-bold bg-green-50 p-1 rounded' : ''}">D. ${q.dap_an_d}</div>
+                                </div>
+
+                                <div class="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition">
+                                    <button onclick="editQuestion(${q.id_cau_hoi}, '${safeStr(q.noi_dung_cau_hoi)}', '${safeStr(q.dap_an_a)}', '${safeStr(q.dap_an_b)}', '${safeStr(q.dap_an_c)}', '${safeStr(q.dap_an_d)}', '${q.dap_an_dung}')" class="text-blue-500 bg-blue-50 w-8 h-8 rounded hover:bg-blue-100 hover:text-blue-700"><i class="fas fa-edit"></i></button>
+                                    <button onclick="deleteQuestion(${q.id_cau_hoi})" class="text-red-500 bg-red-50 w-8 h-8 rounded hover:bg-red-100 hover:text-red-700"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>`).join('');
+                    $("#listQuestions").html(html || "<div class='text-center p-10'><i class='fas fa-box-open text-4xl text-gray-300 mb-3'></i><p class='text-gray-500'>Chưa có câu hỏi nào trong bài Test này.</p></div>");
+                }
+            });
+        }
+
+        function openModalQuestion() {
+            if (!currentTestId) { alert("Vui lòng chọn 1 Bài Test ở cột bên trái trước!"); return; }
+
+            // Xóa rỗng các ô nhập liệu
+            $("#txtQ_Id, #txtQ_Nd, #txtQ_A, #txtQ_B, #txtQ_C, #txtQ_D").val("");
+            $("#cboQ_Dung").val("A");
+            $("#qModalTitle").text("Thêm Câu Hỏi Mới");
+            $("#modalQuestion").removeClass("hidden").addClass("flex");
+        }
+
+        function closeModalQuestion() {
+            $("#modalQuestion").addClass("hidden").removeClass("flex");
+        }
+
+        function editQuestion(id, nd, a, b, c, d, dung) {
+            $("#txtQ_Id").val(id);
+            $("#txtQ_Nd").val(nd);
+            $("#txtQ_A").val(a);
+            $("#txtQ_B").val(b);
+            $("#txtQ_C").val(c);
+            $("#txtQ_D").val(d);
+            $("#cboQ_Dung").val(dung);
+            $("#qModalTitle").text("Sửa Câu Hỏi");
+            $("#modalQuestion").removeClass("hidden").addClass("flex");
+        }
+
+        function saveQuestion() {
+            // FIX LỖI: Luôn truyền id_bai bằng currentTestId đang chọn ở cột trái
+            let data = {
+                id_bai: currentTestId,
+                id_cau: $("#txtQ_Id").val() || 0, // Đảm bảo rỗng = 0 để thêm mới
+                nd: $("#txtQ_Nd").val(),
+                a: $("#txtQ_A").val(),
+                b: $("#txtQ_B").val(),
+                c: $("#txtQ_C").val(),
+                d: $("#txtQ_D").val(),
+                dung: $("#cboQ_Dung").val()
+            };
+
+            if (!data.nd || !data.a || !data.b) { alert("Vui lòng nhập đủ nội dung và tối thiểu đáp án A, B!"); return; }
+
+            $.post("/Admin/Trang_Admin/LuuCauHoiKiemTra", data, function (res) {
+                if (res.success) {
+                    closeModalQuestion();
+                    loadQuestions(); // Load lại câu hỏi
+                } else {
+                    alert("Lỗi lưu câu hỏi: " + res.message);
+                }
+            });
+        }
+
+        function deleteQuestion(id) {
+            if (confirm("Bạn có chắc chắn muốn xóa câu hỏi này?")) {
+                $.post("/Admin/Trang_Admin/XoaCauHoiKiemTra", { id: id }, function (res) {
+                    if (res.success) loadQuestions();
+                });
+            }
+        }
+    </script>
+}
