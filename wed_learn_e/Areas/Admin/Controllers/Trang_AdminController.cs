@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using wed_learn_e.Models;
-using System.Data.Entity;
 namespace wed_learn_e.Areas.Admin.Controllers
 {
     public class Trang_AdminController : Controller
@@ -450,6 +451,167 @@ namespace wed_learn_e.Areas.Admin.Controllers
             {
                 return Content("Đã xảy ra lỗi khi thống kê dữ liệu: " + ex.Message);
             }
+        }
+        // 1. GIAO DIỆN QUẢN LÝ TRANG CHỦ
+        public ActionResult QuanLyGiaoDien()
+        {
+            if (Session["Admin_VaiTro"] == null || Session["Admin_VaiTro"].ToString() != "quan_tri_vien")
+                return RedirectToAction("DangNhap", "User", new { area = "" });
+
+            // Lấy danh sách để Admin xem
+            ViewBag.ListFeature = db.feature_trang_chu.OrderBy(f => f.thu_tu).ToList();
+            ViewBag.ListFooter = db.footer_cot.OrderBy(f => f.thu_tu).ToList();
+            return View();
+        }
+
+        // 1. THÊM HÀNG GIỚI THIỆU (UPLOAD ẢNH)
+        [HttpPost]
+        [ValidateInput(false)]
+        public JsonResult ThemFeature(string tieu_de, string noi_dung, HttpPostedFileBase hinh_anh_file, string anh_ben_trai, string thu_tu)
+        {
+            try
+            {
+                // Tự ép kiểu an toàn (Không sợ bị Crash 500 nữa)
+                bool viTri = (anh_ben_trai == "true");
+                int thuTuInt = 1;
+                int.TryParse(thu_tu, out thuTuInt);
+
+                string duongDanAnh = "";
+
+                if (hinh_anh_file != null && hinh_anh_file.ContentLength > 0)
+                {
+                    string dir = Server.MapPath("~/Img/Features");
+                    if (!Directory.Exists(dir)) { Directory.CreateDirectory(dir); }
+
+                    string fileName = DateTime.Now.ToString("yyyyMMdd_HHmmss_") + Path.GetFileName(hinh_anh_file.FileName);
+                    string path = Path.Combine(dir, fileName);
+                    hinh_anh_file.SaveAs(path);
+                    duongDanAnh = "/Img/Features/" + fileName;
+                }
+
+                var f = new feature_trang_chu
+                {
+                    tieu_de = tieu_de,
+                    noi_dung = noi_dung,
+                    hinh_anh = duongDanAnh,
+                    anh_ben_trai = viTri,
+                    thu_tu = thuTuInt
+                };
+                db.feature_trang_chu.Add(f);
+                db.SaveChanges();
+                return Json(new { success = true, message = "Thêm hàng giới thiệu thành công!" });
+            }
+            catch (Exception ex) { return Json(new { success = false, message = "Lỗi Database: " + ex.Message }); }
+        }
+
+        // 2. CẬP NHẬT HÀNG GIỚI THIỆU
+        [HttpPost]
+        [ValidateInput(false)]
+        public JsonResult UpdateFeature(string id, string tieu_de, string noi_dung, HttpPostedFileBase hinh_anh_file, string hinh_anh_cu, string anh_ben_trai, string thu_tu)
+        {
+            try
+            {
+                int idFeature = 0;
+                int.TryParse(id, out idFeature);
+
+                var f = db.feature_trang_chu.Find(idFeature);
+                if (f != null)
+                {
+                    int thuTuInt = 1;
+                    int.TryParse(thu_tu, out thuTuInt);
+
+                    f.tieu_de = tieu_de;
+                    f.noi_dung = noi_dung;
+                    f.anh_ben_trai = (anh_ben_trai == "true");
+                    f.thu_tu = thuTuInt;
+
+                    if (hinh_anh_file != null && hinh_anh_file.ContentLength > 0)
+                    {
+                        string dir = Server.MapPath("~/Img/Features");
+                        if (!Directory.Exists(dir)) { Directory.CreateDirectory(dir); }
+
+                        string fileName = DateTime.Now.ToString("yyyyMMdd_HHmmss_") + Path.GetFileName(hinh_anh_file.FileName);
+                        string path = Path.Combine(dir, fileName);
+                        hinh_anh_file.SaveAs(path);
+                        f.hinh_anh = "/Img/Features/" + fileName;
+                    }
+                    else
+                    {
+                        f.hinh_anh = hinh_anh_cu;
+                    }
+
+                    db.SaveChanges();
+                    return Json(new { success = true, message = "Đã cập nhật hàng giới thiệu!" });
+                }
+                return Json(new { success = false, message = "Không tìm thấy dữ liệu." });
+            }
+            catch (Exception ex) { return Json(new { success = false, message = "Lỗi Database: " + ex.Message }); }
+        }
+        // 3. THÊM CỘT FOOTER MỚI (Nâng cấp chống lỗi)
+        [HttpPost]
+        [ValidateInput(false)]
+        public JsonResult ThemFooter(string tieu_de, string noi_dung_html, string thu_tu)
+        {
+            try
+            {
+                int thuTuInt = 1;
+                int.TryParse(thu_tu, out thuTuInt); // Tự ép kiểu an toàn
+
+                var f = new footer_cot
+                {
+                    tieu_de = tieu_de,
+                    noi_dung_html = noi_dung_html,
+                    thu_tu = thuTuInt
+                };
+                db.footer_cot.Add(f);
+                db.SaveChanges();
+                return Json(new { success = true, message = "Thêm cột Footer thành công!" });
+            }
+            catch (Exception ex) { return Json(new { success = false, message = ex.Message }); }
+        }
+
+        // 4. CẬP NHẬT CỘT FOOTER (Nâng cấp chống lỗi)
+        [HttpPost]
+        [ValidateInput(false)]
+        public JsonResult UpdateFooter(string id, string tieu_de, string noi_dung_html, string thu_tu)
+        {
+            try
+            {
+                int idFooter = 0;
+                int.TryParse(id, out idFooter);
+
+                var f = db.footer_cot.Find(idFooter);
+                if (f != null)
+                {
+                    int thuTuInt = 1;
+                    int.TryParse(thu_tu, out thuTuInt);
+
+                    f.tieu_de = tieu_de;
+                    f.noi_dung_html = noi_dung_html;
+                    f.thu_tu = thuTuInt;
+                    db.SaveChanges();
+                    return Json(new { success = true, message = "Đã cập nhật Footer!" });
+                }
+                return Json(new { success = false, message = "Không tìm thấy dữ liệu." });
+            }
+            catch (Exception ex) { return Json(new { success = false, message = ex.Message }); }
+        }
+
+        // 4. HÀM XÓA CHUNG
+        [HttpPost]
+        public JsonResult XoaThanhPhan(string loai, int id)
+        {
+            if (loai == "feature")
+            {
+                var f = db.feature_trang_chu.Find(id);
+                if (f != null) { db.feature_trang_chu.Remove(f); db.SaveChanges(); }
+            }
+            else
+            {
+                var f = db.footer_cot.Find(id);
+                if (f != null) { db.footer_cot.Remove(f); db.SaveChanges(); }
+            }
+            return Json(new { success = true });
         }
     }
 }

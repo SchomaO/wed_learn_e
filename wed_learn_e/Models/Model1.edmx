@@ -175,6 +175,26 @@
           <Property Name="dap_an_d" Type="nvarchar" MaxLength="200" Nullable="false" />
           <Property Name="dap_an_dung" Type="nvarchar" MaxLength="5" Nullable="false" />
         </EntityType>
+        <EntityType Name="feature_trang_chu">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="tieu_de" Type="nvarchar" MaxLength="255" />
+          <Property Name="noi_dung" Type="nvarchar(max)" />
+          <Property Name="hinh_anh" Type="nvarchar" MaxLength="255" />
+          <Property Name="anh_ben_trai" Type="bit" />
+          <Property Name="thu_tu" Type="int" />
+        </EntityType>
+        <EntityType Name="footer_cot">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="tieu_de" Type="nvarchar" MaxLength="255" />
+          <Property Name="noi_dung_html" Type="nvarchar(max)" />
+          <Property Name="thu_tu" Type="int" />
+        </EntityType>
         <EntityType Name="game_kho_bau">
           <Key>
             <PropertyRef Name="id_game" />
@@ -836,6 +856,8 @@
           <EntitySet Name="cau_hoi_luyen_viet" EntityType="Self.cau_hoi_luyen_viet" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="cau_hoi_sap_xep" EntityType="Self.cau_hoi_sap_xep" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="cau_hoi_video" EntityType="Self.cau_hoi_video" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="feature_trang_chu" EntityType="Self.feature_trang_chu" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="footer_cot" EntityType="Self.footer_cot" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="game_kho_bau" EntityType="Self.game_kho_bau" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Idiom" EntityType="Self.Idiom" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ket_qua_kiem_tra" EntityType="Self.ket_qua_kiem_tra" Schema="dbo" store:Type="Tables" />
@@ -1590,6 +1612,8 @@
           <EntitySet Name="Idioms" EntityType="wed_learn_eModel.Idiom" />
           <EntitySet Name="cau_hoi_video" EntityType="wed_learn_eModel.cau_hoi_video" />
           <EntitySet Name="ngu_phap" EntityType="wed_learn_eModel.ngu_phap" />
+          <EntitySet Name="feature_trang_chu" EntityType="wed_learn_eModel.feature_trang_chu" />
+          <EntitySet Name="footer_cot" EntityType="wed_learn_eModel.footer_cot" />
         </EntityContainer>
         <EntityType Name="bai_luyen_noi">
           <Key>
@@ -2087,6 +2111,26 @@
           <Property Name="vi_du" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="luu_y_them" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="feature_trang_chu">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="tieu_de" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="noi_dung" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="hinh_anh" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="anh_ben_trai" Type="Boolean" />
+          <Property Name="thu_tu" Type="Int32" />
+        </EntityType>
+        <EntityType Name="footer_cot">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="tieu_de" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="noi_dung_html" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="thu_tu" Type="Int32" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2481,6 +2525,28 @@
                 <ScalarProperty Name="icon" ColumnName="icon" />
                 <ScalarProperty Name="id_cap_do" ColumnName="id_cap_do" />
                 <ScalarProperty Name="id_ngu_phap" ColumnName="id_ngu_phap" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="feature_trang_chu">
+            <EntityTypeMapping TypeName="wed_learn_eModel.feature_trang_chu">
+              <MappingFragment StoreEntitySet="feature_trang_chu">
+                <ScalarProperty Name="thu_tu" ColumnName="thu_tu" />
+                <ScalarProperty Name="anh_ben_trai" ColumnName="anh_ben_trai" />
+                <ScalarProperty Name="hinh_anh" ColumnName="hinh_anh" />
+                <ScalarProperty Name="noi_dung" ColumnName="noi_dung" />
+                <ScalarProperty Name="tieu_de" ColumnName="tieu_de" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="footer_cot">
+            <EntityTypeMapping TypeName="wed_learn_eModel.footer_cot">
+              <MappingFragment StoreEntitySet="footer_cot">
+                <ScalarProperty Name="thu_tu" ColumnName="thu_tu" />
+                <ScalarProperty Name="noi_dung_html" ColumnName="noi_dung_html" />
+                <ScalarProperty Name="tieu_de" ColumnName="tieu_de" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

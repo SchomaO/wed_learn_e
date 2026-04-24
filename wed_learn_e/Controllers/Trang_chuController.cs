@@ -20,7 +20,8 @@ namespace wed_learn_e.Controllers
         public ActionResult Index(int? page)
         {
             // ... (Giữ nguyên phần kiểm tra bảo trì) ...
-
+            ViewBag.ListFeature = db.feature_trang_chu.OrderBy(f => f.thu_tu).ToList();
+            ViewBag.ListFooter = db.footer_cot.OrderBy(f => f.thu_tu).ToList();
             int pageNumber = (page ?? 1);
             int pageSize = 6; // Bạn có thể tăng số lượng hiện mỗi trang lên cho xịn
 
@@ -83,5 +84,6 @@ namespace wed_learn_e.Controllers
                 return Json(new { success = false, message = "Lỗi hệ thống: " + ex.Message });
             }
         }
+
     }
 }

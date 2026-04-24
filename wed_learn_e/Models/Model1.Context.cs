@@ -57,5 +57,7 @@ namespace wed_learn_e.Models
         public DbSet<Idiom> Idioms { get; set; }
         public DbSet<cau_hoi_video> cau_hoi_video { get; set; }
         public DbSet<ngu_phap> ngu_phap { get; set; }
+        public DbSet<feature_trang_chu> feature_trang_chu { get; set; }
+        public DbSet<footer_cot> footer_cot { get; set; }
     }
 }
