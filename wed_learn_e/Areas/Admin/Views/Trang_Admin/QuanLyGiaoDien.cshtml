@@ -1,0 +1,280 @@
+﻿@{
+    ViewBag.Title = "Quản lý Giao diện Web";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    var features = ViewBag.ListFeature as List<wed_learn_e.Models.feature_trang_chu>;
+    var footers = ViewBag.ListFooter as List<wed_learn_e.Models.footer_cot>;
+}
+
+<script src="@Url.Content("~/ckeditor/ckeditor.js")"></script>
+
+<script src="@Url.Content("~/ckfinder/ckfinder.js")"></script>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div class="bg-white p-6 rounded-xl shadow-sm border">
+        <h3 class="text-xl font-bold mb-4 text-indigo-600">Cài đặt Hàng Giới Thiệu</h3>
+        <div class="space-y-4 mb-6">
+            <input type="text" id="f_tieu_de" placeholder="Tiêu đề (Ví dụ: Lộ trình cá nhân hóa)" class="w-full p-2.5 border rounded-lg focus:border-indigo-500 outline-none">
+
+            <div>
+                <label class="block text-sm font-bold text-gray-600 mb-1">Nội dung chi tiết</label>
+                <textarea id="f_noi_dung" name="f_noi_dung"></textarea>
+            </div>
+
+            <div class="p-4 border-2 border-dashed border-gray-200 rounded-lg">
+                <label class="block text-sm font-bold text-gray-600 mb-2">Hình ảnh minh họa</label>
+                <input type="file" id="f_hinh_anh" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+
+                <div id="container_preview" class="mt-3 hidden">
+                    <p class="text-xs text-gray-400 mb-1">Ảnh đã chọn:</p>
+                    <img id="preview_anh" src="#" class="max-h-40 rounded-lg shadow-sm border">
+                </div>
+                <input type="hidden" id="f_hinh_anh_cu">
+            </div>
+
+            <div class="flex gap-4">
+                <select id="f_vi_tri" class="p-2.5 border rounded-lg flex-1 outline-none">
+                    <option value="0">Ảnh nằm bên Phải</option>
+                    <option value="1">Ảnh nằm bên Trái</option>
+                </select>
+                <input type="number" id="f_thu_tu" placeholder="Thứ tự" value="1" class="p-2.5 border rounded-lg w-24 outline-none">
+            </div>
+
+            <button id="btnSaveFeature" onclick="handleSaveFeature()" class="bg-indigo-600 text-white px-4 py-3 rounded-lg font-bold w-full hover:bg-indigo-700 transition">
+                <i class="fas fa-plus-circle mr-2"></i> Thêm Hàng Giới Thiệu
+            </button>
+        </div>
+
+        <h4 class="font-bold mb-3 text-gray-700">Danh sách hiện tại:</h4>
+        <ul class="space-y-3">
+            @foreach (var f in features)
+            {
+                <li class="p-4 bg-gray-50 border rounded-xl flex justify-between items-center group hover:bg-white hover:shadow-md transition">
+                    <div class="flex items-center gap-3">
+                        <img src="@f.hinh_anh" class="w-12 h-12 rounded object-cover border">
+                        <strong>@Html.Raw(f.tieu_de)</strong>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="editFeature(@f.id, '@HttpUtility.JavaScriptStringEncode(f.tieu_de)', '@HttpUtility.JavaScriptStringEncode(f.noi_dung)', '@HttpUtility.JavaScriptStringEncode(f.hinh_anh ?? "")', '@(f.anh_ben_trai == true ? 1 : 0)', @f.thu_tu)" class="text-blue-500 hover:bg-blue-50 p-2 rounded-lg transition"><i class="fas fa-edit"></i></button>
+                        <button onclick="xoa('feature', @f.id)" class="text-red-500 hover:bg-red-50 p-2 rounded-lg transition"><i class="fas fa-trash"></i></button>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl shadow-sm border">
+        <h3 class="text-xl font-bold mb-4 text-green-600">Cài đặt Cột Footer</h3>
+        <div class="space-y-4 mb-6">
+            <input type="text" id="ft_tieu_de" placeholder="Tiêu đề cột (VD: Cộng đồng)" class="w-full p-2.5 border rounded-lg focus:border-green-500 outline-none">
+
+            <div>
+                <label class="block text-sm font-bold text-gray-600 mb-1">Nội dung cột (Hỗ trợ trình soạn thảo)</label>
+                <textarea id="ft_noi_dung" name="ft_noi_dung"></textarea>
+            </div>
+
+            <input type="number" id="ft_thu_tu" placeholder="Thứ tự hiện" value="1" class="w-full p-2.5 border rounded-lg focus:border-green-500 outline-none">
+
+            <button id="btnSaveFooter" onclick="handleSaveFooter()" class="bg-green-600 text-white px-4 py-3 rounded-lg font-bold w-full hover:bg-green-700 transition">
+                <i class="fas fa-plus-circle mr-2"></i> Thêm Cột Này
+            </button>
+        </div>
+
+        <h4 class="font-bold mb-3 text-gray-700">Danh sách hiện tại:</h4>
+        <ul class="space-y-3">
+            @foreach (var ft in footers)
+            {
+                <li class="p-4 bg-gray-50 border rounded-xl flex justify-between items-center group hover:bg-white hover:shadow-md transition">
+                    <strong>@ft.tieu_de</strong>
+                    <div class="flex gap-2">
+                        <button onclick="editFooter(@ft.id, '@HttpUtility.JavaScriptStringEncode(ft.tieu_de)', '@HttpUtility.JavaScriptStringEncode(ft.noi_dung_html)', @ft.thu_tu)" class="text-blue-500 hover:bg-blue-50 p-2 rounded-lg transition"><i class="fas fa-edit"></i></button>
+                        <button onclick="xoa('footer', @ft.id)" class="text-red-500 hover:bg-red-50 p-2 rounded-lg transition"><i class="fas fa-trash"></i></button>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    // 1. ĐƯA BIẾN LÊN TRÊN CÙNG ĐỂ KHÔNG BAO GIỜ BỊ LỖI MẤT BIẾN
+    let editingFeatureId = null;
+    let editingFooterId = null;
+
+    // 2. KHỞI TẠO CKEDITOR (Bọc trong try-catch an toàn)
+   // 2. KHỞI TẠO CKEDITOR
+    try {
+        if (typeof CKEDITOR !== 'undefined') {
+            // Gom cấu hình lại để tái sử dụng
+            let ckConfig = {
+                height: 250,
+                filebrowserBrowseUrl: '@Url.Content("~/ckfinder/ckfinder.html")',
+                filebrowserImageBrowseUrl: '@Url.Content("~/ckfinder/ckfinder.html?type=Images")',
+                filebrowserUploadUrl: '@Url.Content("~/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Files")',
+                filebrowserImageUploadUrl: '@Url.Content("~/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Images")'
+            };
+
+            // Khởi tạo cho cả 2 ô nội dung
+            CKEDITOR.replace('f_noi_dung', ckConfig);
+            CKEDITOR.replace('ft_noi_dung', ckConfig); // <--- DÒNG MỚI THÊM VÀO
+        } else {
+            console.error("⚠️ Cảnh báo: Chưa nhận diện được thư mục ckeditor trong project!");
+        }
+    } catch (err) {
+        console.error("Lỗi khi load CKEditor:", err);
+    }
+
+    // 3. LOGIC XEM TRƯỚC ẢNH
+    $(document).ready(function () {
+        $("#f_hinh_anh").change(function () {
+            if (this.files && this.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#preview_anh').attr('src', e.target.result);
+                    $('#container_preview').removeClass('hidden');
+                }
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+    });
+
+    // ==========================================
+    // 4. CÁC HÀM CỦA HÀNG GIỚI THIỆU (FEATURE)
+    // ==========================================
+    function editFeature(id, tieuDe, noiDung, hinhAnh, viTri, thuTu) {
+        editingFeatureId = id;
+        $('#f_tieu_de').val(tieuDe);
+
+        // Đổ dữ liệu vào CKEditor an toàn
+        if (typeof CKEDITOR !== 'undefined' && CKEDITOR.instances.f_noi_dung) {
+            CKEDITOR.instances.f_noi_dung.setData(noiDung);
+        } else {
+            $('#f_noi_dung').val(noiDung);
+        }
+
+        $('#f_vi_tri').val(viTri);
+        $('#f_thu_tu').val(thuTu);
+
+        $('#f_hinh_anh_cu').val(hinhAnh);
+        $('#preview_anh').attr('src', hinhAnh);
+        $('#container_preview').removeClass('hidden');
+        $('#f_hinh_anh').val("");
+
+        $('#btnSaveFeature').html('<i class="fas fa-save mr-2"></i> Lưu Thay Đổi').addClass("bg-blue-600").removeClass("bg-indigo-600");
+    }
+
+    function handleSaveFeature() {
+        // Cập nhật lại URL đầy đủ chống lỗi 404
+        let url = editingFeatureId ? '@Url.Action("UpdateFeature", "Trang_Admin", new { area = "Admin" })' : '@Url.Action("ThemFeature", "Trang_Admin", new { area = "Admin" })';
+
+        let formData = new FormData();
+
+        if (editingFeatureId) {
+            formData.append("id", editingFeatureId);
+            formData.append("hinh_anh_cu", $('#f_hinh_anh_cu').val());
+        }
+
+        formData.append("tieu_de", $('#f_tieu_de').val());
+
+        // Lấy nội dung CKEditor
+        let dataNoiDung = "";
+        if (typeof CKEDITOR !== 'undefined' && CKEDITOR.instances.f_noi_dung) {
+            dataNoiDung = CKEDITOR.instances.f_noi_dung.getData();
+        } else {
+            dataNoiDung = $('#f_noi_dung').val();
+        }
+        formData.append("noi_dung", dataNoiDung);
+
+        formData.append("anh_ben_trai", $('#f_vi_tri').val() == "1" ? "true" : "false");
+        formData.append("thu_tu", $('#f_thu_tu').val());
+
+        let fileInput = $('#f_hinh_anh')[0].files[0];
+        if (fileInput) {
+            formData.append("hinh_anh_file", fileInput);
+        }
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (res) {
+                alert(res.message);
+                if (res.success) location.reload();
+            },
+            error: function (xhr) {
+                console.log(xhr.responseText);
+                alert("Lỗi máy chủ! Vui lòng F12 mở tab Console để xem chi tiết.");
+            }
+        });
+    }
+
+    // ==========================================
+    // 5. CÁC HÀM CỦA FOOTER & XÓA
+    // ==========================================
+    function editFooter(id, tieuDe, noiDungHtml, thuTu) {
+        editingFooterId = id;
+        $('#ft_tieu_de').val(tieuDe);
+
+        // Đổ dữ liệu vào CKEditor an toàn
+        if (typeof CKEDITOR !== 'undefined' && CKEDITOR.instances.ft_noi_dung) {
+            CKEDITOR.instances.ft_noi_dung.setData(noiDungHtml);
+        } else {
+            $('#ft_noi_dung').val(noiDungHtml);
+        }
+
+        $('#ft_thu_tu').val(thuTu);
+        $('#btnSaveFooter').html('<i class="fas fa-save mr-2"></i> Lưu Thay Đổi').addClass("bg-blue-600").removeClass("bg-green-600");
+    }
+
+    function handleSaveFooter() {
+        // Cập nhật URL chống lỗi 404
+        let url = editingFooterId ? '@Url.Action("UpdateFooter", "Trang_Admin", new { area = "Admin" })' : '@Url.Action("ThemFooter", "Trang_Admin", new { area = "Admin" })';
+
+        // Dùng FormData để gói dữ liệu HTML an toàn
+        let formData = new FormData();
+
+        if (editingFooterId) {
+            formData.append("id", editingFooterId);
+        }
+
+        formData.append("tieu_de", $('#ft_tieu_de').val());
+
+        // Lấy dữ liệu chuẩn từ CKEditor
+        let dataNoiDungHtml = "";
+        if (typeof CKEDITOR !== 'undefined' && CKEDITOR.instances.ft_noi_dung) {
+            dataNoiDungHtml = CKEDITOR.instances.ft_noi_dung.getData();
+        } else {
+            dataNoiDungHtml = $('#ft_noi_dung').val();
+        }
+        formData.append("noi_dung_html", dataNoiDungHtml);
+
+        formData.append("thu_tu", $('#ft_thu_tu').val());
+
+        // Gửi ajax với quy chuẩn y hệt như Feature
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (res) {
+                alert(res.message);
+                if (res.success) location.reload();
+            },
+            error: function (xhr) {
+                console.log(xhr.responseText);
+                alert("Lỗi máy chủ! Vui lòng nhấn F12 mở tab Console để xem chi tiết.");
+            }
+        });
+    }
+
+    function xoa(loai, id) {
+        if (confirm("Bạn có chắc muốn xóa thành phần này?")) {
+            $.post('@Url.Action("XoaThanhPhan", "Trang_Admin", new { area = "Admin" })', { loai: loai, id: id }, function () { location.reload(); });
+        }
+    }
+</script>   

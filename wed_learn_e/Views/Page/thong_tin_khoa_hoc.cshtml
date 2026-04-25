@@ -172,5 +172,16 @@
         <div class="course-desc">Học các idioms thông dụng.</div>
         <a class="btn-course" href="@Url.Action("_ThanhNgu", "Page", new { id_cap_do = ViewBag.IdCapDo })">Xem ngay</a>
     </div>
-
-</div>
+    @if (ViewBag.DanhSachKhoaHocMoi != null)
+    {
+        foreach (var kh in ViewBag.DanhSachKhoaHocMoi)
+        {
+            <div class="course-box" style="background:#fff7e6; border: 1px solid #ffe8cc;">
+                <div class="course-icon">🌟</div>
+                <div class="course-title">@kh.ten_khoa_hoc</div>
+                <div class="course-desc">@kh.mo_ta</div>
+                <a class="btn-course" style="background: #ff8c00;" href="@Url.Action("NoiDungKhoaHoc", "Page", new { id_khoa_hoc = kh.id_khoa_hoc })">Bắt đầu học</a>
+            </div>
+        }
+    }
+</div> ```

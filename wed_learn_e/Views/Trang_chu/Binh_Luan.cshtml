@@ -1,0 +1,82 @@
+﻿@using PagedList
+@using PagedList.Mvc
+<h2>Học viên nói gì về chúng tôi?</h2>
+<div class="testimonial-grid">
+    @{
+        // ÉP KIỂU LẠI THÀNH IPagedList
+        var listBinhLuan = ViewBag.DanhSachBinhLuan as IPagedList<wed_learn_e.Models.binh_luan>;
+
+        if (listBinhLuan != null && listBinhLuan.Count > 0)
+        {
+            string[] colors = { "f4b400", "4786e3", "28a745", "dc3545", "17a2b8" };
+            int colorIndex = 0;
+
+            foreach (var item in listBinhLuan)
+            {
+                string tenHocVien = (item.nguoi_dung != null) ? item.nguoi_dung.ho_va_ten : "Học viên";
+                string tenAvatar = tenHocVien.Replace(" ", "+");
+                string bgColor = colors[colorIndex % colors.Length];
+                colorIndex++;
+
+                // Kiểm tra xem bình luận này có phải của Admin không
+                bool isAdmin = (item.nguoi_dung != null && item.nguoi_dung.vai_tro == "quan_tri_vien");
+
+                // Nếu là Admin thì thêm style viền vàng cho nổi bật
+                <div class="testimonial-card" style="@(isAdmin ? "border: 2px solid #f4b400; background: #fffcf0;" : "")">
+
+                    @if (isAdmin)
+                    {
+                        <div style="position: absolute; top: -12px; left: 20px; background: #f4b400; color: white; padding: 3px 12px; border-radius: 12px; font-size: 12px; font-weight: bold;">
+                            📌 Thông báo Admin
+                        </div>
+                    }
+
+                    <div class="user-info">
+                        <img src="https://ui-avatars.com/api/?name=@tenAvatar&background=@(isAdmin ? "f4b400" : bgColor)&color=fff" alt="User">
+                        <div>
+                            <div class="user-name" style="@(isAdmin ? "color: red;" : "")">
+                                @tenHocVien @(isAdmin ? "✔" : "")
+                            </div>
+                            <div class="user-role">
+                                @if (isAdmin)
+                                {
+                                    <span>Quản trị viên KityLearn</span>
+                                }
+                                else
+                                {
+                                    @* HIỂN THỊ TRẠNG THÁI TRẢ LỜI CHO USER *@
+                                    if (item.trang_thai == true)
+                                    {
+                                        <span style="color: #28a745; font-weight: bold;"><i class="fas fa-check-double"></i> Đã được hỗ trợ</span>
+                                    }
+                                    else
+                                    {
+                                        <span style="color: #888;">🕒 Đang chờ phản hồi</span>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comment">"@item.noi_dung"</div>
+                </div>
+            }
+        }
+        else
+        {
+            <p style="color: #888; font-style: italic;">Chưa có đánh giá nào từ học viên.</p>
+        }
+    }
+</div>
+
+<div style="text-align: center; margin-top: 40px;">
+    @if (listBinhLuan != null && listBinhLuan.PageCount > 1)
+    {
+        // Thêm cái mỏ neo #khu-vuc-binh-luan vào cuối đường link
+        @Html.PagedListPager(listBinhLuan, page => Url.Action("Index", new { page }) + "#khu-vuc-binh-luan")
+    }
+</div>
+<div style="text-align: center; margin: 40px 0;">
+    <button class="start-btn" onclick="location.href='@Url.Action("LienHe", "Trang_chu")'" style="padding: 15px 40px; font-size: 20px;">
+        📞 Liên Hệ & Đóng Góp Ý Kiến
+    </button>
+</div>

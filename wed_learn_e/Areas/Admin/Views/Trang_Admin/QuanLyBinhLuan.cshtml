@@ -26,7 +26,19 @@
         <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 transition text-white px-5 py-2 rounded-lg font-bold">Lọc</button>
     </form>
 </div>
+<div class="bg-indigo-50 p-6 rounded-xl shadow-sm border border-indigo-100 mb-8 relative overflow-hidden">
+    <i class="fas fa-bullhorn absolute -right-4 -top-4 text-7xl text-indigo-100 opacity-50"></i>
 
+    <h3 class="text-lg font-bold text-indigo-700 mb-3 relative z-10"><i class="fas fa-edit mr-2"></i>Đăng Thông Báo Mới</h3>
+    <div class="flex flex-col md:flex-row gap-4 mb-2 relative z-10">
+        <input type="text" id="txtChuDe" placeholder="Chủ đề (VD: Lịch bảo trì, Khóa mới...)" class="md:w-1/4 p-2.5 border border-indigo-200 rounded-lg focus:border-indigo-500 outline-none">
+        <input type="text" id="txtNoiDung" placeholder="Nhập nội dung thông báo muốn gửi đến tất cả học viên..." class="flex-1 p-2.5 border border-indigo-200 rounded-lg focus:border-indigo-500 outline-none">
+
+        <button onclick="guiThongBao()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-lg font-bold transition whitespace-nowrap shadow-md">
+            <i class="fas fa-paper-plane mr-1"></i> Đăng lên
+        </button>
+    </div>
+</div>
 <h3 class="text-xl font-bold text-gray-700 mb-4 border-b pb-2"><i class="fas fa-users text-indigo-500 mr-2"></i>Câu hỏi từ Học viên</h3>
 <div class="space-y-4 mb-10">
     @if (listHocVien != null && listHocVien.Any())
@@ -146,6 +158,29 @@
         }, function(res) {
             if (res.success) {
                 location.reload();
+            } else {
+                alert(res.message);
+            }
+        });
+    }
+    // Hàm gửi thông báo độc lập của Admin
+    function guiThongBao() {
+        var chuDe = $("#txtChuDe").val();
+        var noiDung = $("#txtNoiDung").val();
+
+        if (noiDung.trim() === "") {
+            alert("Vui lòng nhập nội dung thông báo!");
+            return;
+        }
+
+        // Gọi AJAX lên hàm TaoThongBao vừa viết trong Controller
+        $.post('@Url.Action("TaoThongBao", "Trang_Admin", new { area = "Admin" })', {
+            chu_de: chuDe,
+            noi_dung: noiDung
+        }, function(res) {
+            if (res.success) {
+                alert(res.message);
+                location.reload(); // Tải lại trang để thấy thông báo xuất hiện
             } else {
                 alert(res.message);
             }

@@ -1,0 +1,59 @@
+﻿@model IEnumerable<wed_learn_e.Models.thong_tin_khoa_hoc>
+@{
+    ViewBag.Title = ViewBag.TenKhoaHoc;
+    Layout = "~/Views/Shared/_Layoutcauhoi.cshtml";
+}
+
+<style>
+    /* CSS giúp nội dung từ CKEditor hiển thị đẹp, hình ảnh không bị tràn viền */
+    .rich-text-content {
+        line-height: 1.8;
+        font-size: 16px;
+        color: #333;
+    }
+
+        .rich-text-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .rich-text-content table {
+            width: 100% !important;
+            border-collapse: collapse;
+        }
+
+        .rich-text-content th, .rich-text-content td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+</style>
+
+<div class="container" style="max-width: 900px; margin: 40px auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+
+    <a href="javascript:history.back()" style="display: inline-block; margin-bottom: 20px; color: #6c757d; text-decoration: none; font-weight: bold;">
+        <i class="fas fa-arrow-left mr-1"></i> Quay lại
+    </a>
+
+    <h2 style="color: #0d6efd; text-align: center; margin-bottom: 40px; font-weight: bold; font-size: 28px; border-bottom: 2px solid #e9f5ff; padding-bottom: 20px;">
+        @ViewBag.TenKhoaHoc
+    </h2>
+
+    @if (Model != null && Model.Any())
+    {
+        foreach (var item in Model)
+        {
+            <div class="rich-text-content" style="margin-bottom: 50px;">
+                @Html.Raw(item.noi_dung_html)
+            </div>
+        }
+    }
+    else
+    {
+        <div style="text-align: center; padding: 50px 0;">
+            <i class="fas fa-folder-open" style="font-size: 40px; color: #ccc; margin-bottom: 15px;"></i>
+            <p style="color: #888; font-style: italic;">Admin đang cập nhật nội dung cho khóa học này. Bạn quay lại sau nhé!</p>
+        </div>
+    }
+</div>
