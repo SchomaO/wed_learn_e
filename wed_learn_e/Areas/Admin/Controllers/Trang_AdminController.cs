@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
@@ -1520,6 +1521,68 @@ namespace wed_learn_e.Areas.Admin.Controllers
                 return Json(new { success = true });
             }
             catch (Exception ex) { return Json(new { success = false, message = ex.Message }); }
+        }
+        //ĐỔI MẬT KHẤU ADMIN
+        // Hàm POST: Đổi mật khẩu cho chính Admin đang đăng nhập
+        [HttpPost]
+        public ActionResult DoiMatKhauAdmin(string oldPass, string newPass, string confirmPass)
+        {
+            // 1. Kiểm tra session login của Admin (Dựa trên tên session bạn đang dùng trong hàm Index)
+            if (Session["Admin_VaiTro"] == null)
+            {
+                return RedirectToAction("DangNhap", "User", new { area = "" });
+            }
+
+            // Lấy ID admin từ Session (Bạn cần đảm bảo lúc Đăng nhập có gán Session["Admin_ID"])
+            // Nếu chưa có Session ID, bạn có thể lấy theo username: string username = Session["Admin_TenDangNhap"].ToString();
+            if (Session["Admin_ID"] == null)
+            {
+                TempData["Error"] = "Không tìm thấy phiên làm việc. Vui lòng đăng nhập lại!";
+                return RedirectToAction("Index");
+            }
+
+            int adminId = int.Parse(Session["Admin_ID"].ToString());
+
+            try
+            {
+                var admin = db.nguoi_dung.Find(adminId);
+
+                if (admin != null)
+                {
+                    // 2. Kiểm tra mật khẩu cũ (Nếu DB bạn có mã hóa MD5 thì cần mã hóa oldPass trước khi so sánh)
+                    if (admin.mat_khau != oldPass)
+                    {
+                        TempData["Error"] = "Mật khẩu hiện tại không chính xác!";
+                        return Redirect(Request.UrlReferrer.ToString());
+                    }
+
+                    // 3. Kiểm tra mật khẩu mới và xác nhận
+                    if (newPass != confirmPass)
+                    {
+                        TempData["Error"] = "Mật khẩu mới và xác nhận không khớp!";
+                        return Redirect(Request.UrlReferrer.ToString());
+                    }
+
+                    if (string.IsNullOrEmpty(newPass))
+                    {
+                        TempData["Error"] = "Mật khẩu mới không được để trống!";
+                        return Redirect(Request.UrlReferrer.ToString());
+                    }
+
+                    // 4. Cập nhật mật khẩu mới
+                    admin.mat_khau = newPass;
+                    db.Entry(admin).State = EntityState.Modified;
+                    db.SaveChanges();
+
+                    TempData["Success"] = "Đổi mật khẩu thành công!";
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Lỗi hệ thống: " + ex.Message;
+            }
+
+            return Redirect(Request.UrlReferrer.ToString());
         }
     }
 }
