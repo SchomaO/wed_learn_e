@@ -370,7 +370,19 @@
         function editMiniTest(id, t, dateStr) { currentEditingItemId = id; currentModalAction = "mini-test"; $("#modalContentTitle").html("✏️ Sửa Lịch Mini Test"); $("#lblData1").text("Tiêu đề Bài Test"); $("#box-data3, #box-data4, #box-khoa-hoc").addClass("hidden"); $("#box-data2-textarea").addClass("hidden"); $("#box-data2-date").removeClass("hidden"); $("#txtData1").val(t); $("#txtData2_Date").val(dateStr); $("#modalAddContent").removeClass("hidden").addClass("flex"); }
 
         // --- XÓA ITEM CHUNG ---
-        function deleteItem(type, id) { if (confirm("Bạn có chắc chắn muốn xóa?")) $.post("/Admin/Trang_Admin/DeleteItem", { type: type, id: id }, function (res) { if (res.success) loadFullData(currentSelectedLevelId, $("#current-level-name").text().replace("Đang quản lý: ", "")); }); }
+        // --- XÓA ITEM CHUNG (ĐÃ FIX LỖI IM LẶNG) ---
+        function deleteItem(type, id) {
+            if (confirm("Bạn có chắc chắn muốn xóa?")) {
+                $.post("/Admin/Trang_Admin/DeleteItem", { type: type, id: id }, function (res) {
+                    if (res.success) {
+                        loadFullData(currentSelectedLevelId, $("#current-level-name").text().replace("Đang quản lý: ", ""));
+                    } else {
+                        // Thêm dòng này để lôi cổ cái lỗi ra màn hình
+                        alert("❌ KHÔNG THỂ XÓA:\n" + res.message);
+                    }
+                });
+            }
+        }
 
         // 6. QUẢN LÝ CẤP ĐỘ
         function openModalAddLevel() { $("#modalAddLevel").removeClass("hidden").addClass("flex"); }

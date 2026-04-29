@@ -138,54 +138,7 @@
         white-space: nowrap;
     }
 
-    /* --- CSS CHO THANH PHÂN TRANG (PAGINATION) --- */
-    .pagination-container {
-        text-align: center;
-        margin: 40px 0;
-    }
-
-    .pagination {
-        display: inline-flex;
-        padding-left: 0;
-        list-style: none;
-        justify-content: center;
-        margin-top: 20px;
-    }
-
-        .pagination li {
-            margin: 0 5px;
-        }
-
-            .pagination li a, .pagination li span {
-                display: block;
-                padding: 10px 18px;
-                color: #4786e3;
-                text-decoration: none;
-                background-color: #fff;
-                border: 1px solid #ddd;
-                border-radius: 8px;
-                font-weight: bold;
-                font-size: 16px;
-                transition: 0.3s;
-            }
-
-                .pagination li a:hover {
-                    background-color: #f8f9fa;
-                    color: #0b5ed7;
-                    border-color: #4786e3;
-                }
-
-        .pagination .active span {
-            background-color: #4786e3;
-            color: white;
-            border-color: #4786e3;
-        }
-
-        .pagination .disabled span {
-            color: #ccc;
-            cursor: not-allowed;
-            background-color: #f9f9f9;
-        }
+   
 </style>
 
 <div class="page-header">
@@ -230,10 +183,26 @@
 </div>
 
 <div class="pagination-container">
-    @if (Model != null && Model.PageCount > 1)
-    {
-        @Html.PagedListPager(Model, page => Url.Action("_ThanhNgu", new { page, id_cap_do = ViewBag.IdCapDo, search = ViewBag.Search }))
-    }
+    <div style="margin-bottom: 10px; color: #666; font-weight: bold;">
+        Trang @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) / @Model.PageCount
+    </div>
+
+
+
+    @Html.PagedListPager(Model, page => Url.Action("_ThanhNgu",
+        new { page, searchString = ViewBag.CurrentFilter, id_cap_do = ViewBag.IdCapDo }),
+        new PagedListRenderOptions
+            {
+                DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+            DisplayLinkToLastPage = PagedListDisplayMode.Always,
+            DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+            DisplayLinkToNextPage = PagedListDisplayMode.Always,
+            MaximumPageNumbersToDisplay = 5,
+            LinkToFirstPageFormat = "« Đầu",
+            LinkToPreviousPageFormat = "‹ Trước",
+            LinkToNextPageFormat = "Sau ›",
+            LinkToLastPageFormat = "Cuối »"
+        })
 </div>
 
 <div class="cat-mascot">

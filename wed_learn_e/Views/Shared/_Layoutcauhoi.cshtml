@@ -3,6 +3,80 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title </title>
+
+    <style>
+        /* CSS LÀM ĐẸP PHÂN TRANG */
+        .pagination-container {
+            margin-top: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .pagination {
+            display: flex;
+            gap: 8px; /* Khoảng cách giữa các con số */
+            padding: 0;
+            list-style: none;
+        }
+
+            .pagination li {
+                display: inline-block;
+            }
+
+                .pagination li a, .pagination li span {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    min-width: 45px;
+                    height: 45px;
+                    padding: 0 15px;
+                    text-decoration: none;
+                    color: #1a73e8;
+                    background-color: white;
+                    border: 1px solid #e0e0e0;
+                    border-radius: 10px; /* Bo góc hiện đại */
+                    font-weight: bold;
+                    transition: all 0.3s ease;
+                    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+                }
+
+                    /* Hiệu ứng khi rê chuột vào */
+                    .pagination li a:hover {
+                        background-color: #1a73e8;
+                        color: white;
+                        border-color: #1a73e8;
+                        transform: translateY(-3px);
+                        box-shadow: 0 5px 15px rgba(26,115,232,0.3);
+                    }
+
+                /* Trang đang chọn (Active) */
+                .pagination li.active span {
+                    background-color: #1a73e8;
+                    color: white;
+                    border-color: #1a73e8;
+                    cursor: default;
+                    box-shadow: 0 4px 12px rgba(26,115,232,0.4);
+                }
+
+                /* Các nút bị vô hiệu hóa (ví dụ: đang ở trang 1 thì nút "Trước" bị mờ) */
+                .pagination li.disabled span {
+                    color: #ccc;
+                    background-color: #f9f9f9;
+                    border-color: #eee;
+                    cursor: not-allowed;
+                    box-shadow: none;
+                }
+
+        /* Tùy chỉnh riêng cho nút Đầu/Cuối/Trước/Sau */
+        .PagedList-skipToFirst a, .PagedList-skipToLast a,
+        .PagedList-skipToNext a, .PagedList-skipToPrevious a {
+            font-size: 13px;
+            background-color: #f1f7ff;
+        }
+    </style>
+    <link rel="icon" type="image/png" href="@Url.Content("~/Img/Gemini_Generated_Image_xdycdaxdycdaxdyc-removebg-preview (1).png")" />
 </head>
 
 <body>

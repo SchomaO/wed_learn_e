@@ -18,7 +18,6 @@ namespace wed_learn_e.Controllers
             // 1. CẬP NHẬT & LẤY SESSION CẤP ĐỘ
             if (id_cap_do != null)
             {
-                // Ghi nhớ lại ID cấp độ mới nhất người dùng vừa chọn
                 Session["id_cap_do_hien_tai"] = id_cap_do;
             }
             else if (Session["id_cap_do_hien_tai"] != null)
@@ -36,12 +35,11 @@ namespace wed_learn_e.Controllers
                 queryVideo = queryVideo.Where(v => v.id_khoa_hoc != null && listIdKhoaHoc.Contains(v.id_khoa_hoc.Value));
             }
 
-            // 2. ÉP VỀ TRANG 1 KHI TÌM KIẾM
+            // --- BỘ LỌC TÌM KIẾM (Đã fix chuẩn: Giao lại cho SQL Server tự phân biệt Hoa/Thường) ---
             if (!String.IsNullOrEmpty(searchString))
             {
-                queryVideo = queryVideo.Where(v => v.tieu_de.Contains(searchString));
-                // Fix lỗi: Khi gõ tìm kiếm, tự động reset về trang 1
-                page = 1;
+                string tuKhoa = searchString.Trim(); // Cắt xén khoảng trắng thừa
+                queryVideo = queryVideo.Where(v => v.tieu_de.Contains(tuKhoa));
             }
 
             ViewBag.CurrentFilter = searchString;
@@ -209,10 +207,11 @@ namespace wed_learn_e.Controllers
                 queryNghe = queryNghe.Where(v => v.id_khoa_hoc != null && listIdKhoaHoc.Contains(v.id_khoa_hoc.Value));
             }
 
-            // --- BỘ LỌC TÌM KIẾM ---
+            // --- BỘ LỌC TÌM KIẾM (Đã fix lỗi chữ hoa/chữ thường) ---
             if (!String.IsNullOrEmpty(searchString))
             {
-                queryNghe = queryNghe.Where(v => v.tieu_de.Contains(searchString));
+                searchString = searchString.Trim().ToLower();
+                queryNghe = queryNghe.Where(v => v.tieu_de != null && v.tieu_de.ToLower().Contains(searchString));
             }
 
             ViewBag.CurrentFilter = searchString;
@@ -250,10 +249,11 @@ namespace wed_learn_e.Controllers
                 queryViet = queryViet.Where(v => v.id_khoa_hoc != null && listIdKhoaHoc.Contains(v.id_khoa_hoc.Value));
             }
 
-            // --- BỘ LỌC TÌM KIẾM ---
+            // --- BỘ LỌC TÌM KIẾM (Đã fix lỗi chữ hoa/chữ thường) ---
             if (!String.IsNullOrEmpty(searchString))
             {
-                queryViet = queryViet.Where(v => v.tieu_de.Contains(searchString));
+                searchString = searchString.Trim().ToLower();
+                queryViet = queryViet.Where(v => v.tieu_de != null && v.tieu_de.ToLower().Contains(searchString));
             }
 
             ViewBag.CurrentFilter = searchString;
@@ -271,7 +271,7 @@ namespace wed_learn_e.Controllers
             int pageNumber = (page ?? 1);
 
             return View(queryViet.ToPagedList(pageNumber, pageSize));
-        
+
         }
 
         // 2. TRANG THỰC HÀNH VIẾT
@@ -594,10 +594,10 @@ namespace wed_learn_e.Controllers
             {
                 var listIdCauHoiGame = db.cau_hoi_kho_bau.Where(c => c.id_game == cauHoi.id_game).Select(c => c.id_cau_hoi).ToList();
                 var lichSuCanXoa = db.lich_su_kho_bau.Where(l => l.id_nguoi_dung == userId && listIdCauHoiGame.Contains(l.id_cau_hoi.Value)).ToList();
-               foreach (var item in lichSuCanXoa)
-{
-    db.lich_su_kho_bau.Remove(item);
-}
+                foreach (var item in lichSuCanXoa)
+                {
+                    db.lich_su_kho_bau.Remove(item);
+                }
                 db.SaveChanges();
                 Session.Remove("Sai_Cau_" + id_cau_hoi);
 

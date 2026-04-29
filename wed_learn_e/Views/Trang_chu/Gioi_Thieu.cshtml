@@ -1,26 +1,26 @@
-﻿<div class="gioi_thieu_cac_uu_dai">
+﻿<div class="gioi_thieu_cac_uu_dai grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     @foreach (var f in ViewBag.ListFeature as List<wed_learn_e.Models.feature_trang_chu>)
     {   
         if (f.anh_ben_trai == false)
         {
-            <div class="feature-row">
-                <div class="feature-content right-align">
+            <div class="feature-row grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="feature-content right-align grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <h2>@Html.Raw(f.tieu_de)</h2>
                     <p>@Html.Raw(f.noi_dung)</p>
                 </div>
-                <div class="feature-image">
+                <div class="feature-image grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <img src="@f.hinh_anh" alt="Giao diện">
                 </div>
             </div>
         }
         else
         {
-            <div class="feature-row reverse">
-                <div class="feature-content left-align">
+            <div class="feature-row reverse grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="feature-content left-align grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <h2>@Html.Raw(f.tieu_de)</h2>
                     <p>@Html.Raw(f.noi_dung)</p>
                 </div>
-                <div class="feature-image">
+                <div class="feature-image grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <img src="@f.hinh_anh" alt="Giao diện">
                 </div>
             </div>

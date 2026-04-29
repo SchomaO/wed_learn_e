@@ -7,7 +7,7 @@
 }
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 <style>
     body {
         background: #f4f9ff;
@@ -110,33 +110,92 @@
         .btn-submit:hover {
             background: #0b5ed7;
         }
-</style>
+    /* CSS Nút hiện đáp án & Gợi ý */
+    .input-group {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
 
-<div class="write-wrapper">
-    <div class="header-box">
-        <div class="header-title">✍️ @Model.tieu_de</div>
-        <div style="color: #666;">@Model.mo_ta</div>
-    </div>
+    .btn-show-answer {
+        position: absolute;
+        right: 15px;
+        background: none;
+        border: none;
+        color: #6c757d;
+        cursor: pointer;
+        font-size: 18px;
+        transition: 0.2s;
+    }
 
-    <div id="exerciseForm">
-        @{ int i = 1; }
-        @foreach (var q in cauHois)
-        {
-            <div class="question-card">
-                <div class="vietnamese-text">Câu @i: @q.cau_tieng_viet</div>
-
-                <input type="text" class="english-input" data-answer="@q.dap_an_tieng_anh" placeholder="Gõ tiếng Anh vào đây..." autocomplete="off">
-
-                <div class="feedback"></div>
-            </div>
-            i++;
+        .btn-show-answer:hover {
+            color: #0d6efd;
         }
 
-        <button type="button" class="btn-submit" id="btnNopBai" onclick="kiemTraDapAn()">Kiểm tra kết quả</button>
-    </div>
-</div>
+    .hint-box {
+        background: #eef7ff;
+        color: #0d6efd;
+        padding: 10px 15px;
+        border-radius: 8px;
+        margin-top: 10px;
+        font-weight: bold;
+        display: none; /* Ẩn mặc định */
+        border-left: 4px solid #0d6efd;
+    }
+</style>
+<div class="list-container">
+    @Html.Partial("_NutQuayLai", new ViewDataDictionary {
+  // Thêm đoạn new { id = ... } để hệ thống tạo ra link có đuôi /1
+  { "LinkQuayVe", Url.Action("list_luyen_viet", "tinh_nang", new { id = Request.QueryString["id_cap_do"] }) },
 
-<script>
+})
+    <div class="write-wrapper">
+        <div class="header-box">
+            <div class="header-title">✍️ @Model.tieu_de</div>
+            <div style="color: #666;">@Model.mo_ta</div>
+        </div>
+
+        <div id="exerciseForm">
+            @{ int i = 1; }
+            @foreach (var q in cauHois)
+            {
+                <div class="question-card">
+                    <div class="vietnamese-text">Câu @i: @q.cau_tieng_viet</div>
+
+                    <div class="input-group">
+                        <input type="text" class="english-input" data-answer="@q.dap_an_tieng_anh" placeholder="Gõ tiếng Anh vào đây..." autocomplete="off">
+                        <button type="button" class="btn-show-answer" title="Xem đáp án" onclick="toggleAnswer(this)">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+
+                    <div class="hint-box">Đáp án: @q.dap_an_tieng_anh</div>
+                    <div class="feedback"></div>
+                </div>
+                i++;
+            }
+
+            <button type="button" class="btn-submit" id="btnNopBai" onclick="kiemTraDapAn()">Kiểm tra kết quả</button>
+        </div>
+    </div>
+
+    <script>
+    // Hàm Bật/Tắt đáp án khi bấm nút con mắt
+    function toggleAnswer(btn) {
+        let card = btn.closest('.question-card');
+        let hintBox = card.querySelector('.hint-box');
+
+        if (hintBox.style.display === "block") {
+            hintBox.style.display = "none";
+            btn.innerHTML = '<i class="fas fa-eye"></i>'; // Mắt mở
+            btn.style.color = "#6c757d";
+        } else {
+            hintBox.style.display = "block";
+            btn.innerHTML = '<i class="fas fa-eye-slash"></i>'; // Mắt nhắm
+            btn.style.color = "#dc3545";
+        }
+    }
+
     function kiemTraDapAn() {
         let inputs = document.querySelectorAll('.english-input');
         let allCorrect = true;
@@ -144,6 +203,7 @@
         inputs.forEach(function (input) {
             let card = input.closest('.question-card');
             let feedback = card.querySelector('.feedback');
+            let hintBox = card.querySelector('.hint-box');
 
             // Xóa dấu câu, viết thường, loại bỏ khoảng trắng thừa
             let cleanStr = (str) => str.toLowerCase().replace(/[.,!?]/g, "").trim().replace(/\s+/g, " ");
@@ -156,32 +216,37 @@
                 card.classList.add('success');
                 feedback.className = 'feedback correct';
                 feedback.innerHTML = '✔ Chính xác!';
+                hintBox.style.display = "none"; // Ẩn luôn đáp án nếu làm đúng
             } else {
                 card.classList.remove('success');
                 card.classList.add('error');
                 feedback.className = 'feedback wrong';
-                feedback.innerHTML = '✘ Chưa đúng (Đáp án: ' + input.getAttribute('data-answer') + ')';
+
+                // NẾU LÀM SAI: Chỉ báo chưa đúng, yêu cầu người dùng bấm con mắt nếu muốn xem
+                if(input.value.trim() === "") {
+                    feedback.innerHTML = '✘ Bạn chưa nhập câu trả lời!';
+                } else {
+                    feedback.innerHTML = '✘ Chưa đúng! (Bấm biểu tượng 👁️ để xem đáp án)';
+                }
+
                 allCorrect = false;
             }
         });
 
         // NẾU LÀM ĐÚNG HẾT 100% CÁC CÂU
         if (allCorrect) {
-            // Đổi giao diện nút bấm
             let btn = document.getElementById('btnNopBai');
             btn.innerHTML = "Đang lưu kết quả...";
             btn.style.background = "#28a745";
             btn.disabled = true;
 
-            // GỌI AJAX VỀ SERVER ĐỂ LƯU VÀO DATABASE
             $.ajax({
-                url: '@Url.Action("LuuKetQuaViet", "tinh_nang")', // Tên Controller của bạn
+                url: '@Url.Action("LuuKetQuaViet", "tinh_nang")',
                 type: 'POST',
                 data: { id_bai_viet: @Model.id_bai_viet },
                 success: function (res) {
                     if (res.success) {
                         alert("Tuyệt vời! Bạn đã hoàn thành bài tập.");
-                        // Đá người dùng về lại danh sách để chiêm ngưỡng viền xanh
                         window.location.href = '@Url.Action("list_luyen_viet", "tinh_nang")';
                     } else {
                         alert("Lỗi: " + res.message);
@@ -195,4 +260,4 @@
             });
         }
     }
-</script>
+    </script>

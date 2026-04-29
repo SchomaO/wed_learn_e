@@ -227,7 +227,21 @@
             Trang @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) / @Model.PageCount
         </div>
 
+
+
         @Html.PagedListPager(Model, page => Url.Action("list_luyen_viet",
-            new { page, searchString = ViewBag.CurrentFilter, id_cap_do = ViewBag.IdCapDo }))
+            new { page, searchString = ViewBag.CurrentFilter, id_cap_do = ViewBag.IdCapDo }),
+            new PagedListRenderOptions
+                {
+                    DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+                DisplayLinkToLastPage = PagedListDisplayMode.Always,
+                DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+                DisplayLinkToNextPage = PagedListDisplayMode.Always,
+                MaximumPageNumbersToDisplay = 5,
+                LinkToFirstPageFormat = "« Đầu",
+                LinkToPreviousPageFormat = "‹ Trước",
+                LinkToNextPageFormat = "Sau ›",
+                LinkToLastPageFormat = "Cuối »"
+            })
     </div>
 </div>

@@ -29,8 +29,59 @@ namespace wed_learn_e.Areas.Admin.Controllers
             var users = db.nguoi_dung.Where(u => u.vai_tro != "quan_tri_vien").ToList();
             return View(users);
         }
+        // ===============================================
+        // CÀI ĐẶT HỆ THỐNG (LƯU VÀO FILE TXT TRONG APP_DATA)
+        // ===============================================
+        private string GetLimitFilePath()
+        {
+            // Trỏ đường dẫn tới thư mục App_Data ẩn của hệ thống
+            return Server.MapPath("~/App_Data/limit.txt");
+        }
+
+        [HttpGet]
+        public JsonResult GetCaiDatHeThong()
+        {
+            int limit = 2; // Mặc định nếu chưa cài đặt gì là 2
+            try
+            {
+                string path = GetLimitFilePath();
+                if (System.IO.File.Exists(path))
+                {
+                    string data = System.IO.File.ReadAllText(path);
+                    int.TryParse(data, out limit);
+                }
+            }
+            catch { } // Lỗi thì kệ nó, lấy số 2 mặc định
+
+            return Json(new { success = true, limit = limit }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult LuuCaiDatHeThong(int limit)
+        {
+            try
+            {
+                string path = GetLimitFilePath();
+
+                // Kiểm tra xem thư mục App_Data có chưa, chưa có thì tự tạo
+                string folder = Server.MapPath("~/App_Data");
+                if (!System.IO.Directory.Exists(folder))
+                {
+                    System.IO.Directory.CreateDirectory(folder);
+                }
+
+                // Lưu con số limit vào file limit.txt
+                System.IO.File.WriteAllText(path, limit.ToString());
+
+                return Json(new { success = true, message = "Đã cập nhật giới hạn khóa học thành công!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Lỗi ghi file: " + ex.Message });
+            }
+        }
         // 1. Hàm GET: Lấy ra danh sách khóa học CỦA 1 HỌC VIÊN CỤ THỂ
-        public ActionResult ChiTietKhoaHoc(int id_nguoi_dung)
+        public ActionResult ChiTietKhoaHoc(int? id_nguoi_dung)
         {
             // Lấy thông tin học viên để in ra tên
             var user = db.nguoi_dung.Find(id_nguoi_dung);
@@ -124,23 +175,43 @@ namespace wed_learn_e.Areas.Admin.Controllers
                 var user = db.nguoi_dung.Find(id);
                 if (user != null)
                 {
-                    // BƯỚC QUAN TRỌNG: Xóa các dữ liệu liên quan ở các bảng khác trước (khóa ngoại)
+                    // ========================================================
+                    // BƯỚC 1: DỌN SẠCH MỌI DẤU VẾT (LỊCH SỬ) CỦA NGƯỜI DÙNG
+                    // ========================================================
 
-                    // 1. Xóa tiến độ học tập (Dùng ToList() và foreach thay cho RemoveRange)
+                    // 1. Bình luận
+                    var binhLuan = db.binh_luan.Where(b => b.id_nguoi_dung == id).ToList();
+                    foreach (var item in binhLuan) db.binh_luan.Remove(item);
+
+                    // 2. Tiến độ học tập
                     var tienDo = db.tien_do_hoc_tap.Where(t => t.id_nguoi_dung == id).ToList();
-                    foreach (var item in tienDo)
-                    {
-                        db.tien_do_hoc_tap.Remove(item);
-                    }
+                    foreach (var item in tienDo) db.tien_do_hoc_tap.Remove(item);
 
-                    // 2. Xóa kết quả kiểm tra (Dùng ToList() và foreach thay cho RemoveRange)
+                    // 3. Kết quả kiểm tra
                     var ketQua = db.ket_qua_kiem_tra.Where(k => k.id_nguoi_dung == id).ToList();
-                    foreach (var item in ketQua)
-                    {
-                        db.ket_qua_kiem_tra.Remove(item);
-                    }
+                    foreach (var item in ketQua) db.ket_qua_kiem_tra.Remove(item);
 
-                    // Cuối cùng mới xóa user
+                    // 4. Lịch sử Luyện Viết
+                    var lsViet = db.lich_su_luyen_viet.Where(l => l.id_nguoi_dung == id).ToList();
+                    foreach (var item in lsViet) db.lich_su_luyen_viet.Remove(item);
+
+                    // 5. Lịch sử Luyện Nghe (Kẻ ngáng đường mới nhất)
+                    var lsNghe = db.lich_su_luyen_nghe.Where(l => l.id_nguoi_dung == id).ToList();
+                    foreach (var item in lsNghe) db.lich_su_luyen_nghe.Remove(item);
+
+                    // 6. Lịch sử Luyện Nói (Đón đầu luôn cho chắc)
+                    var lsNoi = db.lich_su_luyen_noi.Where(l => l.id_nguoi_dung == id).ToList();
+                    foreach (var item in lsNoi) db.lich_su_luyen_noi.Remove(item);
+
+                    // MẸO: Nếu Visual Studio gạch chân đỏ chữ "lich_su_luyen_noi" (tức là bạn không có bảng này hoặc đặt tên khác), 
+                    // thì bạn chỉ việc XÓA 2 DÒNG mục số 6 đi là xong nhé! 
+
+                    // Ép hệ thống dọn dẹp sạch sẽ các bảng phụ trước để "Mở khóa"
+                    db.SaveChanges();
+
+                    // ========================================================
+                    // BƯỚC 2: TIÊU DIỆT TÀI KHOẢN CHÍNH
+                    // ========================================================
                     db.nguoi_dung.Remove(user);
                     db.SaveChanges();
 
@@ -150,7 +221,22 @@ namespace wed_learn_e.Areas.Admin.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = "Không thể xóa do vi phạm ràng buộc dữ liệu: " + ex.Message });
+                // BƯỚC 3: NẾU VẪN CÒN BẢNG NÀO SÓT LẠI THÌ LÔI CỔ NÓ RA MÀN HÌNH
+                string loiGoc = ex.Message;
+                if (ex.InnerException != null)
+                {
+                    loiGoc = ex.InnerException.Message;
+                    if (ex.InnerException.InnerException != null)
+                    {
+                        loiGoc = ex.InnerException.InnerException.Message;
+                    }
+                }
+
+                return Json(new
+                {
+                    success = false,
+                    message = "Không thể xóa! Thủ phạm đang chặn là: \n\n" + loiGoc
+                });
             }
         }
         // Hàm POST: Đổi mật khẩu người dùng
@@ -318,7 +404,28 @@ namespace wed_learn_e.Areas.Admin.Controllers
                 else if (type == "khoa-hoc")
                 {
                     var item = db.khoa_hoc.Find(id);
-                    if (item != null) db.khoa_hoc.Remove(item);
+                    if (item != null)
+                    {
+                        // 1. DIỆT THỦ PHẠM CHÍNH: Xóa tất cả tiến độ của học viên lỡ đăng ký khóa này
+                        var tienDo = db.tien_do_hoc_tap.Where(t => t.id_khoa_hoc == id).ToList();
+                        foreach (var t in tienDo)
+                        {
+                            db.tien_do_hoc_tap.Remove(t);
+                        }
+
+                        // 2. DIỆT THỦ PHẠM PHỤ: Xóa các bài soạn văn bản (Rich Text) bên trong khóa học
+                        var thongTin = db.thong_tin_khoa_hoc.Where(t => t.id_khoa_hoc == id).ToList();
+                        foreach (var t in thongTin)
+                        {
+                            db.thong_tin_khoa_hoc.Remove(t);
+                        }
+
+                        // 3. Xóa Khóa học
+                        db.khoa_hoc.Remove(item);
+
+                        // Lệnh này sẽ chốt hạ toàn bộ 3 bước trên cùng 1 lúc
+                        db.SaveChanges();
+                    }
                 }
                 else if (type == "ngu-phap")
                 {
@@ -346,9 +453,24 @@ namespace wed_learn_e.Areas.Admin.Controllers
                 return Json(new { success = true });
             }
             catch (Exception ex)
+        {
+            // Lôi cổ lỗi sâu nhất (Inner Exception) của SQL Server ra ánh sáng
+            string loiGoc = ex.Message;
+            if (ex.InnerException != null)
             {
-                return Json(new { success = false, message = ex.Message });
+                loiGoc = ex.InnerException.Message;
+                if (ex.InnerException.InnerException != null)
+                {
+                    loiGoc = ex.InnerException.InnerException.Message;
+                }
             }
+
+            return Json(new
+            {
+                success = false,
+                message = "Thủ phạm chặn xóa là: \n\n" + loiGoc
+            });
+        }
         }
         [HttpPost]
         public JsonResult CreateContent(int id_cap_do, string type, string content, string extra)

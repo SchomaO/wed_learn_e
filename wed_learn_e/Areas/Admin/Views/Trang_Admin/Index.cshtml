@@ -11,6 +11,15 @@
         <h3 class="text-3xl font-bold mt-1">@Model.Count()</h3>
         <p class="text-green-500 text-xs mt-2 font-bold"><i class="fas fa-users"></i> Dữ liệu thực tế</p>
     </div>
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex justify-between items-center">
+        <div>
+            <p class="text-gray-500 text-sm font-medium">Cấu hình hệ thống</p>
+            <h3 class="text-xl font-bold mt-1 text-gray-800">Giới hạn học thử</h3>
+        </div>
+        <button onclick="openSettingsModal()" class="bg-gray-800 hover:bg-black text-white p-3 rounded-lg shadow transition">
+            <i class="fas fa-cog"></i> Cài đặt
+        </button>
+    </div>
 </div>
 
 @* 2. Bảng hiển thị danh sách người dùng *@
@@ -25,10 +34,10 @@
                 <tr class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider font-semibold">
                     <th class="px-6 py-4">Người dùng</th>
                     <th class="px-6 py-4">Tài khoản & Ngày tạo</th>
-                    <th class="px-6 py-4 text-center">Vai trò</th>
+                    <th class="px-6 py-4 text-center whitespace-nowrap">Vai trò</th>
                     <th class="px-6 py-4 text-center">Trạng thái VIP</th>
                     <th class="px-6 py-4 text-center">Khóa học</th>
-                    <th class="px-6 py-4 text-right">Thao tác</th>
+                    <th class="px-6 py-4 text-right whitespace-nowrap">Thao tác</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100 text-sm">
@@ -68,11 +77,11 @@
                         <td class="px-6 py-4 text-center">
                             @if (item.vai_tro == "quan_tri_vien" || item.vai_tro == "admin")
                             {
-                                <span class="bg-red-100 text-red-600 px-3 py-1 rounded-full text-[10px] font-bold uppercase">Admin</span>
+                                <span class="bg-red-100 text-red-600 px-3 py-1 rounded-full text-[10px] font-bold uppercase whitespace-nowrap">Admin</span>
                             }
                             else
                             {
-                                <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-[10px] font-bold uppercase">Học viên</span>
+                                <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-[10px] font-bold uppercase whitespace-nowrap">Học viên</span>
                             }
                         </td>
 
@@ -104,11 +113,26 @@
                             </span>
                         </td>
 
-                        @* CỘT 6: THAO TÁC (Đổi Mật Khẩu, Sửa, Khóa học) *@
-                        <td class="px-6 py-4 text-right space-x-2">
-                            <button onclick="openPasswordModal(@item.id_nguoi_dung, '@item.ho_va_ten')" class="text-orange-500 hover:text-orange-700 font-bold transition px-2 py-1 bg-orange-50 rounded"><i class="fas fa-key"></i> Đổi MK</button>
-                            <button onclick="openEditModal(@item.id_nguoi_dung, '@item.ho_va_ten', '@item.email', '@item.vai_tro', @(item.loai_tai_khoan ?? 1))" class="text-blue-600 hover:text-blue-900 font-bold transition px-2 py-1 bg-blue-50 rounded"><i class="fas fa-edit"></i> Sửa</button>
-                            <a href="@Url.Action("ChiTietKhoaHoc", "Trang_Admin", new { id_nguoi_dung = item.id_nguoi_dung })" class="text-indigo-600 hover:text-indigo-900 font-bold transition px-2 py-1 bg-indigo-50 rounded"><i class="fas fa-book"></i> Khóa học</a>
+                        @* CỘT 6: THAO TÁC (Đổi Mật Khẩu, Sửa, Xóa, Khóa học) *@
+                        @* CỘT 6: THAO TÁC (Đổi Mật Khẩu, Sửa, Xóa, Khóa học) *@
+                        <td class="px-6 py-4 text-right whitespace-nowrap">
+                            <div class="flex items-center justify-end gap-2">
+                                <button onclick="openPasswordModal(@item.id_nguoi_dung, '@item.ho_va_ten')" class="text-orange-500 hover:text-orange-700 font-bold transition px-2.5 py-1.5 bg-orange-50 rounded hover:bg-orange-100 flex items-center">
+                                    <i class="fas fa-key mr-1.5"></i> Đổi MK
+                                </button>
+
+                                <button onclick="openEditModal(@item.id_nguoi_dung, '@item.ho_va_ten', '@item.email', '@item.vai_tro', @(item.loai_tai_khoan ?? 1))" class="text-blue-600 hover:text-blue-900 font-bold transition px-2.5 py-1.5 bg-blue-50 rounded hover:bg-blue-100 flex items-center">
+                                    <i class="fas fa-edit mr-1.5"></i> Sửa
+                                </button>
+
+                                <button onclick="confirmDelete(@item.id_nguoi_dung)" class="text-red-500 hover:text-red-700 font-bold transition px-2.5 py-1.5 bg-red-50 rounded hover:bg-red-100 flex items-center">
+                                    <i class="fas fa-trash-alt mr-1.5"></i> Xóa
+                                </button>
+
+                                <a href="@Url.Action("ChiTietKhoaHoc", "Trang_Admin", new { id_nguoi_dung = item.id_nguoi_dung })" class="text-indigo-600 hover:text-indigo-900 font-bold transition px-2.5 py-1.5 bg-indigo-50 rounded hover:bg-indigo-100 flex items-center">
+                                    <i class="fas fa-book mr-1.5"></i> Khóa học
+                                </a>
+                            </div>
                         </td>
                     </tr>
                 }
@@ -132,7 +156,7 @@
                 <label class="block text-xs font-bold text-gray-500 uppercase">Email</label>
                 <input type="email" id="edit_email" class="w-full mt-1 border-2 rounded-lg p-2 focus:border-indigo-500 outline-none font-medium" />
             </div>
-            <div>
+            <div class="hidden">
                 <label class="block text-xs font-bold text-gray-500 uppercase">Vai trò (Quyền)</label>
                 <select id="edit_vai_tro" class="w-full mt-1 border-2 rounded-lg p-2 focus:border-indigo-500 outline-none font-bold text-blue-600">
                     <option value="nguoi_dung">Học viên</option>
@@ -175,7 +199,24 @@
         </div>
     </div>
 </div>
+<div id="modalSettings" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden z-[9999] flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 relative">
+        <button onclick="closeSettingsModal()" class="absolute top-4 right-4 text-gray-400 hover:text-red-500"><i class="fas fa-times text-xl"></i></button>
+        <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2"><i class="fas fa-cogs mr-2"></i>Cài đặt hệ thống</h3>
 
+        <div class="space-y-4">
+            <div>
+                <label class="block text-xs font-bold text-gray-500 uppercase">Giới hạn cấp độ (TK Thường)</label>
+                <input type="number" id="txtLimitNormal" min="0" class="w-full mt-1 border-2 border-gray-200 rounded-lg p-3 font-bold text-3xl text-center focus:border-indigo-500 outline-none text-indigo-600" />
+                <p class="text-[11px] text-gray-400 mt-2 italic text-center">*Nhập 0 nếu bắt buộc phải mua VIP mới được học. Số càng lớn học thử càng nhiều.</p>
+            </div>
+        </div>
+        <div class="mt-6 flex gap-3">
+            <button onclick="closeSettingsModal()" class="flex-1 py-2 bg-gray-100 text-gray-700 font-bold rounded-lg hover:bg-gray-200">Hủy</button>
+            <button onclick="saveSettings()" class="flex-1 py-2 bg-gray-800 text-white font-bold rounded-lg shadow-lg hover:bg-black">Lưu Cài Đặt</button>
+        </div>
+    </div>
+</div>
 @section scripts {
     <script>
         // --- CHỨC NĂNG SỬA THÔNG TIN ---
@@ -232,6 +273,45 @@
                     if (res.success) {
                         alert("✅ " + res.message);
                         closePasswordModal();
+                    } else {
+                        alert("❌ Lỗi: " + res.message);
+                    }
+                });
+            }
+        }
+        // --- CHỨC NĂNG CÀI ĐẶT HỆ THỐNG ---
+        function openSettingsModal() {
+            $.get("/Admin/Trang_Admin/GetCaiDatHeThong", function (res) {
+                if (res.success) {
+                    $("#txtLimitNormal").val(res.limit);
+                    $("#modalSettings").removeClass("hidden").addClass("flex");
+                }
+            });
+        }
+
+        function closeSettingsModal() { $("#modalSettings").addClass("hidden").removeClass("flex"); }
+
+        function saveSettings() {
+            let val = $("#txtLimitNormal").val();
+            if (val === "") { alert("Vui lòng nhập một con số!"); return; }
+
+            $.post("/Admin/Trang_Admin/LuuCaiDatHeThong", { limit: val }, function (res) {
+                if (res.success) {
+                    alert("✅ " + res.message);
+                    closeSettingsModal();
+                } else {
+                    alert("❌ Lỗi: " + res.message);
+                }
+            });
+        }
+        // --- CHỨC NĂNG XÓA NGƯỜI DÙNG ---
+        function confirmDelete(id) {
+            if (confirm("Bạn có chắc chắn muốn xóa vĩnh viễn người dùng này và mọi dữ liệu liên quan không?")) {
+                $.post("/Admin/Trang_Admin/XoaNguoiDung", { id: id }, function (res) {
+                    if (res.success) {
+                        alert("✅ " + res.message);
+                        // Ẩn dòng đó đi cho hiệu ứng mượt mà (hoặc dùng location.reload() để tải lại trang)
+                        $("#user-row-" + id).fadeOut();
                     } else {
                         alert("❌ Lỗi: " + res.message);
                     }

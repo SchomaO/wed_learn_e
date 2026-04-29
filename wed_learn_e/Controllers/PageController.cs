@@ -138,16 +138,30 @@ namespace wed_learn_e.Controllers
                 // =========================================================
                 // 3. KIỂM TRA GIỚI HẠN TÀI KHOẢN BẢN THƯỜNG (Mức chặn: 2 khóa)
                 // =========================================================
-                if (user.loai_tai_khoan == 1 && user.so_luong_khoa_hoc >= 2)
+                // =========================================================
+                // 3. KIỂM TRA GIỚI HẠN TÀI KHOẢN BẢN THƯỜNG (ĐỌC TỪ FILE TXT)
+                // =========================================================
+
+                int gioiHanThuong = 2; // Mặc định là 2
+                string limitPath = Server.MapPath("~/App_Data/limit.txt");
+
+                // Mở file ra đọc xem Admin đang cài số mấy
+                if (System.IO.File.Exists(limitPath))
+                {
+                    int.TryParse(System.IO.File.ReadAllText(limitPath), out gioiHanThuong);
+                }
+
+                // Kiểm tra xem học viên có vượt quá con số Admin vừa cài không
+                if (user.loai_tai_khoan == 1 && user.so_luong_khoa_hoc >= gioiHanThuong)
                 {
                     return Json(new
                     {
                         success = false,
                         type = "limit_reached",
-                        message = "Tài khoản của bạn là bản Thường, chỉ được đăng ký tối đa 2 cấp độ.\n\nVui lòng nâng cấp lên tài khoản VIP để học không giới hạn!",
-                        redirect = Url.Action("TrangMuaVIP", "Page") // Link chuyển tới trang nạp tiền
+                        message = $"Tài khoản của bạn là bản Thường, chỉ được đăng ký tối đa {gioiHanThuong} cấp độ.\n\nVui lòng nâng cấp lên tài khoản VIP để học không giới hạn!",
+                        redirect = Url.Action("TrangMuaVIP", "Page") // Sửa lại Link nếu cần
                     });
-                }
+                }    
 
 
                 // =========================================================
