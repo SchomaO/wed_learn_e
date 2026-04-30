@@ -133,7 +133,7 @@ namespace wed_learn_e.Areas.Admin.Controllers
         // 3. Hàm POST: Xóa khóa học khỏi học viên
         // 4. Hàm POST: Cập nhật thông tin học viên
         [HttpPost]
-        public JsonResult SuaNguoiDung(int id, string ho_ten, string email, string vai_tro, int loai_tk)
+        public JsonResult SuaNguoiDung(int id, string ho_ten, string email, string vai_tro, int loai_tk, DateTime? hsd)
         {
             try
             {
@@ -147,6 +147,15 @@ namespace wed_learn_e.Areas.Admin.Controllers
 
                     // Nếu bảng nguoi_dung của bạn có cột ngay_cap_nhat, hãy bỏ comment dòng dưới:
                     // user.ngay_cap_nhat = DateTime.Now;
+
+                    if (loai_tk == 1)
+                    {
+                        user.ngay_het_han_vip = null; // Thường thì hủy hạn sử dụng
+                    }
+                    else
+                    {
+                        user.ngay_het_han_vip = hsd; // VIP thì gán hạn sử dụng mới
+                    }
 
                     db.SaveChanges();
                     return Json(new { success = true, message = "Cập nhật tài khoản thành công!" });

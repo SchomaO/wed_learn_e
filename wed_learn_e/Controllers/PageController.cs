@@ -7,7 +7,8 @@ using System.Web.UI;
 using wed_learn_e.Models;
 using PagedList;
 
-
+using System.Net;
+using System.Net.Mail;
 namespace wed_learn_e.Controllers
 {
     public class PageController : Controller
@@ -224,9 +225,76 @@ namespace wed_learn_e.Controllers
                 }
             }
         }
+        // Hàm hỗ trợ gửi Email tự động
+        private void GuiEmailThongBao(string emailNhan, string hoTen, string tenGoi, string phuongThuc, DateTime? hanSuDung)
+        {
+            try
+            {
+                // 1. Cấu hình Email gửi đi (Bạn cần thay bằng Email thật của bạn)
+                string emailGui = "2424802010340@student.tdmu.edu.vn";
+                string matKhauApp = "bgpw qezn lsvu biyn"; // Lưu ý: Không dùng mật khẩu đăng nhập bình thường
+                
+                var senderEmail = new MailAddress(emailGui, "Hệ Thống KityLearn");
+                var receiverEmail = new MailAddress(emailNhan, hoTen);
+
+                string subject = "🎉 Xác nhận nâng cấp VIP thành công - KityLearn";
+
+                // 2. Nội dung Email (Được thiết kế bằng HTML cho đẹp)
+                string body = $@"
+                    <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #ddd; border-radius: 10px; padding: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.05);'>
+                        <h2 style='color: #0d6efd; text-align: center;'>Thanh toán thành công!</h2>
+                        <p>Chào <b>{hoTen}</b>,</p>
+                        <p>Cảm ơn bạn đã tin tưởng và nâng cấp tài khoản VIP tại hệ thống học tiếng Anh <b>KityLearn</b>. Chúng tôi xin xác nhận giao dịch của bạn đã hoàn tất.</p>
+                        
+                        <div style='background: #f4f9ff; padding: 15px; border-radius: 8px; margin: 20px 0;'>
+                            <h3 style='margin-top:0; color: #1a73e8;'>📄 Thông tin giao dịch:</h3>
+                            <ul style='list-style: none; padding: 0;'>
+                                <li style='margin-bottom: 10px;'>💎 <b>Gói đăng ký:</b> {tenGoi}</li>
+                                <li style='margin-bottom: 10px;'>💳 <b>Phương thức:</b> {phuongThuc}</li>
+                                <li style='margin-bottom: 10px;'>⏳ <b>Thời hạn sử dụng:</b> {(hanSuDung.HasValue ? hanSuDung.Value.ToString("dd/MM/yyyy") : "Không thời hạn")}</li>
+                            </ul>
+                        </div>
+
+                        <p>Bây giờ bạn đã có thể truy cập toàn bộ khóa học từ A1 đến C2 không giới hạn. Hãy bắt đầu hành trình chinh phục tiếng Anh ngay hôm nay!</p>
+                        
+                        <div style='text-align: center; margin-top: 30px;'>
+                            <a href='https://localhost:44395/Page/khoadaotao' style='background: #28a745; color: white; padding: 12px 25px; text-decoration: none; border-radius: 8px; font-weight: bold;'>Vào Học Ngay</a>
+                        </div>
+                        
+                        <hr style='border: none; border-top: 1px solid #eee; margin-top: 30px;' />
+                        <p style='color: #888; font-size: 12px; text-align: center;'>Đây là email tự động, vui lòng không trả lời email này.</p>
+                    </div>";
+
+                // 3. Khởi tạo dịch vụ SMTP của Google
+                var smtp = new SmtpClient
+                {
+                    Host = "smtp.gmail.com",
+                    Port = 587,
+                    EnableSsl = true,
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(senderEmail.Address, matKhauApp)
+                };
+
+                // 4. Gửi mail
+                using (var mess = new MailMessage(senderEmail, receiverEmail)
+                {
+                    Subject = subject,
+                    Body = body,
+                    IsBodyHtml = true // Kích hoạt đọc HTML
+                })
+                {
+                    smtp.Send(mess);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Bắt lỗi ngầm để nếu gửi mail có lỗi thì web vẫn chạy tiếp không bị văng
+                Console.WriteLine("Lỗi gửi mail: " + ex.Message);
+            }
+        }
         // 2. Hàm xử lý AJAX khi bấm nút "Thanh toán"
         [HttpPost]
-     
         public JsonResult XuLyThanhToan(string goi_vip, string phuong_thuc)
         {
             if (Session["user_id"] == null)
@@ -237,27 +305,37 @@ namespace wed_learn_e.Controllers
 
             if (user != null)
             {
-                // GIẢ LẬP: Ở đây thường sẽ gọi API VNPAY/MOMO. 
-                // Sau khi API trả về kết quả thành công, chúng ta mới cập nhật DB:
+                string tenGoi = "";
 
                 if (goi_vip == "VIP_THANG")
                 {
-                    // Cập nhật gói Tháng (Loại 2)
                     user.loai_tai_khoan = 2;
                     user.ngay_het_han_vip = DateTime.Now.AddDays(30);
+                    tenGoi = "VIP 1 Tháng (99.000 VNĐ)";
                 }
                 else if (goi_vip == "VIP_NAM")
                 {
-                    // Cập nhật gói Năm (Loại 3)
                     user.loai_tai_khoan = 3;
                     user.ngay_het_han_vip = DateTime.Now.AddDays(365);
+                    tenGoi = "VIP 1 Năm (799.000 VNĐ)";
                 }
                 else
                 {
                     return Json(new { success = false, message = "Gói VIP không hợp lệ!" });
                 }
 
-                db.SaveChanges();
+                db.SaveChanges(); // Lưu vào cơ sở dữ liệu
+
+                // --- GỬI EMAIL THÔNG BÁO ---
+                // Chuyển mã phương thức thành chữ dễ đọc
+                string tenPhuongThuc = "Không xác định";
+                if (phuong_thuc == "VNPAY") tenPhuongThuc = "Thanh toán qua VNPAY";
+                else if (phuong_thuc == "MOMO") tenPhuongThuc = "Ví điện tử MoMo";
+                else if (phuong_thuc == "BANK") tenPhuongThuc = "Chuyển khoản ngân hàng";
+
+                // Gọi hàm gửi mail (chạy ngầm)
+                GuiEmailThongBao(user.email, user.ho_va_ten, tenGoi, tenPhuongThuc, user.ngay_het_han_vip);
+                // -----------------------------
 
                 // Cập nhật lại Session ngay lập tức để giao diện thay đổi mà không cần đăng nhập lại
                 Session["LoaiTaiKhoan"] = user.loai_tai_khoan;
@@ -272,7 +350,7 @@ namespace wed_learn_e.Controllers
 
             return Json(new { success = false, message = "Không tìm thấy thông tin người dùng!" });
         }
-        //Khóa học bổ sung 
+        
         // Thêm tham số id_cap_do vào hàm
         public ActionResult _1000TuVung(int? id_cap_do, int page = 1, string search = "")
         {

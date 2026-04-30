@@ -121,7 +121,7 @@
                                     <i class="fas fa-key mr-1.5"></i> Đổi MK
                                 </button>
 
-                                <button onclick="openEditModal(@item.id_nguoi_dung, '@item.ho_va_ten', '@item.email', '@item.vai_tro', @(item.loai_tai_khoan ?? 1))" class="text-blue-600 hover:text-blue-900 font-bold transition px-2.5 py-1.5 bg-blue-50 rounded hover:bg-blue-100 flex items-center">
+                                <button onclick="openEditModal(@item.id_nguoi_dung, '@item.ho_va_ten', '@item.email', '@item.vai_tro', @(item.loai_tai_khoan ?? 1), '@(item.ngay_het_han_vip.HasValue ? item.ngay_het_han_vip.Value.ToString("yyyy-MM-dd") : "")')" class="text-blue-600 hover:text-blue-900 font-bold transition px-2.5 py-1.5 bg-blue-50 rounded hover:bg-blue-100 flex items-center">
                                     <i class="fas fa-edit mr-1.5"></i> Sửa
                                 </button>
 
@@ -170,6 +170,12 @@
                     <option value="2">VIP Tháng</option>
                     <option value="3">VIP Năm</option>
                 </select>
+            </div>
+
+            <!-- THÊM KHỐI NGÀY HẾT HẠN VÀO ĐÂY -->
+            <div id="div_hsd" class="hidden">
+                <label class="block text-xs font-bold text-gray-500 uppercase">Ngày hết hạn VIP</label>
+                <input type="date" id="edit_hsd" class="w-full mt-1 border-2 rounded-lg p-2 focus:border-indigo-500 outline-none font-bold text-red-600" />
             </div>
         </div>
         <div class="mt-6 flex justify-end gap-3">
@@ -220,18 +226,51 @@
 @section scripts {
     <script>
         // --- CHỨC NĂNG SỬA THÔNG TIN ---
-        function openEditModal(id, ten, email, vaiTro, loaiTk) {
+        
+
+        function closeEditModal() { $("#editUserModal").addClass("hidden").removeClass("flex"); }
+
+        // --- CHỨC NĂNG SỬA THÔNG TIN ---
+        // Nhận thêm tham số thứ 6 là "hsd" (Hạn sử dụng)
+        function openEditModal(id, ten, email, vaiTro, loaiTk, hsd) {
             $("#edit_user_id").val(id);
             $("#edit_ho_ten").val(ten);
             $("#edit_email").val(email);
 
-            // Gán đúng value cho dropdown (Mặc định nếu lỗi thì về học viên)
             let vTro = (vaiTro == 'quan_tri_vien' || vaiTro == 'admin') ? 'quan_tri_vien' : 'nguoi_dung';
             $("#edit_vai_tro").val(vTro);
-
             $("#edit_loai_tk").val(loaiTk || 1);
+
+            // KIỂM TRA ĐỂ ẨN HIỆN Ô NGÀY HẾT HẠN
+            if (loaiTk == 2 || loaiTk == 3) {
+                $("#div_hsd").removeClass("hidden");
+                $("#edit_hsd").val(hsd);
+            } else {
+                $("#div_hsd").addClass("hidden");
+                $("#edit_hsd").val("");
+            }
+
             $("#editUserModal").removeClass("hidden").addClass("flex");
         }
+
+        // LẮNG NGHE SỰ KIỆN: Khi Admin bấm đổi qua lại giữa VIP và Thường trong bảng sửa
+        $(document).ready(function () {
+            $("#edit_loai_tk").change(function () {
+                let val = $(this).val();
+                if (val == 2 || val == 3) {
+                    $("#div_hsd").removeClass("hidden");
+                    // Tính năng xịn: Tự động cộng ngày nếu Admin vừa chuyển sang VIP
+                    if (!$("#edit_hsd").val()) {
+                        let d = new Date();
+                        d.setDate(d.getDate() + (val == 2 ? 30 : 365));
+                        $("#edit_hsd").val(d.toISOString().split('T')[0]);
+                    }
+                } else {
+                    $("#div_hsd").addClass("hidden");
+                    $("#edit_hsd").val(""); // Xóa ngày đi
+                }
+            });
+        });
 
         function closeEditModal() { $("#editUserModal").addClass("hidden").removeClass("flex"); }
 
@@ -241,7 +280,8 @@
                 ho_ten: $("#edit_ho_ten").val(),
                 email: $("#edit_email").val(),
                 vai_tro: $("#edit_vai_tro").val(),
-                loai_tk: $("#edit_loai_tk").val()
+                loai_tk: $("#edit_loai_tk").val(),
+                hsd: $("#edit_hsd").val() // Gửi thêm ngày hết hạn về máy chủ
             };
 
             $.post("/Admin/Trang_Admin/SuaNguoiDung", data, function (res) {
