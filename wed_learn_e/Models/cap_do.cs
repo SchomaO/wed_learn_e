@@ -20,6 +20,9 @@ namespace wed_learn_e.Models
             this.khoa_hoc = new HashSet<khoa_hoc>();
             this.nguoi_dung = new HashSet<nguoi_dung>();
             this.binh_luan = new HashSet<binh_luan>();
+            this.Idioms = new HashSet<Idiom>();
+            this.ngu_phap = new HashSet<ngu_phap>();
+            this.Vocabularies = new HashSet<Vocabulary>();
         }
     
         public int id_cap_do { get; set; }
@@ -30,5 +33,8 @@ namespace wed_learn_e.Models
         public virtual ICollection<khoa_hoc> khoa_hoc { get; set; }
         public virtual ICollection<nguoi_dung> nguoi_dung { get; set; }
         public virtual ICollection<binh_luan> binh_luan { get; set; }
+        public virtual ICollection<Idiom> Idioms { get; set; }
+        public virtual ICollection<ngu_phap> ngu_phap { get; set; }
+        public virtual ICollection<Vocabulary> Vocabularies { get; set; }
     }
 }

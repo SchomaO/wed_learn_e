@@ -850,6 +850,48 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_CauHoiVideo_BaiGiangVideo">
+          <End Role="bai_giang_video" Type="Self.bai_giang_video" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="cau_hoi_video" Type="Self.cau_hoi_video" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bai_giang_video">
+              <PropertyRef Name="id_video" />
+            </Principal>
+            <Dependent Role="cau_hoi_video">
+              <PropertyRef Name="id_video" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Idiom_CapDo">
+          <End Role="cap_do" Type="Self.cap_do" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Idiom" Type="Self.Idiom" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="cap_do">
+              <PropertyRef Name="id_cap_do" />
+            </Principal>
+            <Dependent Role="Idiom">
+              <PropertyRef Name="id_cap_do" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NguPhap_CapDo">
+          <End Role="cap_do" Type="Self.cap_do" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ngu_phap" Type="Self.ngu_phap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="cap_do">
+              <PropertyRef Name="id_cap_do" />
+            </Principal>
+            <Dependent Role="ngu_phap">
+              <PropertyRef Name="id_cap_do" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ThongTin_KhoaHoc">
           <End Role="khoa_hoc" Type="Self.khoa_hoc" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
@@ -861,6 +903,20 @@
             </Principal>
             <Dependent Role="thong_tin_khoa_hoc">
               <PropertyRef Name="id_khoa_hoc" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Vocabulary_CapDo">
+          <End Role="cap_do" Type="Self.cap_do" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Vocabulary" Type="Self.Vocabulary" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="cap_do">
+              <PropertyRef Name="id_cap_do" />
+            </Principal>
+            <Dependent Role="Vocabulary">
+              <PropertyRef Name="id_cap_do" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1052,9 +1108,25 @@
             <End Role="nguoi_dung" EntitySet="nguoi_dung" />
             <End Role="binh_luan" EntitySet="binh_luan" />
           </AssociationSet>
+          <AssociationSet Name="FK_CauHoiVideo_BaiGiangVideo" Association="Self.FK_CauHoiVideo_BaiGiangVideo">
+            <End Role="bai_giang_video" EntitySet="bai_giang_video" />
+            <End Role="cau_hoi_video" EntitySet="cau_hoi_video" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Idiom_CapDo" Association="Self.FK_Idiom_CapDo">
+            <End Role="cap_do" EntitySet="cap_do" />
+            <End Role="Idiom" EntitySet="Idiom" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NguPhap_CapDo" Association="Self.FK_NguPhap_CapDo">
+            <End Role="cap_do" EntitySet="cap_do" />
+            <End Role="ngu_phap" EntitySet="ngu_phap" />
+          </AssociationSet>
           <AssociationSet Name="FK_ThongTin_KhoaHoc" Association="Self.FK_ThongTin_KhoaHoc">
             <End Role="khoa_hoc" EntitySet="khoa_hoc" />
             <End Role="thong_tin_khoa_hoc" EntitySet="thong_tin_khoa_hoc" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Vocabulary_CapDo" Association="Self.FK_Vocabulary_CapDo">
+            <End Role="cap_do" EntitySet="cap_do" />
+            <End Role="Vocabulary" EntitySet="Vocabulary" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -1072,6 +1144,7 @@
           <Property Name="thoi_luong_phut" Type="Int32" />
           <NavigationProperty Name="khoa_hoc" Relationship="Self.FK__bai_giang__id_kh__0A9D95DB" FromRole="bai_giang_video" ToRole="khoa_hoc" />
           <NavigationProperty Name="lich_su_video" Relationship="wed_learn_eModel.FK__lich_su_v__id_vi__531856C7" FromRole="bai_giang_video" ToRole="lich_su_video" />
+          <NavigationProperty Name="cau_hoi_video" Relationship="wed_learn_eModel.FK_CauHoiVideo_BaiGiangVideo" FromRole="bai_giang_video" ToRole="cau_hoi_video" />
         </EntityType>
         <EntityType Name="bai_kiem_tra_dau_vao">
           <Key>
@@ -1110,6 +1183,9 @@
           <NavigationProperty Name="khoa_hoc" Relationship="Self.FK__khoa_hoc__id_cap__72C60C4A" FromRole="cap_do" ToRole="khoa_hoc" />
           <NavigationProperty Name="nguoi_dung" Relationship="Self.FK__nguoi_dun__id_ca__6383C8BA" FromRole="cap_do" ToRole="nguoi_dung" />
           <NavigationProperty Name="binh_luan" Relationship="wed_learn_eModel.FK_BinhLuan_CapDo" FromRole="cap_do" ToRole="binh_luan" />
+          <NavigationProperty Name="Idioms" Relationship="wed_learn_eModel.FK_Idiom_CapDo" FromRole="cap_do" ToRole="Idiom" />
+          <NavigationProperty Name="ngu_phap" Relationship="wed_learn_eModel.FK_NguPhap_CapDo" FromRole="cap_do" ToRole="ngu_phap" />
+          <NavigationProperty Name="Vocabularies" Relationship="wed_learn_eModel.FK_Vocabulary_CapDo" FromRole="cap_do" ToRole="Vocabulary" />
         </EntityType>
         <EntityType Name="cau_hoi_kiem_tra">
           <Key>
@@ -1651,6 +1727,22 @@
             <End Role="khoa_hoc" EntitySet="khoa_hoc" />
             <End Role="thong_tin_khoa_hoc" EntitySet="thong_tin_khoa_hoc" />
           </AssociationSet>
+          <AssociationSet Name="FK_CauHoiVideo_BaiGiangVideo" Association="wed_learn_eModel.FK_CauHoiVideo_BaiGiangVideo">
+            <End Role="bai_giang_video" EntitySet="bai_giang_video" />
+            <End Role="cau_hoi_video" EntitySet="cau_hoi_video" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Idiom_CapDo" Association="wed_learn_eModel.FK_Idiom_CapDo">
+            <End Role="cap_do" EntitySet="cap_do" />
+            <End Role="Idiom" EntitySet="Idioms" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NguPhap_CapDo" Association="wed_learn_eModel.FK_NguPhap_CapDo">
+            <End Role="cap_do" EntitySet="cap_do" />
+            <End Role="ngu_phap" EntitySet="ngu_phap" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Vocabulary_CapDo" Association="wed_learn_eModel.FK_Vocabulary_CapDo">
+            <End Role="cap_do" EntitySet="cap_do" />
+            <End Role="Vocabulary" EntitySet="Vocabularies" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="bai_luyen_noi">
           <Key>
@@ -2110,6 +2202,7 @@
           <Property Name="Meaning" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Example" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="id_cap_do" Type="Int32" />
+          <NavigationProperty Name="cap_do" Relationship="wed_learn_eModel.FK_Vocabulary_CapDo" FromRole="Vocabulary" ToRole="cap_do" />
         </EntityType>
         <EntityType Name="Idiom">
           <Key>
@@ -2120,6 +2213,7 @@
           <Property Name="Meaning" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Example" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="id_cap_do" Type="Int32" />
+          <NavigationProperty Name="cap_do" Relationship="wed_learn_eModel.FK_Idiom_CapDo" FromRole="Idiom" ToRole="cap_do" />
         </EntityType>
         <EntityType Name="cau_hoi_video">
           <Key>
@@ -2133,6 +2227,7 @@
           <Property Name="dap_an_c" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="dap_an_d" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="dap_an_dung" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="bai_giang_video" Relationship="wed_learn_eModel.FK_CauHoiVideo_BaiGiangVideo" FromRole="cau_hoi_video" ToRole="bai_giang_video" />
         </EntityType>
         <EntityType Name="ngu_phap">
           <Key>
@@ -2147,6 +2242,7 @@
           <Property Name="cach_dung" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="vi_du" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="luu_y_them" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="cap_do" Relationship="wed_learn_eModel.FK_NguPhap_CapDo" FromRole="ngu_phap" ToRole="cap_do" />
         </EntityType>
         <EntityType Name="feature_trang_chu">
           <Key>
@@ -2188,6 +2284,62 @@
             </Principal>
             <Dependent Role="thong_tin_khoa_hoc">
               <PropertyRef Name="id_khoa_hoc" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CauHoiVideo_BaiGiangVideo">
+          <End Type="wed_learn_eModel.bai_giang_video" Role="bai_giang_video" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="wed_learn_eModel.cau_hoi_video" Role="cau_hoi_video" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bai_giang_video">
+              <PropertyRef Name="id_video" />
+            </Principal>
+            <Dependent Role="cau_hoi_video">
+              <PropertyRef Name="id_video" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Idiom_CapDo">
+          <End Type="wed_learn_eModel.cap_do" Role="cap_do" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="wed_learn_eModel.Idiom" Role="Idiom" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="cap_do">
+              <PropertyRef Name="id_cap_do" />
+            </Principal>
+            <Dependent Role="Idiom">
+              <PropertyRef Name="id_cap_do" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NguPhap_CapDo">
+          <End Type="wed_learn_eModel.cap_do" Role="cap_do" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="wed_learn_eModel.ngu_phap" Role="ngu_phap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="cap_do">
+              <PropertyRef Name="id_cap_do" />
+            </Principal>
+            <Dependent Role="ngu_phap">
+              <PropertyRef Name="id_cap_do" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Vocabulary_CapDo">
+          <End Type="wed_learn_eModel.cap_do" Role="cap_do" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="wed_learn_eModel.Vocabulary" Role="Vocabulary" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="cap_do">
+              <PropertyRef Name="id_cap_do" />
+            </Principal>
+            <Dependent Role="Vocabulary">
+              <PropertyRef Name="id_cap_do" />
             </Dependent>
           </ReferentialConstraint>
         </Association>

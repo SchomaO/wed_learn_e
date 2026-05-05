@@ -19,5 +19,7 @@ namespace wed_learn_e.Models
         public string Meaning { get; set; }
         public string Example { get; set; }
         public Nullable<int> id_cap_do { get; set; }
+    
+        public virtual cap_do cap_do { get; set; }
     }
 }

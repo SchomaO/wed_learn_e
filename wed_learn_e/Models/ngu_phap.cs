@@ -23,5 +23,7 @@ namespace wed_learn_e.Models
         public string cach_dung { get; set; }
         public string vi_du { get; set; }
         public string luu_y_them { get; set; }
+    
+        public virtual cap_do cap_do { get; set; }
     }
 }

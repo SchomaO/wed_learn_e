@@ -17,6 +17,7 @@ namespace wed_learn_e.Models
         public bai_giang_video()
         {
             this.lich_su_video = new HashSet<lich_su_video>();
+            this.cau_hoi_video = new HashSet<cau_hoi_video>();
         }
     
         public int id_video { get; set; }
@@ -27,5 +28,6 @@ namespace wed_learn_e.Models
     
         public virtual khoa_hoc khoa_hoc { get; set; }
         public virtual ICollection<lich_su_video> lich_su_video { get; set; }
+        public virtual ICollection<cau_hoi_video> cau_hoi_video { get; set; }
     }
 }

@@ -22,5 +22,7 @@ namespace wed_learn_e.Models
         public string dap_an_c { get; set; }
         public string dap_an_d { get; set; }
         public string dap_an_dung { get; set; }
+    
+        public virtual bai_giang_video bai_giang_video { get; set; }
     }
 }
