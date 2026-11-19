@@ -1,12 +1,68 @@
-﻿
-@{
-    Layout = null;
-}
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>@ViewBag.Title</title>
 
-@if (HttpContext.Current.Application["ThongBaoBanner"] != null && !string.IsNullOrEmpty(HttpContext.Current.Application["ThongBaoBanner"].ToString()))
-{
-    <div style="background: #ffc107; color: #000; padding: 10px; text-align: center; font-weight: bold; position: relative; z-index: 9999;">
-        <i class="fas fa-bullhorn" style="margin-right: 10px;"></i>
-        @HttpContext.Current.Application["ThongBaoBanner"].ToString()
-    </div>
-}
+    <!-- THÊM THƯ VIỆN FONT AWESOME ĐỂ HIỆN ICON CẢNH BÁO -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <link rel="icon" type="image/png" href="@Url.Content("~/Img/Gemini_Generated_Image_xdycdaxdycdaxdyc-removebg-preview (1).png")" />
+
+
+
+</head>
+
+
+<body>
+    @{
+        // Dòng này để User nghe ngóng xem Admin có bật công tắc không
+        bool isBaoTri = HttpContext.Current.Application["BaoTri"] != null && (bool)HttpContext.Current.Application["BaoTri"];
+        string thongBaoBanner = HttpContext.Current.Application["ThongBaoBanner"] as string;
+    }
+
+    @if (isBaoTri)
+    {
+        <!-- GIAO DIỆN BẢO TRÌ: TRẮNG BÓC, CHỈ HIỆN THÔNG BÁO Ở GIỮA -->
+        <!-- Đã thêm position: fixed để nó phủ kín 100% màn hình, đè lên mọi thứ -->
+        <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; background: white; text-align: center; font-family: Arial, sans-serif; padding: 20px; box-sizing: border-box;">
+            <i class="fas fa-tools" style="font-size: 80px; color: #ffc107; margin-bottom: 20px;"></i>
+            <h1 style="color: #333; font-size: 32px; margin-bottom: 10px;">HỆ THỐNG ĐANG BẢO TRÌ</h1>
+            <p style="color: #666; font-size: 18px; line-height: 1.6; max-width: 600px;">
+                @if (!string.IsNullOrWhiteSpace(thongBaoBanner))
+                {
+                    @thongBaoBanner
+                }
+                else
+                {
+                    <span>Hệ thống đang được nâng cấp để mang lại trải nghiệm tốt hơn. Vui lòng quay lại sau ít phút nhé!</span>
+                }
+            </p>
+        </div>
+
+        <!-- BÍ QUYẾT FIX LỖI: Nhét RenderBody vào hộp tàng hình để không bị crash Web -->
+        <div style="display: none;">
+            @RenderBody()
+            @RenderSection("Scripts", required: false)
+        </div>
+    }
+    else
+    {
+        <!-- GIAO DIỆN BÌNH THƯỜNG KHI KHÔNG BẢO TRÌ -->
+
+        <!-- Nếu không bảo trì nhưng Admin có viết thông báo thì vẫn hiện thanh chữ chạy ở trên đỉnh -->
+        if (!string.IsNullOrWhiteSpace(thongBaoBanner))
+        {
+            <div style="background: #ff4757; color: white; text-align: center; padding: 12px 20px; font-weight: bold; position: sticky; top: 0; z-index: 99999; box-shadow: 0 4px 10px rgba(0,0,0,0.15);">
+                <i class="fas fa-bullhorn" style="margin-right: 8px;"></i>
+                <span>@thongBaoBanner</span>
+            </div>
+        }
+
+        <div class="register-box">
+            @RenderBody()
+            @RenderSection("Scripts", required: false)
+        </div>
+    }
+</body>
+</html>

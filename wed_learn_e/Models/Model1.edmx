@@ -206,6 +206,7 @@
           <Property Name="tieu_de" Type="nvarchar" MaxLength="200" />
           <Property Name="tu_khoa_cuoi" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="mo_ta" Type="nvarchar(max)" />
+          <Property Name="trang_thai" Type="int" />
         </EntityType>
         <EntityType Name="Idiom">
           <Key>
@@ -2120,6 +2121,7 @@
           <Property Name="tu_khoa_cuoi" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="mo_ta" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="cau_hoi_kho_bau" Relationship="wed_learn_eModel.FK__cau_hoi_k__id_ga__6442E2C9" FromRole="game_kho_bau" ToRole="cau_hoi_kho_bau" />
+          <Property Name="trang_thai" Type="Int32" />
         </EntityType>
         <EntityType Name="lich_su_kho_bau">
           <Key>
@@ -2660,6 +2662,7 @@
           <EntitySetMapping Name="game_kho_bau">
             <EntityTypeMapping TypeName="wed_learn_eModel.game_kho_bau">
               <MappingFragment StoreEntitySet="game_kho_bau">
+                <ScalarProperty Name="trang_thai" ColumnName="trang_thai" />
                 <ScalarProperty Name="mo_ta" ColumnName="mo_ta" />
                 <ScalarProperty Name="tu_khoa_cuoi" ColumnName="tu_khoa_cuoi" />
                 <ScalarProperty Name="tieu_de" ColumnName="tieu_de" />

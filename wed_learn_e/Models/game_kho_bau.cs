@@ -24,6 +24,7 @@ namespace wed_learn_e.Models
         public string tieu_de { get; set; }
         public string tu_khoa_cuoi { get; set; }
         public string mo_ta { get; set; }
+        public Nullable<int> trang_thai { get; set; }
     
         public virtual ICollection<cau_hoi_kho_bau> cau_hoi_kho_bau { get; set; }
     }

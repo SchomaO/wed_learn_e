@@ -173,7 +173,8 @@
   
 })
     <div class="header-box">
-        <div class="header-title">🏆 Mini Test Hàng Ngày</div>
+        <!-- Lấy tên Bài Test từ Admin -->
+        <div class="header-title">🏆 @(ViewBag.TenBaiTest ?? "Mini Test Hàng Ngày")</div>
         <div style="display: inline-block; background: #fff4e6; color: #ff9800; padding: 5px 15px; border-radius: 20px; font-weight: bold;">📅 Ngày: @ViewBag.NgayTest</div>
     </div>
 
@@ -185,55 +186,55 @@
         </div>
     }
 
-    <form action="@Url.Action("MiniTestHangNgay", "tinh_nang")" method="post" onsubmit="gatherAnswers()">
-        <input type="hidden" name="id_cap_do" value="@ViewBag.IdCapDo" />
+<form action="@Url.Action("MiniTestHangNgay", "tinh_nang")" method="post" onsubmit="gatherAnswers()">
+    <input type="hidden" name="id_cap_do" value="@ViewBag.IdCapDo" />
 
 
 
-        @if (sapXep != null)
+    @if (sapXep != null)
+    {
+        foreach (var q in sapXep)
         {
-            foreach (var q in sapXep)
+            var words = scrambledWords[q.id_cau_hoi];
+
+            string cssClass = "";
+            string feedbackMsg = "";
+            if (isSubmitted)
             {
-                var words = scrambledWords[q.id_cau_hoi];
+                string uAns = uAnswersSX[q.id_cau_hoi];
+                string cleanUser = System.Text.RegularExpressions.Regex.Replace(uAns.ToLower(), @"\s+", " ").Trim();
+                string cleanCorrect = System.Text.RegularExpressions.Regex.Replace(q.dap_an_dung.ToLower(), @"\s+", " ").Trim();
 
-                string cssClass = "";
-                string feedbackMsg = "";
-                if (isSubmitted)
-                {
-                    string uAns = uAnswersSX[q.id_cau_hoi];
-                    string cleanUser = System.Text.RegularExpressions.Regex.Replace(uAns.ToLower(), @"\s+", " ").Trim();
-                    string cleanCorrect = System.Text.RegularExpressions.Regex.Replace(q.dap_an_dung.ToLower(), @"\s+", " ").Trim();
-
-                    if (cleanUser == cleanCorrect) { cssClass = "box-success"; feedbackMsg = "✔ Chính xác!"; }
-                    else { cssClass = "box-error"; feedbackMsg = "✘ Sai (Đáp án: " + q.dap_an_dung + ")"; }
-                }
-
-                <div class="question-block @cssClass">
-                    <div class="question-title" style="color:#ff9800">Câu @cauSo: @q.cau_tieng_viet</div>
-                    <div style="font-size: 14px; margin-bottom: 10px;">Sắp xếp lại các từ bên dưới:</div>
-
-                    <div class="word-container" id="container_@q.id_cau_hoi">
-                        @foreach (var word in words)
-                        {
-                            if (!string.IsNullOrWhiteSpace(word))
-                            {
-                                <div class="word-block">@word</div>
-                            }
-                        }
-                    </div>
-
-                    <input type="hidden" id="input_@q.id_cau_hoi" name="sapxep_@q.id_cau_hoi" value="" />
-                    <div class="feedback">@feedbackMsg</div>
-                </div>
-                cauSo++;
+                if (cleanUser == cleanCorrect) { cssClass = "box-success"; feedbackMsg = "✔ Chính xác!"; }
+                else { cssClass = "box-error"; feedbackMsg = "✘ Sai (Đáp án: " + q.dap_an_dung + ")"; }
             }
-        }
 
-        @if (!isSubmitted)
-        {
-            <button type="submit" class="btn-submit">Nộp Bài</button>
+            <div class="question-block @cssClass">
+                <div class="question-title" style="color:#ff9800">Câu @cauSo: @q.cau_tieng_viet</div>
+                <div style="font-size: 14px; margin-bottom: 10px;">Sắp xếp lại các từ bên dưới:</div>
+
+                <div class="word-container" id="container_@q.id_cau_hoi">
+                    @foreach (var word in words)
+                    {
+                        if (!string.IsNullOrWhiteSpace(word))
+                        {
+                            <div class="word-block">@word</div>
+                        }
+                    }
+                </div>
+
+                <input type="hidden" id="input_@q.id_cau_hoi" name="sapxep_@q.id_cau_hoi" value="" />
+                <div class="feedback">@feedbackMsg</div>
+            </div>
+            cauSo++;
         }
-    </form>
+    }
+
+    @if (!isSubmitted && ViewBag.CoBaiTest == true)
+    {
+        <button type="submit" class="btn-submit">Nộp Bài</button>
+    }
+</form>
 </div>
 
 <script>

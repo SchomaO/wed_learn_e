@@ -136,7 +136,83 @@
 
 <div id="modalQuestionViet" class="fixed inset-0 z-[9999] hidden bg-black/60 backdrop-blur-sm items-center justify-center p-4"><div class="bg-white w-full max-w-4xl rounded-2xl shadow-2xl relative flex flex-col h-[80vh]"><div class="p-5 border-b bg-purple-50 flex justify-between items-center rounded-t-2xl"><h3 class="text-xl font-bold text-purple-900"><i class="fas fa-pen mr-2"></i> Câu hỏi Bài Viết: <span id="vietTitleLabel" class="text-purple-600"></span></h3><button onclick="closeQuestionViet()" class="text-gray-400 hover:text-red-500"><i class="fas fa-times text-xl"></i></button></div><div class="p-6 flex-1 flex flex-col md:flex-row gap-6 bg-gray-50 overflow-hidden"><div class="w-full md:w-5/12 bg-white p-5 rounded-xl border border-gray-200 shadow-sm h-full overflow-y-auto"><h4 class="font-bold text-gray-800 mb-4 border-b pb-2" id="formQuestionVietTitle">Thêm Câu Hỏi Mới</h4><div class="space-y-4"><div><label class="text-xs font-bold text-gray-500">Câu Tiếng Việt (Đề bài)</label><textarea id="txtQViet_VN" rows="3" class="w-full border rounded-lg p-3 mt-1"></textarea></div><div><label class="text-xs font-bold text-gray-500">Đáp án Tiếng Anh</label><textarea id="txtQViet_EN" rows="3" class="w-full border rounded-lg p-3 mt-1"></textarea></div><div class="flex gap-2 pt-2"><button onclick="resetFormCauHoiViet()" class="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg font-bold">Hủy</button><button onclick="saveCauHoiViet()" class="flex-1 bg-purple-600 text-white py-2 rounded-lg font-bold">Lưu Câu Hỏi</button></div></div></div><div class="w-full md:w-7/12 bg-white p-5 rounded-xl border border-gray-200 shadow-sm h-full overflow-y-auto"><h4 class="font-bold text-gray-800 mb-4 border-b pb-2 sticky top-0 bg-white z-10">Danh sách câu hỏi luyện viết</h4><div id="listQuestionViet" class="space-y-3"></div></div></div></div></div>
 
-<div id="modalQuestionGame" class="fixed inset-0 z-[9999] hidden bg-black/60 backdrop-blur-sm items-center justify-center p-4"><div class="bg-white w-full max-w-6xl rounded-2xl shadow-2xl relative flex flex-col h-[95vh]"><div class="p-5 border-b bg-yellow-50 flex justify-between items-center rounded-t-2xl"><h3 class="text-xl font-bold text-yellow-900"><i class="fas fa-gamepad mr-2"></i> Câu hỏi Game: <span id="gameTitleLabel" class="text-yellow-700"></span></h3><button onclick="closeQuestionGame()" class="text-gray-400 hover:text-red-500"><i class="fas fa-times text-xl"></i></button></div><div class="p-6 flex-1 flex flex-col md:flex-row gap-6 bg-gray-50 overflow-hidden"><div class="w-full md:w-4/12 bg-white p-5 rounded-xl border border-gray-200 shadow-sm h-full overflow-y-auto"><h4 class="font-bold text-gray-800 mb-4 border-b pb-2" id="formQuestionGameTitle">Thêm Câu Hỏi Mới</h4><div class="space-y-3"><div class="grid grid-cols-2 gap-3"><div><label class="text-xs font-bold text-gray-500">Thứ tự câu</label><input type="number" id="txtQG_ThuTu" value="1" class="w-full border rounded-lg p-2 mt-1"></div><div><label class="text-xs font-bold text-gray-500">Loại câu hỏi</label><input type="text" id="txtQG_Loai" placeholder="trac_nghiem" value="trac_nghiem" class="w-full border rounded-lg p-2 mt-1"></div></div><div><label class="text-xs font-bold text-gray-500">Nội dung câu hỏi</label><textarea id="txtQG_NoiDung" rows="2" class="w-full border rounded-lg p-2 mt-1"></textarea></div><div class="grid grid-cols-2 gap-3"><div><label class="text-xs font-bold text-gray-500">Đáp án A</label><input type="text" id="txtQG_A" class="w-full border rounded-lg p-2 mt-1"></div><div><label class="text-xs font-bold text-gray-500">Đáp án B</label><input type="text" id="txtQG_B" class="w-full border rounded-lg p-2 mt-1"></div><div><label class="text-xs font-bold text-gray-500">Đáp án C</label><input type="text" id="txtQG_C" class="w-full border rounded-lg p-2 mt-1"></div><div><label class="text-xs font-bold text-gray-500">Đáp án D</label><input type="text" id="txtQG_D" class="w-full border rounded-lg p-2 mt-1"></div></div><div class="grid grid-cols-2 gap-3"><div><div id="box-QG-SelectDung"><label class="text-xs font-bold text-gray-500">Đ.Án Đúng</label><select id="cboQG_Dung" class="w-full border rounded-lg p-2 mt-1 font-bold"><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select></div><div id="box-QG-TextDung" class="hidden"><label class="text-xs font-bold text-gray-500">Đ.Án Đúng (Nhập)</label><input type="text" id="txtQG_DungText" class="w-full border rounded-lg p-2 mt-1 font-bold"></div></div><div><label class="text-xs font-bold text-gray-500">Mảnh ghép</label><input type="text" id="txtQG_ManhGhep" placeholder="Gợi ý..." class="w-full border rounded-lg p-2 mt-1"></div></div><div class="flex gap-2 pt-2"><button onclick="resetFormCauHoiGame()" class="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg font-bold">Hủy</button><button onclick="saveCauHoiGame()" class="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white py-2 rounded-lg font-bold shadow-md">Lưu Câu</button></div></div></div><div class="w-full md:w-8/12 bg-white p-5 rounded-xl border border-gray-200 shadow-sm h-full overflow-y-auto"><h4 class="font-bold text-gray-800 mb-4 border-b pb-2 sticky top-0 bg-white z-10">Danh sách câu hỏi Khó Báu</h4><div id="listQuestionGame" class="space-y-3"></div></div></div></div></div>
+<!-- BẮT ĐẦU: MODAL CÂU HỎI GAME -->
+<div id="modalQuestionGame" class="fixed inset-0 z-[9999] hidden bg-black/60 backdrop-blur-sm items-center justify-center p-4">
+    <div class="bg-white w-full max-w-6xl rounded-2xl shadow-2xl relative flex flex-col h-[95vh]">
+        <div class="p-5 border-b bg-yellow-50 flex justify-between items-center rounded-t-2xl">
+            <h3 class="text-xl font-bold text-yellow-900"><i class="fas fa-gamepad mr-2"></i> Câu hỏi Game: <span id="gameTitleLabel" class="text-yellow-700"></span></h3>
+            <button onclick="closeQuestionGame()" class="text-gray-400 hover:text-red-500"><i class="fas fa-times text-xl"></i></button>
+        </div>
+        <div class="p-6 flex-1 flex flex-col md:flex-row gap-6 bg-gray-50 overflow-hidden">
+            <div class="w-full md:w-4/12 bg-white p-5 rounded-xl border border-gray-200 shadow-sm h-full overflow-y-auto">
+                <h4 class="font-bold text-gray-800 mb-4 border-b pb-2" id="formQuestionGameTitle">Thêm Câu Hỏi Mới</h4>
+                <div class="space-y-3">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="text-xs font-bold text-gray-500">Thứ tự câu</label>
+                            <input type="number" id="txtQG_ThuTu" value="1" class="w-full border rounded-lg p-2 mt-1">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-gray-500">Loại câu hỏi</label>
+                            <select id="txtQG_Loai" class="w-full border rounded-lg p-2 mt-1 font-bold text-indigo-600 outline-none focus:border-indigo-500">
+                                <option value="trac_nghiem">Trắc nghiệm</option>
+                                <option value="tim_loi">Tìm lỗi sai</option>
+                                <option value="sap_xep">Sắp xếp câu</option>
+                                <option value="dien_tu">Điền từ</option>
+                                <option value="viet_anh">Dịch Việt -> Anh</option>
+                                <option value="viet_viet">Dịch Anh -> Việt</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-bold text-gray-500">Nội dung câu hỏi</label>
+                        <textarea id="txtQG_NoiDung" rows="2" class="w-full border rounded-lg p-2 mt-1"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3" id="box-QG-ABCD">
+                        <div><label class="text-xs font-bold text-gray-500">Đáp án A</label><input type="text" id="txtQG_A" class="w-full border rounded-lg p-2 mt-1"></div>
+                        <div><label class="text-xs font-bold text-gray-500">Đáp án B</label><input type="text" id="txtQG_B" class="w-full border rounded-lg p-2 mt-1"></div>
+                        <div><label class="text-xs font-bold text-gray-500">Đáp án C</label><input type="text" id="txtQG_C" class="w-full border rounded-lg p-2 mt-1"></div>
+                        <div><label class="text-xs font-bold text-gray-500">Đáp án D</label><input type="text" id="txtQG_D" class="w-full border rounded-lg p-2 mt-1"></div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <div id="box-QG-SelectDung">
+                                <label class="text-xs font-bold text-gray-500">Đ.Án Đúng</label>
+                                <select id="cboQG_Dung" class="w-full border rounded-lg p-2 mt-1 font-bold text-green-600">
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                    <option value="D">D</option>
+                                </select>
+                            </div>
+                            <div id="box-QG-TextDung" class="hidden">
+                                <label class="text-xs font-bold text-gray-500">Đ.Án Đúng (Nhập)</label>
+                                <input type="text" id="txtQG_DungText" class="w-full border rounded-lg p-2 mt-1 font-bold text-green-600">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-gray-500">Mảnh ghép</label>
+                            <input type="text" id="txtQG_ManhGhep" placeholder="VD: A, B, C..." class="w-full border rounded-lg p-2 mt-1 text-center font-bold text-yellow-600 uppercase">
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2 pt-2">
+                        <button onclick="resetFormCauHoiGame()" class="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg font-bold hover:bg-gray-300">Hủy</button>
+                        <button onclick="saveCauHoiGame()" class="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white py-2 rounded-lg font-bold shadow-md">Lưu Câu</button>
+                    </div>
+                </div>
+            </div>
+            <div class="w-full md:w-8/12 bg-white p-5 rounded-xl border border-gray-200 shadow-sm h-full overflow-y-auto">
+                <h4 class="font-bold text-gray-800 mb-4 border-b pb-2 sticky top-0 bg-white z-10">Danh sách câu hỏi Khó Báu</h4>
+                <div id="listQuestionGame" class="space-y-3"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- KẾT THÚC: MODAL CÂU HỎI GAME -->
 
 <div id="modalQuestionMiniTest" class="fixed inset-0 z-[9999] hidden bg-black/60 backdrop-blur-sm items-center justify-center p-4"><div class="bg-white w-full max-w-4xl rounded-2xl shadow-2xl relative flex flex-col h-[80vh]"><div class="p-5 border-b bg-pink-50 flex justify-between items-center rounded-t-2xl"><h3 class="text-xl font-bold text-pink-900"><i class="fas fa-list-ol mr-2"></i> Câu hỏi Mini Test: <span id="miniTestTitleLabel" class="text-pink-600"></span></h3><button onclick="closeQuestionMiniTest()" class="text-gray-400 hover:text-red-500"><i class="fas fa-times text-xl"></i></button></div><div class="p-6 flex-1 flex flex-col md:flex-row gap-6 bg-gray-50 overflow-hidden"><div class="w-full md:w-5/12 bg-white p-5 rounded-xl border border-gray-200 shadow-sm h-full overflow-y-auto"><h4 class="font-bold text-gray-800 mb-4 border-b pb-2" id="formQuestionMiniTestTitle">Thêm Câu Hỏi Sắp Xếp</h4><div class="space-y-4"><div><label class="text-xs font-bold text-gray-500">Câu Tiếng Việt (Nghĩa)</label><textarea id="txtQMT_VN" rows="3" class="w-full border rounded-lg p-3 mt-1"></textarea></div><div><label class="text-xs font-bold text-gray-500">Câu Tiếng Anh đúng (Đáp án)</label><textarea id="txtQMT_EN" rows="3" class="w-full border border-pink-200 rounded-lg p-3 mt-1 bg-pink-50 font-bold text-pink-700"></textarea><p class="text-xs text-gray-400 mt-1 italic">*Hệ thống sẽ tự trộn các từ để sinh viên xếp lại.</p></div><div class="flex gap-2 pt-2"><button onclick="resetFormCauHoiMiniTest()" class="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg font-bold">Hủy</button><button onclick="saveCauHoiMiniTest()" class="flex-1 bg-pink-600 hover:bg-pink-700 text-white py-2 rounded-lg font-bold">Lưu Câu Hỏi</button></div></div></div><div class="w-full md:w-7/12 bg-white p-5 rounded-xl border border-gray-200 shadow-sm h-full overflow-y-auto"><h4 class="font-bold text-gray-800 mb-4 border-b pb-2 sticky top-0 bg-white z-10">Danh sách câu hỏi Mini Test</h4><div id="listQuestionMiniTest" class="space-y-3"></div></div></div></div></div>
 
@@ -226,55 +302,55 @@
         function renderListKhoaHoc(data) {
             let dataDaLoc = data ? data.slice(9) : [];
             let html = (!dataDaLoc || dataDaLoc.length === 0) ? "<div class='col-span-full text-center py-10 text-gray-400'>Không có khóa học nào từ vị trí thứ 10 trở đi.</div>" : dataDaLoc.map(item => `
-                    <div class="bg-indigo-50/30 border border-indigo-100 rounded-2xl p-4 hover:shadow-md transition flex justify-between items-center group cursor-pointer" onclick="openCourseInfo(${item.id_khoa_hoc}, '${safeStr(item.ten_khoa_hoc)}')">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-xl shadow-sm"><i class="fas fa-folder-open"></i></div>
-                            <div><h5 class="font-bold text-indigo-900">${item.ten_khoa_hoc}</h5><p class="text-xs text-gray-500 mt-1"><i class="fas fa-edit"></i> Bấm vào để soạn bài học</p></div>
-                        </div>
-                        <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition">
-                            <button onclick="event.stopPropagation(); editKhoaHoc(${item.id_khoa_hoc}, '${safeStr(item.ten_khoa_hoc)}', '${safeStr(item.mo_ta)}')" class="text-blue-500 bg-white p-2 rounded-lg shadow-sm hover:text-blue-700"><i class="fas fa-edit"></i></button>
-                            <button onclick="event.stopPropagation(); deleteItem('khoa-hoc', ${item.id_khoa_hoc})" class="text-red-400 bg-white p-2 rounded-lg shadow-sm hover:text-red-600"><i class="fas fa-trash-alt"></i></button>
-                        </div>
-                    </div>`).join('');
+                            <div class="bg-indigo-50/30 border border-indigo-100 rounded-2xl p-4 hover:shadow-md transition flex justify-between items-center group cursor-pointer" onclick="openCourseInfo(${item.id_khoa_hoc}, '${safeStr(item.ten_khoa_hoc)}')">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-xl shadow-sm"><i class="fas fa-folder-open"></i></div>
+                                    <div><h5 class="font-bold text-indigo-900">${item.ten_khoa_hoc}</h5><p class="text-xs text-gray-500 mt-1"><i class="fas fa-edit"></i> Bấm vào để soạn bài học</p></div>
+                                </div>
+                                <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition">
+                                    <button onclick="event.stopPropagation(); editKhoaHoc(${item.id_khoa_hoc}, '${safeStr(item.ten_khoa_hoc)}', '${safeStr(item.mo_ta)}')" class="text-blue-500 bg-white p-2 rounded-lg shadow-sm hover:text-blue-700"><i class="fas fa-edit"></i></button>
+                                    <button onclick="event.stopPropagation(); deleteItem('khoa-hoc', ${item.id_khoa_hoc})" class="text-red-400 bg-white p-2 rounded-lg shadow-sm hover:text-red-600"><i class="fas fa-trash-alt"></i></button>
+                                </div>
+                            </div>`).join('');
             $("#list-khoa-hoc").html(html);
         }
         function renderTableTuVung(data) {
             let html = (!data || data.length === 0) ? '<tr><td colspan="3" class="text-center py-10 text-gray-400 italic">Chưa có từ vựng nào.</td></tr>' : data.map(item => `
-                    <tr class="hover:bg-gray-50 transition border-b border-gray-100"><td class="p-4 font-bold text-indigo-600">${item.tu_tieng_anh}</td><td class="p-4 text-gray-600">${item.nghia_tieng_viet}</td><td class="p-4 text-right"><button onclick="editTuVung(${item.id_tu_vung}, '${safeStr(item.tu_tieng_anh)}', '${safeStr(item.nghia_tieng_viet)}', '${safeStr(item.vi_du)}')" class="text-blue-500 hover:text-blue-700 transition mr-3"><i class="fas fa-edit"></i></button><button onclick="deleteItem('tu-vung', ${item.id_tu_vung})" class="text-gray-400 hover:text-red-500 transition"><i class="fas fa-trash-alt"></i></button></td></tr>`).join('');
+                            <tr class="hover:bg-gray-50 transition border-b border-gray-100"><td class="p-4 font-bold text-indigo-600">${item.tu_tieng_anh}</td><td class="p-4 text-gray-600">${item.nghia_tieng_viet}</td><td class="p-4 text-right"><button onclick="editTuVung(${item.id_tu_vung}, '${safeStr(item.tu_tieng_anh)}', '${safeStr(item.nghia_tieng_viet)}', '${safeStr(item.vi_du)}')" class="text-blue-500 hover:text-blue-700 transition mr-3"><i class="fas fa-edit"></i></button><button onclick="deleteItem('tu-vung', ${item.id_tu_vung})" class="text-gray-400 hover:text-red-500 transition"><i class="fas fa-trash-alt"></i></button></td></tr>`).join('');
             $("#tbody-tu-vung").html(html);
         }
         function renderTableThanhNgu(data) {
             let html = (!data || data.length === 0) ? '<tr><td colspan="3" class="text-center py-10 text-gray-400 italic">Chưa có thành ngữ nào.</td></tr>' : data.map(item => `
-                    <tr class="hover:bg-gray-50 transition border-b border-gray-100"><td class="p-4 font-bold text-indigo-600">${item.thanh_ngu}</td><td class="p-4 text-gray-600">${item.nghia}</td><td class="p-4 text-right"><button onclick="editThanhNgu(${item.id_thanh_ngu}, '${safeStr(item.thanh_ngu)}', '${safeStr(item.nghia)}', '${safeStr(item.vi_du)}')" class="text-blue-500 hover:text-blue-700 transition mr-3"><i class="fas fa-edit"></i></button><button onclick="deleteItem('thanh-ngu', ${item.id_thanh_ngu})" class="text-gray-400 hover:text-red-500 transition"><i class="fas fa-trash-alt"></i></button></td></tr>`).join('');
+                            <tr class="hover:bg-gray-50 transition border-b border-gray-100"><td class="p-4 font-bold text-indigo-600">${item.thanh_ngu}</td><td class="p-4 text-gray-600">${item.nghia}</td><td class="p-4 text-right"><button onclick="editThanhNgu(${item.id_thanh_ngu}, '${safeStr(item.thanh_ngu)}', '${safeStr(item.nghia)}', '${safeStr(item.vi_du)}')" class="text-blue-500 hover:text-blue-700 transition mr-3"><i class="fas fa-edit"></i></button><button onclick="deleteItem('thanh-ngu', ${item.id_thanh_ngu})" class="text-gray-400 hover:text-red-500 transition"><i class="fas fa-trash-alt"></i></button></td></tr>`).join('');
             $("#tbody-thanh-ngu").html(html);
         }
         function renderTableNoi(data) {
             let html = (!data || data.length === 0) ? '<tr><td colspan="3" class="text-center py-10 text-gray-400">Trống.</td></tr>' : data.map(item => `
-                    <tr class="border-b hover:bg-gray-50 transition"><td class="py-3 px-2 font-medium">${item.noi_dung_goc}</td><td class="py-3 px-2 text-gray-600">${item.nghia_tieng_viet}</td><td class="py-3 px-2 text-right"><button onclick="editNoi(${item.id_bai_noi}, '${safeStr(item.noi_dung_goc)}', '${safeStr(item.nghia_tieng_viet)}')" class="text-blue-500 hover:text-blue-700 p-2 mr-2"><i class="fas fa-edit"></i></button><button onclick="deleteItem('noi', ${item.id_bai_noi})" class="text-red-500 hover:text-red-700 p-2"><i class="fas fa-trash"></i></button></td></tr>`).join('');
+                            <tr class="border-b hover:bg-gray-50 transition"><td class="py-3 px-2 font-medium">${item.noi_dung_goc}</td><td class="py-3 px-2 text-gray-600">${item.nghia_tieng_viet}</td><td class="py-3 px-2 text-right"><button onclick="editNoi(${item.id_bai_noi}, '${safeStr(item.noi_dung_goc)}', '${safeStr(item.nghia_tieng_viet)}')" class="text-blue-500 hover:text-blue-700 p-2 mr-2"><i class="fas fa-edit"></i></button><button onclick="deleteItem('noi', ${item.id_bai_noi})" class="text-red-500 hover:text-red-700 p-2"><i class="fas fa-trash"></i></button></td></tr>`).join('');
             $("#tbody-noi").html(html);
         }
         function renderListNghe(data) {
             let html = (!data || data.length === 0) ? "<div class='col-span-full text-center py-10 text-gray-400'>Chưa có bài nghe nào.</div>" : data.map(i => `
-                    <div class="bg-indigo-50/30 border border-indigo-100 rounded-2xl p-4 hover:shadow-md transition flex justify-between items-center group cursor-pointer" onclick="openQuestionNghe(${i.id_bai_nghe}, '${safeStr(i.tieu_de)}')">
-                        <div class="flex items-center gap-4"><div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl shadow-sm"><i class="fas fa-headphones"></i></div><div><h5 class="font-bold text-indigo-900">${i.tieu_de}</h5><p class="text-xs text-gray-500 mt-1"><i class="fas fa-list-ol"></i> Quản lý câu hỏi</p></div></div>
-                        <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition"><button onclick="event.stopPropagation(); editNghe(${i.id_bai_nghe}, '${safeStr(i.tieu_de)}', '${safeStr(i.mo_ta)}', '${safeStr(i.file_am_thanh)}')" class="text-blue-500 bg-white p-2 rounded-lg shadow-sm hover:text-blue-700"><i class="fas fa-edit"></i></button><button onclick="event.stopPropagation(); deleteItem('nghe', ${i.id_bai_nghe})" class="text-red-400 bg-white p-2 rounded-lg shadow-sm hover:text-red-600"><i class="fas fa-trash-alt"></i></button></div>
-                    </div>`).join('');
+                            <div class="bg-indigo-50/30 border border-indigo-100 rounded-2xl p-4 hover:shadow-md transition flex justify-between items-center group cursor-pointer" onclick="openQuestionNghe(${i.id_bai_nghe}, '${safeStr(i.tieu_de)}')">
+                                <div class="flex items-center gap-4"><div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl shadow-sm"><i class="fas fa-headphones"></i></div><div><h5 class="font-bold text-indigo-900">${i.tieu_de}</h5><p class="text-xs text-gray-500 mt-1"><i class="fas fa-list-ol"></i> Quản lý câu hỏi</p></div></div>
+                                <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition"><button onclick="event.stopPropagation(); editNghe(${i.id_bai_nghe}, '${safeStr(i.tieu_de)}', '${safeStr(i.mo_ta)}', '${safeStr(i.file_am_thanh)}')" class="text-blue-500 bg-white p-2 rounded-lg shadow-sm hover:text-blue-700"><i class="fas fa-edit"></i></button><button onclick="event.stopPropagation(); deleteItem('nghe', ${i.id_bai_nghe})" class="text-red-400 bg-white p-2 rounded-lg shadow-sm hover:text-red-600"><i class="fas fa-trash-alt"></i></button></div>
+                            </div>`).join('');
             $("#list-nghe").html(html);
         }
         function renderListVideo(data) {
             let html = (!data || data.length === 0) ? "<div class='col-span-full text-center py-10 text-gray-400 italic'>Chưa có video.</div>" : data.map(v => `
-                    <div class="bg-indigo-50/30 border border-indigo-100 rounded-2xl p-4 hover:shadow-md transition flex justify-between items-center group cursor-pointer" onclick="openQuestionVideo(${v.id_video}, '${safeStr(v.tieu_de)}')">
-                        <div class="flex items-center gap-4"><div class="w-12 h-12 rounded-xl bg-red-100 text-red-600 flex items-center justify-center text-xl shadow-sm"><i class="fas fa-play-circle"></i></div><div><h5 class="font-bold text-indigo-900">${v.tieu_de}</h5><p class="text-xs text-gray-500 mt-1"><i class="fas fa-list-ol"></i> Quản lý câu hỏi</p></div></div>
-                        <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition"><button onclick="event.stopPropagation(); editVideo(${v.id_video}, '${safeStr(v.tieu_de)}', '${safeStr(v.duong_dan_video)}', ${v.thoi_luong_phut || 0})" class="text-blue-500 bg-white p-2 rounded-lg shadow-sm hover:text-blue-700"><i class="fas fa-edit"></i></button><button onclick="event.stopPropagation(); deleteItem('video', ${v.id_video})" class="text-red-400 bg-white p-2 rounded-lg shadow-sm hover:text-red-600"><i class="fas fa-trash-alt"></i></button></div>
-                    </div>`).join('');
+                            <div class="bg-indigo-50/30 border border-indigo-100 rounded-2xl p-4 hover:shadow-md transition flex justify-between items-center group cursor-pointer" onclick="openQuestionVideo(${v.id_video}, '${safeStr(v.tieu_de)}')">
+                                <div class="flex items-center gap-4"><div class="w-12 h-12 rounded-xl bg-red-100 text-red-600 flex items-center justify-center text-xl shadow-sm"><i class="fas fa-play-circle"></i></div><div><h5 class="font-bold text-indigo-900">${v.tieu_de}</h5><p class="text-xs text-gray-500 mt-1"><i class="fas fa-list-ol"></i> Quản lý câu hỏi</p></div></div>
+                                <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition"><button onclick="event.stopPropagation(); editVideo(${v.id_video}, '${safeStr(v.tieu_de)}', '${safeStr(v.duong_dan_video)}', ${v.thoi_luong_phut || 0})" class="text-blue-500 bg-white p-2 rounded-lg shadow-sm hover:text-blue-700"><i class="fas fa-edit"></i></button><button onclick="event.stopPropagation(); deleteItem('video', ${v.id_video})" class="text-red-400 bg-white p-2 rounded-lg shadow-sm hover:text-red-600"><i class="fas fa-trash-alt"></i></button></div>
+                            </div>`).join('');
             $("#list-video").html(html);
         }
         function renderListViet(data) {
             let html = (!data || data.length === 0) ? "<div class='col-span-full text-center py-10 text-gray-400'>Chưa có bài luyện viết.</div>" : data.map(item => `
-                    <div class="bg-indigo-50/30 border border-indigo-100 rounded-2xl p-4 hover:shadow-md transition flex justify-between items-center group cursor-pointer" onclick="openQuestionViet(${item.id_bai_viet}, '${safeStr(item.tieu_de)}')">
-                        <div class="flex items-center gap-4"><div class="w-12 h-12 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-xl shadow-sm"><i class="fas fa-pen"></i></div><div><h5 class="font-bold text-indigo-900">${item.tieu_de}</h5><p class="text-xs text-gray-500 mt-1"><i class="fas fa-list-ol"></i> Quản lý câu hỏi</p></div></div>
-                        <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition"><button onclick="event.stopPropagation(); editViet(${item.id_bai_viet}, '${safeStr(item.tieu_de)}', '${safeStr(item.mo_ta)}')" class="text-blue-500 bg-white p-2 rounded-lg shadow-sm hover:text-blue-700"><i class="fas fa-edit"></i></button><button onclick="event.stopPropagation(); deleteItem('viet', ${item.id_bai_viet})" class="text-red-400 bg-white p-2 rounded-lg shadow-sm hover:text-red-600"><i class="fas fa-trash-alt"></i></button></div>
-                    </div>`).join('');
+                            <div class="bg-indigo-50/30 border border-indigo-100 rounded-2xl p-4 hover:shadow-md transition flex justify-between items-center group cursor-pointer" onclick="openQuestionViet(${item.id_bai_viet}, '${safeStr(item.tieu_de)}')">
+                                <div class="flex items-center gap-4"><div class="w-12 h-12 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-xl shadow-sm"><i class="fas fa-pen"></i></div><div><h5 class="font-bold text-indigo-900">${item.tieu_de}</h5><p class="text-xs text-gray-500 mt-1"><i class="fas fa-list-ol"></i> Quản lý câu hỏi</p></div></div>
+                                <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition"><button onclick="event.stopPropagation(); editViet(${item.id_bai_viet}, '${safeStr(item.tieu_de)}', '${safeStr(item.mo_ta)}')" class="text-blue-500 bg-white p-2 rounded-lg shadow-sm hover:text-blue-700"><i class="fas fa-edit"></i></button><button onclick="event.stopPropagation(); deleteItem('viet', ${item.id_bai_viet})" class="text-red-400 bg-white p-2 rounded-lg shadow-sm hover:text-red-600"><i class="fas fa-trash-alt"></i></button></div>
+                            </div>`).join('');
             $("#list-viet").html(html);
         }
         function renderListNguPhap(data) {
@@ -282,28 +358,70 @@
             $("#list-ngu-phap").html(html);
         }
         function renderListGame(data) {
-            let html = (!data || data.length === 0) ? "<div class='col-span-full text-center py-10 text-gray-400'>Chưa có game nào.</div>" : data.map(item => `
-                    <div class="bg-indigo-50/30 border border-indigo-100 rounded-2xl p-4 hover:shadow-md transition flex justify-between items-center group cursor-pointer" onclick="openQuestionGame(${item.id_game}, '${safeStr(item.tieu_de)}')">
-                        <div class="flex items-center gap-4"><div class="w-12 h-12 rounded-xl bg-yellow-100 text-yellow-600 flex items-center justify-center text-xl shadow-sm"><i class="fas fa-gamepad"></i></div><div><h5 class="font-bold text-indigo-900">${item.tieu_de}</h5><p class="text-xs text-gray-500 mt-1"><i class="fas fa-list-ol"></i> Quản lý câu hỏi</p></div></div>
-                        <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition"><button onclick="event.stopPropagation(); editGame(${item.id_game}, '${safeStr(item.tieu_de)}', '${safeStr(item.mo_ta)}', '${safeStr(item.tu_khoa_cuoi)}')" class="text-blue-500 bg-white p-2 rounded-lg shadow-sm hover:text-blue-700"><i class="fas fa-edit"></i></button><button onclick="event.stopPropagation(); deleteItem('game', ${item.id_game})" class="text-red-400 bg-white p-2 rounded-lg shadow-sm hover:text-red-600"><i class="fas fa-trash-alt"></i></button></div>
-                    </div>`).join('');
+            let html = (!data || data.length === 0) ? "<div class='col-span-full text-center py-10 text-gray-400'>Chưa có game nào.</div>" : data.map(item => {
+
+                // Kiểm tra xem Game này có đang được áp dụng không
+                let isActived = item.trang_thai == 1;
+                let activeBadge = isActived ? `<span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-bold border border-green-200 ml-2 align-middle"><i class="fas fa-check-circle"></i> ĐANG ÁP DỤNG</span>` : '';
+
+                // Nếu chưa áp dụng thì hiện nút Nguồn (Bật lên)
+                let activeBtn = isActived ? '' : `<button onclick="event.stopPropagation(); kichHoatGame(${item.id_game}, ${currentSelectedLevelId})" class="text-green-600 bg-white p-2 rounded-lg shadow-sm hover:text-white hover:bg-green-500 transition border border-green-200" title="Chọn làm Game chính thức cho cấp độ này"><i class="fas fa-power-off"></i> Bật</button>`;
+
+                return `
+                            <div class="bg-indigo-50/30 border ${isActived ? 'border-green-400 shadow-md bg-green-50/30' : 'border-indigo-100'} rounded-2xl p-4 hover:shadow-md transition flex justify-between items-center group cursor-pointer" onclick="openQuestionGame(${item.id_game}, '${safeStr(item.tieu_de)}')">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-xl ${isActived ? 'bg-green-100 text-green-600' : 'bg-yellow-100 text-yellow-600'} flex items-center justify-center text-xl shadow-sm">
+                                        <i class="fas fa-gamepad"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-bold ${isActived ? 'text-green-800' : 'text-indigo-900'}">${item.tieu_de} ${activeBadge}</h5>
+                                        <p class="text-xs text-gray-500 mt-1"><i class="fas fa-list-ol"></i> Quản lý câu hỏi</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition">
+
+                                    ${activeBtn}
+
+                                    <button onclick="event.stopPropagation(); editGame(${item.id_game}, '${safeStr(item.tieu_de)}', '${safeStr(item.mo_ta)}', '${safeStr(item.tu_khoa_cuoi)}')" class="text-blue-500 bg-white p-2 rounded-lg shadow-sm hover:text-blue-700" title="Sửa Game">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button onclick="event.stopPropagation(); deleteItem('game', ${item.id_game})" class="text-red-400 bg-white p-2 rounded-lg shadow-sm hover:text-red-600" title="Xóa Game">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </div>`;
+            }).join('');
             $("#list-game").html(html);
+        }
+
+        // Hàm gọi API bật Game
+        function kichHoatGame(idGame, idCapDo) {
+            if (confirm("Bạn có muốn đổi sang Bản đồ kho báu này cho Học viên chơi không?")) {
+                $.post("/Admin/Trang_Admin/KichHoatGame", { id_game: idGame, id_cap_do: idCapDo }, function (res) {
+                    if (res.success) {
+                        // Gọi lại hàm load dữ liệu để cập nhật màu sắc giao diện
+                        loadFullData(currentSelectedLevelId, $("#current-level-name").text().replace("Đang quản lý: ", ""));
+                    } else {
+                        alert("Lỗi: " + res.message);
+                    }
+                });
+            }
         }
         function renderListMiniTest(data) {
             let html = (!data || data.length === 0) ? "<div class='col-span-full text-center py-10 text-gray-400'>Chưa có bài Mini Test nào.</div>" : data.map(item => `
-                    <div class="bg-pink-50/50 border border-pink-200 rounded-2xl p-4 hover:shadow-md transition flex justify-between items-center group cursor-pointer" onclick="openQuestionMiniTest(${item.id_bai_sap_xep}, '${safeStr(item.tieu_de)}')">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center text-xl shadow-sm"><i class="fas fa-calendar-check"></i></div>
-                            <div>
-                                <h5 class="font-bold text-pink-900">${item.tieu_de}</h5>
-                                <p class="text-xs text-pink-600 mt-1"><i class="fas fa-clock"></i> Lịch hiển thị: <b>${item.mo_ta || 'Chưa hẹn'}</b></p>
-                            </div>
-                        </div>
-                        <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition">
-                            <button onclick="event.stopPropagation(); editMiniTest(${item.id_bai_sap_xep}, '${safeStr(item.tieu_de)}', '${safeStr(item.mo_ta)}')" class="text-blue-500 bg-white p-2 rounded-lg shadow-sm hover:text-blue-700"><i class="fas fa-edit"></i></button>
-                            <button onclick="event.stopPropagation(); deleteItem('mini-test', ${item.id_bai_sap_xep})" class="text-red-400 bg-white p-2 rounded-lg shadow-sm hover:text-red-600"><i class="fas fa-trash-alt"></i></button>
-                        </div>
-                    </div>`).join('');
+                            <div class="bg-pink-50/50 border border-pink-200 rounded-2xl p-4 hover:shadow-md transition flex justify-between items-center group cursor-pointer" onclick="openQuestionMiniTest(${item.id_bai_sap_xep}, '${safeStr(item.tieu_de)}')">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center text-xl shadow-sm"><i class="fas fa-calendar-check"></i></div>
+                                    <div>
+                                        <h5 class="font-bold text-pink-900">${item.tieu_de}</h5>
+                                        <p class="text-xs text-pink-600 mt-1"><i class="fas fa-clock"></i> Lịch hiển thị: <b>${item.mo_ta || 'Chưa hẹn'}</b></p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition">
+                                    <button onclick="event.stopPropagation(); editMiniTest(${item.id_bai_sap_xep}, '${safeStr(item.tieu_de)}', '${safeStr(item.mo_ta)}')" class="text-blue-500 bg-white p-2 rounded-lg shadow-sm hover:text-blue-700"><i class="fas fa-edit"></i></button>
+                                    <button onclick="event.stopPropagation(); deleteItem('mini-test', ${item.id_bai_sap_xep})" class="text-red-400 bg-white p-2 rounded-lg shadow-sm hover:text-red-600"><i class="fas fa-trash-alt"></i></button>
+                                </div>
+                            </div>`).join('');
             $("#list-mini-test").html(html);
         }
 
@@ -429,15 +547,89 @@
         function saveCauHoiViet() { let data = { id_bai_viet: currentManageVietId, id_cau_hoi: currentEditQuestionVietId, cau_vn: $("#txtQViet_VN").val(), cau_en: $("#txtQViet_EN").val() }; $.post("/Admin/Trang_Admin/LuuCauHoiViet", data, function (res) { if (res.success) { resetFormCauHoiViet(); loadQuestionVietList(); } }); }
         function deleteCauHoiViet(id) { if (confirm("Xóa câu hỏi này?")) $.post("/Admin/Trang_Admin/XoaCauHoiViet", { id: id }, function (res) { if (res.success) loadQuestionVietList(); }); }
 
+
         // 11. CÂU HỎI GAME KHÓ BÁU
         let currentManageGameId = null; let currentEditQuestionGameId = null;
-        $(document).on('keyup change', '#txtQG_Loai', function () { let loai = $(this).val(); if (loai) loai = loai.trim(); if (loai === 'trac_nghiem') { $("#box-QG-SelectDung").removeClass("hidden"); $("#box-QG-TextDung").addClass("hidden"); } else { $("#box-QG-SelectDung").addClass("hidden"); $("#box-QG-TextDung").removeClass("hidden"); } });
+
+        // SỰ KIỆN: KHI THAY ĐỔI LOẠI CÂU HỎI Ở DROPDOWN
+        $(document).on('change', '#txtQG_Loai', function () {
+            let loai = $(this).val();
+
+            // Nếu là Trắc nghiệm hoặc Tìm lỗi sai -> BẬT các ô A, B, C, D
+            if (loai === 'trac_nghiem' || loai === 'tim_loi') {
+                $("#box-QG-SelectDung").removeClass("hidden");
+                $("#box-QG-TextDung").addClass("hidden");
+
+                // Mở khóa các ô A B C D
+                $("#box-QG-ABCD").removeClass("hidden");
+            }
+            // Nếu là các loại Nhập chữ, Sắp xếp -> TẮT các ô A, B, C, D cho gọn
+            else {
+                $("#box-QG-SelectDung").addClass("hidden");
+                $("#box-QG-TextDung").removeClass("hidden");
+
+                // Giấu đi và Xóa trắng dữ liệu cũ trong các ô A B C D
+                $("#box-QG-ABCD").addClass("hidden");
+                $("#txtQG_A, #txtQG_B, #txtQG_C, #txtQG_D").val("");
+            }
+        });
+
         function openQuestionGame(id, title) { currentManageGameId = id; $("#gameTitleLabel").text(title); resetFormCauHoiGame(); $("#modalQuestionGame").removeClass("hidden").addClass("flex"); $("body").addClass("overflow-hidden"); loadQuestionGameList(); }
         function closeQuestionGame() { $("#modalQuestionGame").addClass("hidden").removeClass("flex"); $("body").removeClass("overflow-hidden"); }
-        function resetFormCauHoiGame() { currentEditQuestionGameId = null; $("#formQuestionGameTitle").text("Thêm Câu Hỏi Mới"); $("#txtQG_NoiDung, #txtQG_A, #txtQG_B, #txtQG_C, #txtQG_D, #txtQG_ManhGhep, #txtQG_DungText").val(""); $("#cboQG_Dung").val("A"); $("#txtQG_Loai").val("trac_nghiem").trigger('change'); let nextIndex = $("#listQuestionGame").children().length + 1; $("#txtQG_ThuTu").val(nextIndex); }
+
+        // Khởi tạo lại Form
+        function resetFormCauHoiGame() {
+            currentEditQuestionGameId = null;
+            $("#formQuestionGameTitle").text("Thêm Câu Hỏi Mới");
+            $("#txtQG_NoiDung, #txtQG_A, #txtQG_B, #txtQG_C, #txtQG_D, #txtQG_ManhGhep, #txtQG_DungText").val("");
+            $("#cboQG_Dung").val("A");
+
+            // Reset dropdown về Trắc nghiệm và Kích hoạt hiệu ứng ẩn hiện
+            $("#txtQG_Loai").val("trac_nghiem").trigger('change');
+
+            let nextIndex = $("#listQuestionGame").children().length + 1;
+            $("#txtQG_ThuTu").val(nextIndex);
+        }
+
+        // Lấy danh sách (Giữ nguyên như cũ)
         function loadQuestionGameList() { $.get("/Admin/Trang_Admin/GetCauHoiGame", { id_game: currentManageGameId }, function (res) { if (res.success) { let html = res.data.map((q) => { let loai = q.loai_cau_hoi || "trac_nghiem"; return `<div class="border rounded-lg p-4 relative group bg-white mb-2"><p class="font-bold text-gray-800 mb-2"><span class="bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded text-xs mr-2">Câu ${q.thu_tu}</span> ${q.noi_dung}</p><div class="grid grid-cols-2 gap-2 text-sm text-gray-600 mb-2"><div class="${q.dap_an_dung == 'A' ? 'font-bold text-green-600' : ''}">A. ${q.dap_an_a}</div><div class="${q.dap_an_dung == 'B' ? 'font-bold text-green-600' : ''}">B. ${q.dap_an_b}</div><div class="${q.dap_an_dung == 'C' ? 'font-bold text-green-600' : ''}">C. ${q.dap_an_c}</div><div class="${q.dap_an_dung == 'D' ? 'font-bold text-green-600' : ''}">D. ${q.dap_an_d}</div></div><div class="text-xs bg-gray-50 p-2 rounded flex justify-between"><span><i class="fas fa-puzzle-piece text-yellow-500 mr-1"></i> Mảnh ghép: <b>${q.manh_ghep || 'Không có'}</b></span><span class="text-gray-400">Loại: ${q.loai_cau_hoi}</span></div><div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 flex gap-2"><button onclick="editCauHoiGame(${q.id_cau_hoi}, ${q.thu_tu}, '${safeStr(loai)}', '${safeStr(q.noi_dung)}', '${safeStr(q.dap_an_a)}', '${safeStr(q.dap_an_b)}', '${safeStr(q.dap_an_c)}', '${safeStr(q.dap_an_d)}', '${safeStr(q.dap_an_dung)}', '${safeStr(q.manh_ghep)}')" class="text-blue-500 bg-white shadow-sm p-1 rounded hover:text-blue-700"><i class="fas fa-edit"></i></button><button onclick="deleteCauHoiGame(${q.id_cau_hoi})" class="text-red-400 bg-white shadow-sm p-1 rounded hover:text-red-600"><i class="fas fa-trash-alt"></i></button></div></div>`; }).join(''); $("#listQuestionGame").html(html); $("#txtQG_ThuTu").val(res.data.length + 1); } }); }
-        function editCauHoiGame(id, thuTu, loai, q, a, b, c, d, dung, mg) { currentEditQuestionGameId = id; $("#formQuestionGameTitle").text("✏️ Cập Nhật Câu Hỏi"); $("#txtQG_ThuTu").val(thuTu); $("#txtQG_Loai").val(loai).trigger('change'); $("#txtQG_NoiDung").val(q); $("#txtQG_A").val(a); $("#txtQG_B").val(b); $("#txtQG_C").val(c); $("#txtQG_D").val(d); $("#txtQG_ManhGhep").val(mg); if (loai === 'trac_nghiem') { $("#cboQG_Dung").val(dung); } else { $("#txtQG_DungText").val(dung); } $("#modalQuestionGame .overflow-y-auto").first().animate({ scrollTop: 0 }, "fast"); }
-        function saveCauHoiGame() { let loai = $("#txtQG_Loai").val(); if (loai) loai = loai.trim(); let dapAnDung = (loai === 'trac_nghiem') ? $("#cboQG_Dung").val() : $("#txtQG_DungText").val(); let data = { id_game: currentManageGameId, id_cau_hoi: currentEditQuestionGameId, thu_tu: $("#txtQG_ThuTu").val(), loai: loai, noi_dung: $("#txtQG_NoiDung").val(), a: $("#txtQG_A").val(), b: $("#txtQG_B").val(), c: $("#txtQG_C").val(), d: $("#txtQG_D").val(), dung: dapAnDung, manh_ghep: $("#txtQG_ManhGhep").val() }; $.post("/Admin/Trang_Admin/LuuCauHoiGame", data, function (res) { if (res.success) { resetFormCauHoiGame(); loadQuestionGameList(); } }); }
+
+        // Khi bấm Sửa -> Điền dữ liệu và kích hoạt hiệu ứng Ẩn/Hiện tương ứng
+        function editCauHoiGame(id, thuTu, loai, q, a, b, c, d, dung, mg) {
+            currentEditQuestionGameId = id;
+            $("#formQuestionGameTitle").text("✏️ Cập Nhật Câu Hỏi");
+            $("#txtQG_ThuTu").val(thuTu);
+
+            // Chọn đúng loại dropdown rồi gọi event trigger('change')
+            $("#txtQG_Loai").val(loai).trigger('change');
+
+            $("#txtQG_NoiDung").val(q);
+            $("#txtQG_A").val(a); $("#txtQG_B").val(b); $("#txtQG_C").val(c); $("#txtQG_D").val(d);
+            $("#txtQG_ManhGhep").val(mg);
+
+            if (loai === 'trac_nghiem' || loai === 'tim_loi') {
+                $("#cboQG_Dung").val(dung);
+            } else {
+                $("#txtQG_DungText").val(dung);
+            }
+            $("#modalQuestionGame .overflow-y-auto").first().animate({ scrollTop: 0 }, "fast");
+        }
+
+        // Lưu câu hỏi (Giữ nguyên như cũ, đổi xíu logic check dung)
+        function saveCauHoiGame() {
+            let loai = $("#txtQG_Loai").val();
+            let dapAnDung = (loai === 'trac_nghiem' || loai === 'tim_loi') ? $("#cboQG_Dung").val() : $("#txtQG_DungText").val();
+            let data = {
+                id_game: currentManageGameId, id_cau_hoi: currentEditQuestionGameId,
+                thu_tu: $("#txtQG_ThuTu").val(), loai: loai, noi_dung: $("#txtQG_NoiDung").val(),
+                a: $("#txtQG_A").val(), b: $("#txtQG_B").val(), c: $("#txtQG_C").val(), d: $("#txtQG_D").val(),
+                dung: dapAnDung, manh_ghep: $("#txtQG_ManhGhep").val()
+            };
+            $.post("/Admin/Trang_Admin/LuuCauHoiGame", data, function (res) {
+                if (res.success) { resetFormCauHoiGame(); loadQuestionGameList(); }
+                else { alert(res.message); }
+            });
+        }
         function deleteCauHoiGame(id) { if (confirm("Xóa câu hỏi này?")) { $.post("/Admin/Trang_Admin/XoaCauHoiGame", { id: id }, function (res) { if (res.success) loadQuestionGameList(); }); } }
 
         // 12. CÂU HỎI MINI TEST (SẮP XẾP)

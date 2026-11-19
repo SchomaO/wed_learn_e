@@ -131,6 +131,39 @@ namespace wed_learn_e.Areas.Admin.Controllers
         }
 
         // 3. Hàm POST: Xóa khóa học khỏi học viên
+        [HttpPost]
+        public ActionResult XoaKhoaHocCuaHocVien(int id_nguoi_dung, int id_khoa_hoc)
+        {
+            try
+            {
+                // 1. Tìm bản ghi tiến độ học tập (Sự liên kết giữa User và Khóa học)
+                var tienDo = db.tien_do_hoc_tap.FirstOrDefault(t => t.id_nguoi_dung == id_nguoi_dung && t.id_khoa_hoc == id_khoa_hoc);
+
+                if (tienDo != null)
+                {
+                    // 2. Xóa bản ghi đó đi (Thu hồi quyền truy cập)
+                    db.tien_do_hoc_tap.Remove(tienDo);
+
+                    // 3. Cập nhật lại số lượng khóa học của user (Giảm đi 1)
+                    var user = db.nguoi_dung.Find(id_nguoi_dung);
+                    if (user != null && user.so_luong_khoa_hoc > 0)
+                    {
+                        user.so_luong_khoa_hoc = user.so_luong_khoa_hoc - 1;
+                    }
+
+                    // 4. Lưu thay đổi vào Database
+                    db.SaveChanges();
+
+                    return Json(new { success = true, message = "Đã thu hồi khóa học thành công!" });
+                }
+
+                return Json(new { success = false, message = "Học viên này không sở hữu khóa học này!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Lỗi hệ thống: " + ex.Message });
+            }
+        }
         // 4. Hàm POST: Cập nhật thông tin học viên
         [HttpPost]
         public JsonResult SuaNguoiDung(int id, string ho_ten, string email, string vai_tro, int loai_tk, DateTime? hsd)
@@ -335,7 +368,7 @@ namespace wed_learn_e.Areas.Admin.Controllers
                             vi_du = x.Example
                         }).ToList();
                 var games = db.game_kho_bau.Where(x => x.id_cap_do == id)
-                       .Select(x => new { x.id_game, x.tieu_de, x.mo_ta, x.tu_khoa_cuoi }).ToList();
+                .Select(x => new { x.id_game, x.tieu_de, x.mo_ta, x.tu_khoa_cuoi, x.trang_thai }).ToList();
 
                 // Thêm chữ: thanh_ngu = thanhngu vào cuối
                 return Json(new
@@ -451,10 +484,17 @@ namespace wed_learn_e.Areas.Admin.Controllers
                     var item = db.game_kho_bau.Find(id);
                     if (item != null)
                     {
-                        // Xóa câu hỏi con trước
-                        var questions = db.cau_hoi_kho_bau.Where(q => q.id_game == id);
-                        foreach (var q in questions) db.cau_hoi_kho_bau.Remove(q);
+                        var questions = db.cau_hoi_kho_bau.Where(q => q.id_game == id).ToList();
+                        foreach (var q in questions)
+                        {
+                            // Diệt lịch sử của từng câu hỏi
+                            var lichSu = db.lich_su_kho_bau.Where(l => l.id_cau_hoi == q.id_cau_hoi).ToList();
+                            foreach (var ls in lichSu) db.lich_su_kho_bau.Remove(ls);
 
+                            // Diệt câu hỏi
+                            db.cau_hoi_kho_bau.Remove(q);
+                        }
+                        // Cuối cùng mới diệt Game
                         db.game_kho_bau.Remove(item);
                     }
                 }
@@ -634,14 +674,32 @@ namespace wed_learn_e.Areas.Admin.Controllers
                         }
                         break;
                     case "mini-test":
+                        // 1. Chuyển đổi ngày Admin chọn (từ chuỗi sang kiểu Date)
+                        DateTime ngayApDung = DateTime.Now; // Mặc định nếu lỗi
+                        if (!string.IsNullOrEmpty(data2))
+                        {
+                            DateTime.TryParse(data2, out ngayApDung);
+                        }
+
                         if (id_item.HasValue && id_item > 0)
                         {
                             var mt = db.bai_sap_xep.Find(id_item);
-                            if (mt != null) { mt.tieu_de = data1; mt.mo_ta = data2; }
+                            if (mt != null)
+                            {
+                                mt.tieu_de = data1;
+                                mt.mo_ta = data2; // Giữ lại chuỗi để hiển thị ở bảng Admin
+                                mt.ngay_tao = ngayApDung; // ÉP LƯU NGÀY ADMIN CHỌN VÀO DATABASE
+                            }
                         }
                         else
                         {
-                            db.bai_sap_xep.Add(new bai_sap_xep { id_khoa_hoc = id_khoa_hoc, tieu_de = data1, mo_ta = data2, ngay_tao = DateTime.Now });
+                            db.bai_sap_xep.Add(new bai_sap_xep
+                            {
+                                id_khoa_hoc = id_khoa_hoc,
+                                tieu_de = data1,
+                                mo_ta = data2,
+                                ngay_tao = ngayApDung // ÉP LƯU NGÀY ADMIN CHỌN VÀO DATABASE
+                            });
                         }
                         break;
                     case "nghe":
@@ -857,17 +915,59 @@ namespace wed_learn_e.Areas.Admin.Controllers
             }
             catch (Exception ex) { return Json(new { success = false, message = ex.Message }); }
         }
+        [HttpPost]
+        public JsonResult KichHoatGame(int id_game, int id_cap_do)
+        {
+            try
+            {
+                // 1. Tắt toàn bộ các Game khác trong cùng Cấp độ đó
+                var danhSachGameCungCapDo = db.game_kho_bau.Where(g => g.id_cap_do == id_cap_do).ToList();
+                foreach (var g in danhSachGameCungCapDo)
+                {
+                    g.trang_thai = 0;
+                }
 
+                // 2. Chỉ bật (trạng thái = 1) cho duy nhất Game được chọn
+                var gameDuocChon = db.game_kho_bau.Find(id_game);
+                if (gameDuocChon != null)
+                {
+                    gameDuocChon.trang_thai = 1;
+                }
+
+                db.SaveChanges();
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Lỗi SQL: " + ex.Message });
+            }
+        }
         [HttpPost]
         public JsonResult XoaCauHoiGame(int id)
         {
             try
             {
                 var ch = db.cau_hoi_kho_bau.Find(id);
-                if (ch != null) { db.cau_hoi_kho_bau.Remove(ch); db.SaveChanges(); }
+                if (ch != null)
+                {
+                    // 1. Dọn sạch lịch sử giải mã của học viên trước
+                    var lichSu = db.lich_su_kho_bau.Where(l => l.id_cau_hoi == id).ToList();
+                    foreach (var ls in lichSu)
+                    {
+                        db.lich_su_kho_bau.Remove(ls);
+                    }
+
+                    // 2. Mới tiến hành xóa câu hỏi
+                    db.cau_hoi_kho_bau.Remove(ch);
+                    db.SaveChanges();
+                }
                 return Json(new { success = true });
             }
-            catch (Exception ex) { return Json(new { success = false, message = ex.Message }); }
+            catch (Exception ex)
+            {
+                string loi = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return Json(new { success = false, message = loi });
+            }
         }
         // ===============================================
         // QUẢN LÝ CÂU HỎI LUYỆN VIẾT
@@ -1118,6 +1218,11 @@ namespace wed_learn_e.Areas.Admin.Controllers
                 return Json(new { success = false, message = "Lỗi dọn dẹp: " + ex.Message });
             }
         }
+        public ActionResult BaoTri()
+        {
+            // Trang này chỉ hiện chữ thông báo
+            return Content("<h2 style='text-align:center; color:red; margin-top:50px;'>Website đang được bảo trì để nâng cấp. Vui lòng quay lại sau!</h2>");
+        }   
         public ActionResult QuanLyBinhLuan(string chuDe = "")
         {
             if (Session["Admin_VaiTro"] == null || Session["Admin_VaiTro"].ToString() != "quan_tri_vien")

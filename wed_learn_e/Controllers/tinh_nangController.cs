@@ -391,7 +391,7 @@ namespace wed_learn_e.Controllers
             }
             return Json(new { success = true });
         }
-        // 1. HÀM GET
+        // 1. HÀM GET (Hiển thị đề thi)
         [HttpGet]
         public ActionResult MiniTestHangNgay(int? id_cap_do)
         {
@@ -399,34 +399,43 @@ namespace wed_learn_e.Controllers
             if (id_cap_do == null && Session["id_cap_do_hien_tai"] != null)
                 id_cap_do = Convert.ToInt32(Session["id_cap_do_hien_tai"]);
 
-            DateTime homNay = DateTime.Now; // Để test ngày mai thì thêm .AddDays(1)
+            DateTime homNay = DateTime.Now;
             int seedHomNay = homNay.Year * 10000 + homNay.Month * 100 + homNay.Day;
-            Random rnd = new Random(seedHomNay);
+            Random rndScramble = new Random(seedHomNay);
 
-            // --- BỘ LỌC CẤP ĐỘ ---
-            // 1. Tìm các khóa học thuộc cấp độ này
             var listIdKhoaHoc = db.khoa_hoc.Where(k => k.id_cap_do == id_cap_do).Select(k => k.id_khoa_hoc).ToList();
 
-            // 2. Tìm các Bài Sắp xếp nằm trong các khóa học đó
-            var listIdBaiSapXep = db.bai_sap_xep
+            // TÌM BÀI MINI TEST LÊN LỊCH ĐÚNG CHÍNH XÁC CHO HÔM NAY
+            var baiTestMoiNhat = db.bai_sap_xep
                                     .Where(b => b.id_khoa_hoc != null && listIdKhoaHoc.Contains(b.id_khoa_hoc.Value))
-                                    .Select(b => b.id_bai_sap_xep)
-                                    .ToList();
+                                    // SO SÁNH CHÍNH XÁC NGÀY - THÁNG - NĂM
+                                    .Where(b => b.ngay_tao.HasValue &&
+                                                b.ngay_tao.Value.Year == homNay.Year &&
+                                                b.ngay_tao.Value.Month == homNay.Month &&
+                                                b.ngay_tao.Value.Day == homNay.Day)
+                                    .FirstOrDefault();
 
-            // 3. Lấy 3 CÂU SẮP XẾP chuẩn của cấp độ này
-            var sapXep = db.cau_hoi_sap_xep
-                           .Where(c => c.id_bai_sap_xep != null && listIdBaiSapXep.Contains(c.id_bai_sap_xep.Value))
-                           .ToList()
-                           .OrderBy(x => rnd.Next())
-                           .Take(3) // CHỈ LẤY 3 CÂU
-                           .ToList();
+            var sapXep = new List<cau_hoi_sap_xep>();
+            if (baiTestMoiNhat != null)
+            {
+                sapXep = db.cau_hoi_sap_xep
+                            .Where(c => c.id_bai_sap_xep == baiTestMoiNhat.id_bai_sap_xep)
+                            .ToList();
 
-            // 4. Lấy 3 CÂU TRẮC NGHIỆM (Tạm lấy từ cau_hoi_kiem_tra)
-            var tracNghiem = db.cau_hoi_kiem_tra.ToList().OrderBy(x => rnd.Next()).Take(3).ToList();
+                ViewBag.NgayTest = baiTestMoiNhat.ngay_tao.Value.ToString("dd/MM/yyyy");
+                ViewBag.TenBaiTest = baiTestMoiNhat.tieu_de;
+                ViewBag.CoBaiTest = true; // Bật cờ báo có bài
+            }
+            else
+            {
+                ViewBag.NgayTest = homNay.ToString("dd/MM/yyyy");
+                ViewBag.TenBaiTest = "Hôm nay không có bài test nào";
+                ViewBag.CoBaiTest = false; // Tắt cờ
+            }
 
-            // Xáo trộn chữ cho phần sắp xếp
+            var tracNghiem = db.cau_hoi_kiem_tra.ToList().OrderBy(x => rndScramble.Next()).Take(0).ToList();
+
             Dictionary<int, List<string>> scrambledWords = new Dictionary<int, List<string>>();
-            Random rndScramble = new Random(seedHomNay);
             foreach (var q in sapXep)
             {
                 List<string> words = q.dap_an_dung.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
@@ -436,7 +445,6 @@ namespace wed_learn_e.Controllers
             ViewBag.TracNghiem = tracNghiem;
             ViewBag.SapXep = sapXep;
             ViewBag.ScrambledWords = scrambledWords;
-            ViewBag.NgayTest = homNay.ToString("dd/MM/yyyy");
             ViewBag.IdCapDo = id_cap_do;
 
             return View();
@@ -448,33 +456,46 @@ namespace wed_learn_e.Controllers
         {
             if (Session["user_id"] == null) return RedirectToAction("dangnhap", "User");
 
-            DateTime homNay = DateTime.Now;
+            DateTime homNay = DateTime.Now;//DateTime.Now.AddDays(1)
             int seedHomNay = homNay.Year * 10000 + homNay.Month * 100 + homNay.Day;
-            Random rnd = new Random(seedHomNay);
+            Random rndScramble = new Random(seedHomNay);
 
-            // --- BỘ LỌC CẤP ĐỘ CHO HÀM CHẤM ĐIỂM ---
             var listIdKhoaHoc = db.khoa_hoc.Where(k => k.id_cap_do == id_cap_do).Select(k => k.id_khoa_hoc).ToList();
-            var listIdBaiSapXep = db.bai_sap_xep.Where(b => b.id_khoa_hoc != null && listIdKhoaHoc.Contains(b.id_khoa_hoc.Value)).Select(b => b.id_bai_sap_xep).ToList();
 
-            // Bốc lại ĐÚNG 3 câu đó ra chấm
-            var sapXep = db.cau_hoi_sap_xep.Where(c => c.id_bai_sap_xep != null && listIdBaiSapXep.Contains(c.id_bai_sap_xep.Value))
-                           .ToList().OrderBy(x => rnd.Next()).Take(3).ToList();
+            // TÌM LẠI ĐÚNG BÀI ĐÓ ĐỂ CHẤM ĐIỂM
+            var baiTestMoiNhat = db.bai_sap_xep
+                                    .Where(b => b.id_khoa_hoc != null && listIdKhoaHoc.Contains(b.id_khoa_hoc.Value))
+                                    .Where(b => b.ngay_tao.HasValue &&
+                                                b.ngay_tao.Value.Year == homNay.Year &&
+                                                b.ngay_tao.Value.Month == homNay.Month &&
+                                                b.ngay_tao.Value.Day == homNay.Day)
+                                    .FirstOrDefault();
 
-            var tracNghiem = db.cau_hoi_kiem_tra.ToList().OrderBy(x => rnd.Next()).Take(3).ToList();
+            var sapXep = new List<cau_hoi_sap_xep>();
+            if (baiTestMoiNhat != null)
+            {
+                sapXep = db.cau_hoi_sap_xep
+                            .Where(c => c.id_bai_sap_xep == baiTestMoiNhat.id_bai_sap_xep)
+                            .ToList();
+
+                ViewBag.NgayTest = baiTestMoiNhat.ngay_tao.Value.ToString("dd/MM/yyyy");
+                ViewBag.TenBaiTest = baiTestMoiNhat.tieu_de;
+                ViewBag.CoBaiTest = true;
+            }
+            else
+            {
+                ViewBag.NgayTest = homNay.ToString("dd/MM/yyyy");
+                ViewBag.TenBaiTest = "Hôm nay không có bài test nào";
+                ViewBag.CoBaiTest = false;
+            }
+
+            var tracNghiem = db.cau_hoi_kiem_tra.ToList().OrderBy(x => rndScramble.Next()).Take(0).ToList();
 
             int score = 0;
             int total = tracNghiem.Count + sapXep.Count;
 
             Dictionary<int, string> userAnswersTN = new Dictionary<int, string>();
             Dictionary<int, string> userAnswersSX = new Dictionary<int, string>();
-
-            // Chấm Trắc nghiệm
-            foreach (var q in tracNghiem)
-            {
-                string ans = form["q_" + q.id_cau_hoi];
-                userAnswersTN[q.id_cau_hoi] = ans ?? "";
-                if (!string.IsNullOrEmpty(ans) && ans == q.dap_an_dung.Trim()) score++;
-            }
 
             // Chấm Kéo thả
             foreach (var q in sapXep)
@@ -488,13 +509,17 @@ namespace wed_learn_e.Controllers
                 if (cleanUser == cleanCorrect && cleanUser != "") score++;
             }
 
-            // Xếp lại chữ đã kéo để hiển thị
             Dictionary<int, List<string>> scrambledWords = new Dictionary<int, List<string>>();
             foreach (var q in sapXep)
             {
                 if (userAnswersSX.ContainsKey(q.id_cau_hoi) && !string.IsNullOrWhiteSpace(userAnswersSX[q.id_cau_hoi]))
                 {
                     scrambledWords.Add(q.id_cau_hoi, userAnswersSX[q.id_cau_hoi].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList());
+                }
+                else
+                {
+                    List<string> words = q.dap_an_dung.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                    scrambledWords.Add(q.id_cau_hoi, words.OrderBy(x => rndScramble.Next()).ToList());
                 }
             }
 
@@ -506,11 +531,11 @@ namespace wed_learn_e.Controllers
             ViewBag.Score = score;
             ViewBag.Total = total;
             ViewBag.IsSubmitted = true;
-            ViewBag.NgayTest = homNay.ToString("dd/MM/yyyy");
             ViewBag.IdCapDo = id_cap_do;
 
             return View();
         }
+        // 1. HIỂN THỊ BẢN ĐỒ KHO BÁU
         // 1. HIỂN THỊ BẢN ĐỒ KHO BÁU
         public ActionResult BanDoKhoBau(int? id_cap_do)
         {
@@ -519,7 +544,15 @@ namespace wed_learn_e.Controllers
             if (id_cap_do == null && Session["id_cap_do_hien_tai"] != null)
                 id_cap_do = Convert.ToInt32(Session["id_cap_do_hien_tai"]);
 
-            var game = db.game_kho_bau.FirstOrDefault(g => g.id_cap_do == id_cap_do);
+            // ---> SỬA Ở DÒNG NÀY: Ép buộc phải lấy Game có trang_thai == 1 <---
+            var game = db.game_kho_bau.FirstOrDefault(g => g.id_cap_do == id_cap_do && g.trang_thai == 1);
+
+            // Nếu không có game nào được bật, có thể rớt xuống lấy tạm game đầu tiên (Phòng hờ)
+            if (game == null)
+            {
+                game = db.game_kho_bau.FirstOrDefault(g => g.id_cap_do == id_cap_do);
+            }
+
             if (game == null) return HttpNotFound("Chưa có sự kiện kho báu cho cấp độ này.");
 
             var cauHois = db.cau_hoi_kho_bau.Where(c => c.id_game == game.id_game).OrderBy(c => c.thu_tu).ToList();

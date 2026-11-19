@@ -8,10 +8,10 @@
         <EntityTypeShape EntityType="wed_learn_eModel.bai_giang_video" Width="1.5" PointX="7.5" PointY="16.375" IsExpanded="true" />
         <EntityTypeShape EntityType="wed_learn_eModel.bai_kiem_tra_dau_vao" Width="1.5" PointX="5.25" PointY="23.625" IsExpanded="true" />
         <EntityTypeShape EntityType="wed_learn_eModel.bai_tap_thuc_hanh" Width="1.5" PointX="7.5" PointY="12.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="wed_learn_eModel.cap_do" Width="1.5" PointX="0.75" PointY="12.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="wed_learn_eModel.cap_do" Width="1.5" PointX="0.75" PointY="15.375" IsExpanded="true" />
         <EntityTypeShape EntityType="wed_learn_eModel.cau_hoi_kiem_tra" Width="1.5" PointX="7.625" PointY="24.625" IsExpanded="true" />
         <EntityTypeShape EntityType="wed_learn_eModel.ket_qua_kiem_tra" Width="1.5" PointX="7.5" PointY="19.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="wed_learn_eModel.khoa_hoc" Width="1.5" PointX="5.25" PointY="18.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="wed_learn_eModel.khoa_hoc" Width="1.5" PointX="4.25" PointY="17.5" IsExpanded="true" />
         <EntityTypeShape EntityType="wed_learn_eModel.nguoi_dung" Width="1.5" PointX="3" PointY="24.25" IsExpanded="true" />
         <EntityTypeShape EntityType="wed_learn_eModel.nhat_ky_quan_tri" Width="1.5" PointX="5.25" PointY="26.75" IsExpanded="true" />
         <EntityTypeShape EntityType="wed_learn_eModel.sysdiagram" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
