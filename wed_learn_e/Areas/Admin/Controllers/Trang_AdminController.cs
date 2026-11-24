@@ -1820,5 +1820,199 @@ namespace wed_learn_e.Areas.Admin.Controllers
 
             return Redirect(Request.UrlReferrer.ToString());
         }
+        // =========================================================================
+        // 1. QUẢN LÝ DANH SÁCH BÀI KIỂM TRA TRÌNH ĐỘ
+        // =========================================================================
+        [HttpGet]
+        public JsonResult GetBaiKiemTraTienDo(int id_cap_do)
+        {
+            try
+            {
+                var list = db.bai_kiem_tra_tien_do
+                    .Where(x => x.id_cap_do == id_cap_do)
+                    .OrderByDescending(x => x.id_bai_kiem_tra)
+                    .Select(x => new
+                    {
+                        x.id_bai_kiem_tra,
+                        x.id_cap_do,
+                        x.tieu_de,
+                        x.mo_ta,
+                        x.thoi_gian_phut,
+                        so_cau = db.cau_hoi_kiem_tra_tien_do.Count(c => c.id_bai_kiem_tra == x.id_bai_kiem_tra)
+                    }).ToList();
+
+                return Json(new { success = true, data = list }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult LuuBaiKiemTraTienDo(int id_cap_do, int? id_bai_kiem_tra, string tieu_de, string mo_ta, int? thoi_gian_phut)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(tieu_de))
+                    return Json(new { success = false, message = "Vui lòng nhập tiêu đề bài kiểm tra!" });
+
+                bai_kiem_tra_tien_do bai;
+                if (id_bai_kiem_tra.HasValue && id_bai_kiem_tra.Value > 0)
+                {
+                    bai = db.bai_kiem_tra_tien_do.Find(id_bai_kiem_tra.Value);
+                    if (bai == null) return Json(new { success = false, message = "Không tìm thấy bài kiểm tra!" });
+                }
+                else
+                {
+                    bai = new bai_kiem_tra_tien_do { id_cap_do = id_cap_do, ngay_tao = DateTime.Now };
+                    db.bai_kiem_tra_tien_do.Add(bai);
+                }
+
+                bai.tieu_de = tieu_de.Trim();
+                bai.mo_ta = mo_ta?.Trim();
+                bai.thoi_gian_phut = (thoi_gian_phut.HasValue && thoi_gian_phut > 0) ? thoi_gian_phut.Value : 15;
+                db.SaveChanges();
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public JsonResult XoaBaiKiemTraTienDo(int id)
+        {
+            try
+            {
+                var bai = db.bai_kiem_tra_tien_do.Find(id);
+                if (bai == null) return Json(new { success = false, message = "Không tìm thấy bài kiểm tra!" });
+
+                // Xóa toàn bộ câu hỏi thuộc bài này trước khi xóa bài
+                var dsCauHoi = db.cau_hoi_kiem_tra_tien_do.Where(x => x.id_bai_kiem_tra == id).ToList();
+                foreach (var item in dsCauHoi)
+                {
+                    db.cau_hoi_kiem_tra_tien_do.Remove(item);
+                }
+                db.bai_kiem_tra_tien_do.Remove(bai);
+                db.SaveChanges();
+                db.bai_kiem_tra_tien_do.Remove(bai);
+                db.SaveChanges();
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        // =========================================================================
+        // 2. QUẢN LÝ CÂU HỎI BÊN TRONG TỪNG BÀI KIỂM TRA TRÌNH ĐỘ
+        // =========================================================================
+        [HttpGet]
+        public JsonResult GetCauHoiTienDo(int id_bai_kiem_tra)
+        {
+            try
+            {
+                var list = db.cau_hoi_kiem_tra_tien_do
+                    .Where(x => x.id_bai_kiem_tra == id_bai_kiem_tra)
+                    .OrderByDescending(x => x.id_cau_hoi)
+                    .Select(x => new
+                    {
+                        x.id_cau_hoi,
+                        x.id_bai_kiem_tra,
+                        x.loai_cau_hoi,
+                        x.noi_dung,
+                        x.file_am_thanh,
+                        x.ghi_chu,
+                        x.dap_an_a,
+                        x.dap_an_b,
+                        x.dap_an_c,
+                        x.dap_an_d,
+                        x.dap_an_dung
+                    }).ToList();
+
+                return Json(new { success = true, data = list }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult LuuCauHoiTienDo(int id_cap_do, int id_bai_kiem_tra, int? id_cau_hoi, string loai_cau_hoi,
+            string noi_dung, string file_am_thanh, string ghi_chu,
+            string a, string b, string c, string d, string dap_an_dung)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(noi_dung) || string.IsNullOrWhiteSpace(dap_an_dung))
+                    return Json(new { success = false, message = "Vui lòng nhập nội dung câu hỏi và đáp án đúng!" });
+
+                cau_hoi_kiem_tra_tien_do item;
+                if (id_cau_hoi.HasValue && id_cau_hoi.Value > 0)
+                {
+                    item = db.cau_hoi_kiem_tra_tien_do.Find(id_cau_hoi.Value);
+                    if (item == null) return Json(new { success = false, message = "Không tìm thấy câu hỏi!" });
+                }
+                else
+                {
+                    item = new cau_hoi_kiem_tra_tien_do
+                    {
+                        id_cap_do = id_cap_do,
+                        id_bai_kiem_tra = id_bai_kiem_tra
+                    };
+                    db.cau_hoi_kiem_tra_tien_do.Add(item);
+                }
+
+                item.loai_cau_hoi = loai_cau_hoi;
+                item.noi_dung = noi_dung.Trim();
+                item.file_am_thanh = (loai_cau_hoi == "nghe") ? file_am_thanh?.Trim() : null;
+                item.ghi_chu = (loai_cau_hoi == "noi") ? ghi_chu?.Trim() : null;
+
+                if (loai_cau_hoi == "trac_nghiem" || loai_cau_hoi == "nghe")
+                {
+                    item.dap_an_a = a?.Trim();
+                    item.dap_an_b = b?.Trim();
+                    item.dap_an_c = c?.Trim();
+                    item.dap_an_d = d?.Trim();
+                }
+                else
+                {
+                    item.dap_an_a = item.dap_an_b = item.dap_an_c = item.dap_an_d = null;
+                }
+
+                item.dap_an_dung = dap_an_dung.Trim();
+                db.SaveChanges();
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Lỗi lưu: " + ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public JsonResult XoaCauHoiTienDo(int id)
+        {
+            try
+            {
+                var item = db.cau_hoi_kiem_tra_tien_do.Find(id);
+                if (item == null) return Json(new { success = false, message = "Không tìm thấy câu hỏi!" });
+
+                db.cau_hoi_kiem_tra_tien_do.Remove(item);
+                db.SaveChanges();
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
     }
 }

@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="a0447b2e78c846688355d58ded414ff7" Name="Diagram1" ZoomLevel="72">
+      <Diagram DiagramId="a0447b2e78c846688355d58ded414ff7" Name="Diagram1" ZoomLevel="10">
         <EntityTypeShape EntityType="wed_learn_eModel.bai_giang_video" Width="1.5" PointX="7.5" PointY="16.375" IsExpanded="true" />
         <EntityTypeShape EntityType="wed_learn_eModel.bai_kiem_tra_dau_vao" Width="1.5" PointX="5.25" PointY="23.625" IsExpanded="true" />
         <EntityTypeShape EntityType="wed_learn_eModel.bai_tap_thuc_hanh" Width="1.5" PointX="7.5" PointY="12.25" IsExpanded="true" />
@@ -83,6 +83,16 @@
         <AssociationConnector Association="wed_learn_eModel.FK_Idiom_CapDo" />
         <AssociationConnector Association="wed_learn_eModel.FK_NguPhap_CapDo" />
         <AssociationConnector Association="wed_learn_eModel.FK_Vocabulary_CapDo" />
+        <EntityTypeShape EntityType="wed_learn_eModel.chi_tiet_kiem_tra_tien_do" Width="1.5" PointX="14.5" PointY="17.875" />
+        <EntityTypeShape EntityType="wed_learn_eModel.ket_qua_kiem_tra_tien_do" Width="1.5" PointX="12.25" PointY="17.5" />
+        <AssociationConnector Association="wed_learn_eModel.FK_KQTienDo_CapDo" />
+        <AssociationConnector Association="wed_learn_eModel.FK_ChiTietTienDo_KetQua" />
+        <AssociationConnector Association="wed_learn_eModel.FK_KQTienDo_NguoiDung" />
+        <EntityTypeShape EntityType="wed_learn_eModel.cau_hoi_kiem_tra_tien_do" Width="1.5" PointX="3" PointY="13.375" />
+        <AssociationConnector Association="wed_learn_eModel.FK_CauHoiTienDo_CapDo" />
+        <EntityTypeShape EntityType="wed_learn_eModel.bai_kiem_tra_tien_do" Width="1.5" PointX="3" PointY="31.875" />
+        <AssociationConnector Association="wed_learn_eModel.FK_BaiKTTienDo_CapDo" />
+        <AssociationConnector Association="wed_learn_eModel.FK_CauHoiTienDo_BaiKT" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -1,11 +1,13 @@
-﻿using System;
+﻿using Microsoft.Ajax.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Web;
 using System.Web.Mvc;
 using wed_learn_e.Models;
-using System.Net;
-using System.Net.Mail;
+using System.Web.Script.Serialization;
 namespace wed_learn_e.Controllers
 {
     public class UserController : Controller
@@ -212,26 +214,23 @@ namespace wed_learn_e.Controllers
             int userId = Convert.ToInt32(Session["user_id"]);
             var nguoiDung = db.nguoi_dung.FirstOrDefault(u => u.id_nguoi_dung == userId);
 
-            // =========================================================================
-            // YÊU CẦU 1: CHỈ LẤY NHỮNG CẤP ĐỘ MÀ NGƯỜI DÙNG ĐÃ ĐĂNG KÝ (CÓ TRONG TIẾN ĐỘ)
-            // =========================================================================
-            // Lấy ID các khóa học đã đăng ký
+            // 1. Lấy các Cấp độ mà người dùng đã đăng ký (có trong bảng tien_do_hoc_tap)
             var listIdKhoaHocDaDangKy = db.tien_do_hoc_tap
-                                          .Where(t => t.id_nguoi_dung == userId)
-                                          .Select(t => t.id_khoa_hoc)
+                                          .Where(t => t.id_nguoi_dung == userId && t.id_khoa_hoc != null)
+                                          .Select(t => (int)t.id_khoa_hoc)
                                           .ToList();
 
-            // Truy ngược ra ID Cấp độ của các khóa học đó
             var listIdCapDoDaDangKy = db.khoa_hoc
-                                        .Where(k => listIdKhoaHocDaDangKy.Contains(k.id_khoa_hoc))
-                                        .Select(k => k.id_cap_do)
+                                        .Where(k => listIdKhoaHocDaDangKy.Contains(k.id_khoa_hoc) && k.id_cap_do != null)
+                                        .Select(k => (int)k.id_cap_do)
                                         .Distinct()
                                         .ToList();
 
-            // Chỉ lấy danh sách Cấp độ thỏa mãn ID ở trên
-            var danhSachCapDo = db.cap_do.Where(c => listIdCapDoDaDangKy.Contains(c.id_cap_do)).ToList();
+            var danhSachCapDo = db.cap_do
+                                  .Where(c => listIdCapDoDaDangKy.Contains(c.id_cap_do))
+                                  .OrderBy(c => c.id_cap_do)
+                                  .ToList();
 
-            // Các "rổ" chứa dữ liệu của từng Cấp Độ truyền ra View
             Dictionary<int, string> dictTrangThai = new Dictionary<int, string>();
             Dictionary<int, decimal> dictPhanTram = new Dictionary<int, decimal>();
             Dictionary<int, int> dictTongBai = new Dictionary<int, int>();
@@ -243,103 +242,88 @@ namespace wed_learn_e.Controllers
             {
                 int idCap = cap.id_cap_do;
 
-                // Tìm tất cả Khóa học thuộc Cấp độ này (Nhưng chỉ lấy khóa đã đăng ký)
-                var listKhoa = db.khoa_hoc.Where(k => k.id_cap_do == idCap && listIdKhoaHocDaDangKy.Contains(k.id_khoa_hoc)).ToList();
+                // Lấy toàn bộ khóa học thuộc cấp độ này để không bị sót kỹ năng nào
+                var khoaHocIds = db.khoa_hoc
+                                   .Where(k => k.id_cap_do == idCap)
+                                   .Select(k => k.id_khoa_hoc)
+                                   .ToList();
 
-                int tongBaiCapDo = 0;
-                int daLamCapDo = 0;
+                // 1. LUYỆN NGHE
+                var dsNghe = db.bai_luyen_nghe.Where(b => b.id_khoa_hoc != null && khoaHocIds.Contains((int)b.id_khoa_hoc)).Select(b => b.id_bai_nghe).ToList();
+                int ngheDaLam = db.lich_su_luyen_nghe.Where(ls => ls.id_nguoi_dung == userId && ls.id_bai_nghe != null && dsNghe.Contains((int)ls.id_bai_nghe)).Select(ls => ls.id_bai_nghe).Distinct().Count();
 
-                // =========================================================================
-                // YÊU CẦU 2: TẠO CÁC BIẾN ĐẾM (GOM NHÓM KỸ NĂNG THAY VÌ LIỆT KÊ TÊN BÀI)
-                // =========================================================================
-                int vietDaLam = 0, vietChuaLam = 0;
-                int sapXepDaLam = 0, sapXepChuaLam = 0;
-                int ngheDaLam = 0, ngheChuaLam = 0;
-                int videoDaLam = 0, videoChuaLam = 0;
-                int noiDaLam = 0, noiChuaLam = 0;
+                // 2. LUYỆN NÓI
+                var dsNoi = db.bai_luyen_noi.Where(b => b.id_khoa_hoc != null && khoaHocIds.Contains((int)b.id_khoa_hoc)).Select(b => b.id_bai_noi).ToList();
+                int noiDaLam = db.lich_su_luyen_noi.Where(ls => ls.id_nguoi_dung == userId && ls.id_bai_noi != null && dsNoi.Contains((int)ls.id_bai_noi)).Select(ls => ls.id_bai_noi).Distinct().Count();
 
-                foreach (var khoa in listKhoa)
-                {
-                    int idKhoaHienTai = khoa.id_khoa_hoc;
+                // 3. LUYỆN VIẾT
+                var dsViet = db.bai_luyen_viet.Where(b => b.id_khoa_hoc != null && khoaHocIds.Contains((int)b.id_khoa_hoc)).Select(b => b.id_bai_viet).ToList();
+                int vietDaLam = db.lich_su_luyen_viet.Where(ls => ls.id_nguoi_dung == userId && ls.id_bai_viet != null && dsViet.Contains((int)ls.id_bai_viet)).Select(ls => ls.id_bai_viet).Distinct().Count();
 
-                    // 1. ĐẾM BÀI LUYỆN VIẾT
-                    var listViet = db.bai_luyen_viet.Where(b => b.id_khoa_hoc == idKhoaHienTai).ToList();
-                    foreach (var bai in listViet)
-                    {
-                        tongBaiCapDo++;
-                        if (db.lich_su_luyen_viet.Any(ls => ls.id_nguoi_dung == userId && ls.id_bai_viet == bai.id_bai_viet))
-                        { daLamCapDo++; vietDaLam++; }
-                        else { vietChuaLam++; }
-                    }
+                // 4. HỌC QUA VIDEO
+                var dsVideo = db.bai_giang_video.Where(b => b.id_khoa_hoc != null && khoaHocIds.Contains((int)b.id_khoa_hoc)).Select(b => b.id_video).ToList();
+                int videoDaLam = db.lich_su_video.Where(ls => ls.id_nguoi_dung == userId && ls.id_video != null && dsVideo.Contains((int)ls.id_video)).Select(ls => ls.id_video).Distinct().Count();
 
-                    // 2. ĐẾM BÀI SẮP XẾP
-                    var listSapXep = db.bai_sap_xep.Where(b => b.id_khoa_hoc == idKhoaHienTai).ToList();
-                    foreach (var bai in listSapXep)
-                    {
-                        tongBaiCapDo++;
-                        if (db.lich_su_sap_xep.Any(ls => ls.id_nguoi_dung == userId && ls.id_bai_sap_xep == bai.id_bai_sap_xep))
-                        { daLamCapDo++; sapXepDaLam++; }
-                        else { sapXepChuaLam++; }
-                    }
+                // 5. BÀI KIỂM TRA TIẾN ĐỘ (Cần đạt >= 70%)
+                var ketQuaThi = db.ket_qua_kiem_tra_tien_do
+                                  .Where(k => k.id_nguoi_dung == userId && k.id_cap_do == idCap)
+                                  .ToList();
+                bool daDatThi = ketQuaThi.Any(k => k.dat_yeu_cau);
+                decimal diemCaoNhat = ketQuaThi.Any() ? ketQuaThi.Max(k => k.phan_tram) : 0;
 
-                    // 3. ĐẾM BÀI LUYỆN NGHE
-                    var listNghe = db.bai_luyen_nghe.Where(b => b.id_khoa_hoc == idKhoaHienTai).ToList();
-                    foreach (var bai in listNghe)
-                    {
-                        tongBaiCapDo++;
-                        if (db.lich_su_luyen_nghe.Any(ls => ls.id_nguoi_dung == userId && ls.id_bai_nghe == bai.id_bai_nghe))
-                        { daLamCapDo++; ngheDaLam++; }
-                        else { ngheChuaLam++; }
-                    }
-
-                    // 4. ĐẾM BÀI GIẢNG VIDEO
-                    var listVideo = db.bai_giang_video.Where(b => b.id_khoa_hoc == idKhoaHienTai).ToList();
-                    foreach (var bai in listVideo)
-                    {
-                        tongBaiCapDo++;
-                        if (db.lich_su_video.Any(ls => ls.id_nguoi_dung == userId && ls.id_video == bai.id_video))
-                        { daLamCapDo++; videoDaLam++; }
-                        else { videoChuaLam++; }
-                    }
-
-                    // 5. ĐẾM BÀI LUYỆN NÓI
-                    var listNoi = db.bai_luyen_noi.Where(b => b.id_khoa_hoc == idKhoaHienTai).ToList();
-                    foreach (var bai in listNoi)
-                    {
-                        tongBaiCapDo++;
-                        if (db.lich_su_luyen_noi.Any(ls => ls.id_nguoi_dung == userId && ls.id_bai_noi == bai.id_bai_noi))
-                        { daLamCapDo++; noiDaLam++; }
-                        else { noiChuaLam++; }
-                    }
-                }
-
-                // =========================================================================
-                // SAU KHI ĐẾM XONG -> XUẤT RA CHUỖI HIỂN THỊ NGẮN GỌN
-                // =========================================================================
+                // Tổng hợp chi tiết hiển thị cho từng kỹ năng
                 List<string> chiTietDaLam = new List<string>();
                 List<string> chiTietChuaLam = new List<string>();
 
-                // Xuất danh sách Đã làm
-                if (vietDaLam > 0) chiTietDaLam.Add($"📝 Hoàn thành {vietDaLam} bài Luyện Viết");
-                if (sapXepDaLam > 0) chiTietDaLam.Add($"🧩 Hoàn thành {sapXepDaLam} bài Sắp Xếp");
-                if (ngheDaLam > 0) chiTietDaLam.Add($"🎧 Hoàn thành {ngheDaLam} bài Luyện Nghe");
-                if (videoDaLam > 0) chiTietDaLam.Add($"🎬 Hoàn thành {videoDaLam} Video");
-                if (noiDaLam > 0) chiTietDaLam.Add($"🗣️ Hoàn thành {noiDaLam} bài Luyện Nói");
+                // Luyện Nghe
+                if (dsNghe.Count > 0)
+                {
+                    if (ngheDaLam >= dsNghe.Count) chiTietDaLam.Add($"🎧 Luyện Nghe: {ngheDaLam}/{dsNghe.Count} bài");
+                    else chiTietChuaLam.Add($"🎧 Luyện Nghe: {ngheDaLam}/{dsNghe.Count} bài");
+                }
 
-                // Xuất danh sách Chưa làm
-                if (vietChuaLam > 0) chiTietChuaLam.Add($"📝 Còn {vietChuaLam} bài Luyện Viết");
-                if (sapXepChuaLam > 0) chiTietChuaLam.Add($"🧩 Còn {sapXepChuaLam} bài Sắp Xếp");
-                if (ngheChuaLam > 0) chiTietChuaLam.Add($"🎧 Còn {ngheChuaLam} bài Luyện Nghe");
-                if (videoChuaLam > 0) chiTietChuaLam.Add($"🎬 Còn {videoChuaLam} Video");
-                if (noiChuaLam > 0) chiTietChuaLam.Add($"🗣️ Còn {noiChuaLam} bài Luyện Nói");
+                // Luyện Nói
+                if (dsNoi.Count > 0)
+                {
+                    if (noiDaLam >= dsNoi.Count) chiTietDaLam.Add($"🗣️ Luyện Nói: {noiDaLam}/{dsNoi.Count} bài");
+                    else chiTietChuaLam.Add($"🗣️ Luyện Nói: {noiDaLam}/{dsNoi.Count} bài");
+                }
 
-                // Tính toán trạng thái cho thẻ Cấp Độ này
+                // Luyện Viết
+                if (dsViet.Count > 0)
+                {
+                    if (vietDaLam >= dsViet.Count) chiTietDaLam.Add($"📝 Luyện Viết: {vietDaLam}/{dsViet.Count} bài");
+                    else chiTietChuaLam.Add($"📝 Luyện Viết: {vietDaLam}/{dsViet.Count} bài");
+                }
+
+                // Video
+                if (dsVideo.Count > 0)
+                {
+                    if (videoDaLam >= dsVideo.Count) chiTietDaLam.Add($"🎬 Học Qua Video: {videoDaLam}/{dsVideo.Count} bài");
+                    else chiTietChuaLam.Add($"🎬 Học Qua Video: {videoDaLam}/{dsVideo.Count} bài");
+                }
+
+                // Bài Kiểm Tra Tiến Độ
+                if (daDatThi)
+                {
+                    chiTietDaLam.Add($"🎓 Kiểm Tra Tiến Độ: Đã đạt ({diemCaoNhat}%)");
+                }
+                else
+                {
+                    string ghiChuDiem = ketQuaThi.Any() ? $"Cao nhất: {diemCaoNhat}% - Cần ≥ 70%" : "Chưa làm - Cần ≥ 70%";
+                    chiTietChuaLam.Add($"🎓 Kiểm Tra Tiến Độ ({ghiChuDiem})");
+                }
+
+                // Tính tổng số bài (4 kỹ năng chính + 1 bài kiểm tra tiến độ)
+                int tongBaiCapDo = dsNghe.Count + dsNoi.Count + dsViet.Count + dsVideo.Count + 1;
+                int daLamCapDo = ngheDaLam + noiDaLam + vietDaLam + videoDaLam + (daDatThi ? 1 : 0);
+
                 dictTongBai[idCap] = tongBaiCapDo;
                 dictDaLam[idCap] = daLamCapDo;
                 dictChiTietDaLam[idCap] = chiTietDaLam;
                 dictChiTietChuaLam[idCap] = chiTietChuaLam;
 
-                if (tongBaiCapDo == 0 || daLamCapDo == 0)
+                if (daLamCapDo == 0)
                 {
                     dictTrangThai[idCap] = "chua_bat_dau";
                     dictPhanTram[idCap] = 0;
@@ -347,7 +331,7 @@ namespace wed_learn_e.Controllers
                 else if (daLamCapDo < tongBaiCapDo)
                 {
                     dictTrangThai[idCap] = "dang_hoc";
-                    dictPhanTram[idCap] = Math.Round((decimal)daLamCapDo / tongBaiCapDo * 100, 2);
+                    dictPhanTram[idCap] = Math.Round((decimal)daLamCapDo / tongBaiCapDo * 100, 1);
                 }
                 else
                 {
@@ -356,7 +340,6 @@ namespace wed_learn_e.Controllers
                 }
             }
 
-            // Đẩy hết ra View
             ViewBag.DanhSachCapDo = danhSachCapDo;
             ViewBag.DictTrangThai = dictTrangThai;
             ViewBag.DictPhanTram = dictPhanTram;
@@ -533,5 +516,79 @@ namespace wed_learn_e.Controllers
                 return Json(new { success = false, message = "❌ Hệ thống gửi mail đang gặp sự cố: " + ex.Message });
             }
         }
+        [HttpPost]
+        public JsonResult DangNhapGoogle(string credential)
+        {
+            if (string.IsNullOrEmpty(credential))
+                return Json(new { success = false, message = "❌ Không nhận được token từ Google!" });
+
+            try
+            {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                using (var client = new WebClient())
+                {
+                    client.Encoding = System.Text.Encoding.UTF8;
+                    string json = client.DownloadString("https://oauth2.googleapis.com/tokeninfo?id_token=" + credential);
+
+                    var serializer = new JavaScriptSerializer();
+                    var payload = serializer.Deserialize<Dictionary<string, object>>(json);
+
+                    string email = payload.ContainsKey("email") ? payload["email"].ToString() : null;
+                    string hoTen = payload.ContainsKey("name") ? payload["name"].ToString() : "Học viên Google";
+
+                    if (string.IsNullOrEmpty(email))
+                        return Json(new { success = false, message = "❌ Không lấy được email từ tài khoản Google!" });
+
+                    var user = db.nguoi_dung.FirstOrDefault(u => u.email == email);
+                    if (user == null)
+                    {
+                        string baseUsername = email.Split('@')[0];
+                        string username = baseUsername;
+                        int count = 1;
+                        while (db.nguoi_dung.Any(u => u.ten_dang_nhap == username))
+                        {
+                            username = baseUsername + count;
+                            count++;
+                        }
+
+                        user = new nguoi_dung
+                        {
+                            ten_dang_nhap = username,
+                            mat_khau = Guid.NewGuid().ToString("N").Substring(0, 10),
+                            ho_va_ten = hoTen,
+                            email = email,
+                            vai_tro = "nguoi_dung",
+                            ngay_tao = DateTime.Now,
+                            so_luong_khoa_hoc = 0,
+                            loai_tai_khoan = 1
+                        };
+
+                        db.nguoi_dung.Add(user);
+                        db.SaveChanges();
+                    }
+
+                    KiemTraVaThuHoiVIP(user);
+                    Session["user_id"] = user.id_nguoi_dung;
+                    Session["TenDN"] = user.ten_dang_nhap;
+                    Session["HoTen"] = user.ho_va_ten;
+                    Session["VaiTro"] = user.vai_tro;
+                    Session["Email"] = user.email;
+                    Session["Avatar"] = user.anh_dai_dien;
+
+                    string[] bangMau = { "1a73e8", "f39c12", "28a745", "dc3545", "6f42c1", "e83e8c" };
+                    Session["AvatarColor"] = bangMau[user.id_nguoi_dung % bangMau.Length];
+
+                    if (user.id_cap_do_hien_tai != null)
+                        Session["id_cap_do_hien_tai"] = user.id_cap_do_hien_tai;
+
+                    return Json(new { success = true, redirectUrl = Url.Action("Index", "Trang_chu") });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "❌ Lỗi xác thực Google: " + ex.Message });
+            }
+        }
+
     }
 }

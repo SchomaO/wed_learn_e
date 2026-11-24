@@ -28,15 +28,38 @@
 
         <p id="thongBaoLoi" style="color:red; display:none; font-weight: bold;"></p>
 
-        <div style="height: 30px; text-align: justify; margin-left: 21px; ">
+        <div style="height: 30px; text-align: justify; margin-left: 21px;">
             <input type="checkbox" name="RememberMe" id="RememberMe" style="padding: 0px 0px 5px 5px; width: 40px; margin-top: 10px;">
-            <span>Lưu đăng nhập </span>
+            <span>Lưu đăng nhập</span>
         </div>
 
         <button type="submit">Đăng nhập</button>
     </form>
 
-    
+    <!-- ĐĂNG NHẬP BẰNG GOOGLE -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <div style="margin: 20px 0; text-align: center; color: #888; font-size: 14px;">
+        — Hoặc đăng nhập bằng —
+    </div>
+
+    <!-- THAY CHUỖI BÊN DƯỚI BẰNG CLIENT ID THẬT (CÓ ĐUÔI .apps.googleusercontent.com) -->
+    <div id="g_id_onload"
+         data-client_id="100462728608-aah17c5bq8cvqbse3ltrecdbk989iv02.apps.googleusercontent.com"
+         data-callback="handleGoogleLogin"
+         data-auto_prompt="false">
+    </div>
+    <div style="display: flex; justify-content: center; margin-bottom: 15px;">
+        <div class="g_id_signin"
+             data-type="standard"
+             data-size="large"
+             data-theme="outline"
+             data-text="sign_in_with"
+             data-shape="rectangular"
+             data-logo_alignment="left">
+        </div>
+    </div>
+
     <p>
         Bạn chưa có tài khoản?
         @if (HttpContext.Current.Application["ChoPhepDangKy"] != null && (bool)HttpContext.Current.Application["ChoPhepDangKy"] == false)
@@ -48,7 +71,7 @@
             <a href="@Url.Action("dangky","User")">Đăng ký ngay</a>
         }
     </p>
-   
+
     <div style="text-align: center; margin-top: 15px;">
         <a href="@Url.Action("QuenMatKhau", "User")" style="color: #e74c3c; font-weight: bold; text-decoration: underline;">Quên mật khẩu?</a>
     </div>
@@ -59,48 +82,63 @@
         <button type="button" id="btnGuiMatKhau" style="width:100%; padding: 10px; background:#f39c12; color:white; border:none; border-radius:4px; font-weight:bold; cursor:pointer;">Gửi mật khẩu mới</button>
         <p id="thongBaoForgot" style="margin-top:10px; font-size: 13px; font-weight:bold; display:none;"></p>
     </div>
-
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    // PHẢI NẰM NGOÀI $(document).ready ĐỂ GOOGLE GỌI ĐƯỢC
+    function handleGoogleLogin(response) {
+        fetch('@Url.Action("DangNhapGoogle", "User")', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ credential: response.credential })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = data.redirectUrl;
+            } else {
+                $("#thongBaoLoi").text(data.message).show();
+            }
+        })
+        .catch(() => {
+            $("#thongBaoLoi").text("❌ Lỗi kết nối máy chủ khi đăng nhập Google!").show();
+        });
+    }
+
     $(document).ready(function () {
         $("#loginForm").submit(function (e) {
-            e.preventDefault(); // Ngăn chặn hành vi tải lại trang mặc định của form
+            e.preventDefault();
 
-            // Lấy dữ liệu từ form
             var formData = {
                 ten_dang_nhap: $("#ten_dang_nhap").val(),
                 mat_khau: $("#mat_khau").val(),
                 RememberMe: $("#RememberMe").is(":checked")
             };
 
-            // Gửi AJAX
             $.ajax({
                 type: "POST",
-                url: '@Url.Action("dangnhap", "User")', // Trỏ tới hàm dangnhap trong UserController
+                url: '@Url.Action("dangnhap", "User")',
                 data: formData,
-                dataType: "json", // Dữ liệu mong đợi trả về từ Server là JSON
+                dataType: "json",
                 success: function (response) {
                     if (response.success) {
-                        // Đăng nhập thành công -> Chuyển hướng trang
                         window.location.href = response.redirectUrl;
                     } else {
-                        // Đăng nhập thất bại -> Hiện câu thông báo lỗi
                         $("#thongBaoLoi").text(response.message).show();
                     }
                 },
                 error: function () {
-                    // Lỗi kết nối mạng hoặc lỗi server
                     $("#thongBaoLoi").text("Có lỗi xảy ra, vui lòng thử lại sau!").show();
                 }
             });
-    $("#btnShowForgot").click(function (e) {
+        });
+
+        $("#btnShowForgot").click(function (e) {
             e.preventDefault();
             $("#forgotPasswordZone").slideToggle();
         });
 
-        // 2. Xử lý nút Gửi mật khẩu mới
         $("#btnGuiMatKhau").click(function () {
             var email = $("#emailNhanMK").val();
             var btn = $(this);
@@ -111,11 +149,9 @@
                 return;
             }
 
-            // Hiển thị trạng thái đang gửi
             btn.prop("disabled", true).css("background", "#95a5a6").text("Đang xử lý & gửi mail...");
             thongBao.hide();
 
-            // Gửi AJAX xuống Controller
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("QuenMatKhau", "User")',
@@ -124,11 +160,10 @@
                 success: function (res) {
                     if (res.success) {
                         thongBao.css("color", "green").text(res.message).fadeIn();
-                        $("#emailNhanMK").val(''); // Xóa trắng ô nhập
+                        $("#emailNhanMK").val('');
                     } else {
                         thongBao.css("color", "red").text(res.message).fadeIn();
                     }
-                    // Nhả nút ra
                     btn.prop("disabled", false).css("background", "#f39c12").text("Gửi mật khẩu mới");
                 },
                 error: function () {
@@ -136,7 +171,6 @@
                     btn.prop("disabled", false).css("background", "#f39c12").text("Gửi mật khẩu mới");
                 }
             });
-        });
         });
     });
 </script>

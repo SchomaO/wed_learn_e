@@ -23,6 +23,9 @@ namespace wed_learn_e.Models
             this.Idioms = new HashSet<Idiom>();
             this.ngu_phap = new HashSet<ngu_phap>();
             this.Vocabularies = new HashSet<Vocabulary>();
+            this.ket_qua_kiem_tra_tien_do = new HashSet<ket_qua_kiem_tra_tien_do>();
+            this.cau_hoi_kiem_tra_tien_do = new HashSet<cau_hoi_kiem_tra_tien_do>();
+            this.bai_kiem_tra_tien_do = new HashSet<bai_kiem_tra_tien_do>();
         }
     
         public int id_cap_do { get; set; }
@@ -36,5 +39,8 @@ namespace wed_learn_e.Models
         public virtual ICollection<Idiom> Idioms { get; set; }
         public virtual ICollection<ngu_phap> ngu_phap { get; set; }
         public virtual ICollection<Vocabulary> Vocabularies { get; set; }
+        public virtual ICollection<ket_qua_kiem_tra_tien_do> ket_qua_kiem_tra_tien_do { get; set; }
+        public virtual ICollection<cau_hoi_kiem_tra_tien_do> cau_hoi_kiem_tra_tien_do { get; set; }
+        public virtual ICollection<bai_kiem_tra_tien_do> bai_kiem_tra_tien_do { get; set; }
     }
 }

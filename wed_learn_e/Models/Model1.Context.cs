@@ -60,5 +60,9 @@ namespace wed_learn_e.Models
         public DbSet<feature_trang_chu> feature_trang_chu { get; set; }
         public DbSet<footer_cot> footer_cot { get; set; }
         public DbSet<thong_tin_khoa_hoc> thong_tin_khoa_hoc { get; set; }
+        public DbSet<chi_tiet_kiem_tra_tien_do> chi_tiet_kiem_tra_tien_do { get; set; }
+        public DbSet<ket_qua_kiem_tra_tien_do> ket_qua_kiem_tra_tien_do { get; set; }
+        public DbSet<cau_hoi_kiem_tra_tien_do> cau_hoi_kiem_tra_tien_do { get; set; }
+        public DbSet<bai_kiem_tra_tien_do> bai_kiem_tra_tien_do { get; set; }
     }
 }

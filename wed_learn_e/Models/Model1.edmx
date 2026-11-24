@@ -26,6 +26,17 @@
           <Property Name="thoi_gian_phut" Type="int" />
           <Property Name="trang_thai" Type="int" />
         </EntityType>
+        <EntityType Name="bai_kiem_tra_tien_do">
+          <Key>
+            <PropertyRef Name="id_bai_kiem_tra" />
+          </Key>
+          <Property Name="id_bai_kiem_tra" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_cap_do" Type="int" Nullable="false" />
+          <Property Name="tieu_de" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="mo_ta" Type="nvarchar(max)" />
+          <Property Name="thoi_gian_phut" Type="int" />
+          <Property Name="ngay_tao" Type="datetime" />
+        </EntityType>
         <EntityType Name="bai_luyen_nghe">
           <Key>
             <PropertyRef Name="id_bai_nghe" />
@@ -133,6 +144,23 @@
           <Property Name="nguoi_cap_nhat" Type="int" />
           <Property Name="ngay_cap_nhat" Type="datetime" />
         </EntityType>
+        <EntityType Name="cau_hoi_kiem_tra_tien_do">
+          <Key>
+            <PropertyRef Name="id_cau_hoi" />
+          </Key>
+          <Property Name="id_cau_hoi" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_cap_do" Type="int" Nullable="false" />
+          <Property Name="loai_cau_hoi" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="noi_dung" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="file_am_thanh" Type="varchar(max)" />
+          <Property Name="ghi_chu" Type="nvarchar(max)" />
+          <Property Name="dap_an_a" Type="nvarchar" MaxLength="255" />
+          <Property Name="dap_an_b" Type="nvarchar" MaxLength="255" />
+          <Property Name="dap_an_c" Type="nvarchar" MaxLength="255" />
+          <Property Name="dap_an_d" Type="nvarchar" MaxLength="255" />
+          <Property Name="dap_an_dung" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="id_bai_kiem_tra" Type="int" />
+        </EntityType>
         <EntityType Name="cau_hoi_luyen_nghe">
           <Key>
             <PropertyRef Name="id_cau_hoi" />
@@ -176,6 +204,18 @@
           <Property Name="dap_an_c" Type="nvarchar" MaxLength="200" Nullable="false" />
           <Property Name="dap_an_d" Type="nvarchar" MaxLength="200" Nullable="false" />
           <Property Name="dap_an_dung" Type="nvarchar" MaxLength="5" Nullable="false" />
+        </EntityType>
+        <EntityType Name="chi_tiet_kiem_tra_tien_do">
+          <Key>
+            <PropertyRef Name="id_chi_tiet" />
+          </Key>
+          <Property Name="id_chi_tiet" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_ket_qua" Type="int" Nullable="false" />
+          <Property Name="nguon_ky_nang" Type="nvarchar" MaxLength="100" />
+          <Property Name="noi_dung_cau_hoi" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="dap_an_chon" Type="nvarchar(max)" />
+          <Property Name="dap_an_dung" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="is_dung" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="feature_trang_chu">
           <Key>
@@ -227,6 +267,19 @@
           <Property Name="id_bai_kiem_tra" Type="int" />
           <Property Name="diem_so" Type="int" Nullable="false" />
           <Property Name="id_cap_do_dat_duoc" Type="int" />
+          <Property Name="ngay_lam_bai" Type="datetime" />
+        </EntityType>
+        <EntityType Name="ket_qua_kiem_tra_tien_do">
+          <Key>
+            <PropertyRef Name="id_ket_qua" />
+          </Key>
+          <Property Name="id_ket_qua" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_nguoi_dung" Type="int" Nullable="false" />
+          <Property Name="id_cap_do" Type="int" Nullable="false" />
+          <Property Name="so_cau_dung" Type="int" Nullable="false" />
+          <Property Name="tong_so_cau" Type="int" Nullable="false" />
+          <Property Name="phan_tram" Type="decimal" Precision="5" Scale="2" Nullable="false" />
+          <Property Name="dat_yeu_cau" Type="bit" Nullable="false" />
           <Property Name="ngay_lam_bai" Type="datetime" />
         </EntityType>
         <EntityType Name="khoa_hoc">
@@ -827,6 +880,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_BaiKTTienDo_CapDo">
+          <End Role="cap_do" Type="Self.cap_do" Multiplicity="1" />
+          <End Role="bai_kiem_tra_tien_do" Type="Self.bai_kiem_tra_tien_do" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="cap_do">
+              <PropertyRef Name="id_cap_do" />
+            </Principal>
+            <Dependent Role="bai_kiem_tra_tien_do">
+              <PropertyRef Name="id_cap_do" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_BinhLuan_CapDo">
           <End Role="cap_do" Type="Self.cap_do" Multiplicity="1" />
           <End Role="binh_luan" Type="Self.binh_luan" Multiplicity="*" />
@@ -851,6 +916,32 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_CauHoiTienDo_BaiKT">
+          <End Role="bai_kiem_tra_tien_do" Type="Self.bai_kiem_tra_tien_do" Multiplicity="0..1" />
+          <End Role="cau_hoi_kiem_tra_tien_do" Type="Self.cau_hoi_kiem_tra_tien_do" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bai_kiem_tra_tien_do">
+              <PropertyRef Name="id_bai_kiem_tra" />
+            </Principal>
+            <Dependent Role="cau_hoi_kiem_tra_tien_do">
+              <PropertyRef Name="id_bai_kiem_tra" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CauHoiTienDo_CapDo">
+          <End Role="cap_do" Type="Self.cap_do" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="cau_hoi_kiem_tra_tien_do" Type="Self.cau_hoi_kiem_tra_tien_do" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="cap_do">
+              <PropertyRef Name="id_cap_do" />
+            </Principal>
+            <Dependent Role="cau_hoi_kiem_tra_tien_do">
+              <PropertyRef Name="id_cap_do" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_CauHoiVideo_BaiGiangVideo">
           <End Role="bai_giang_video" Type="Self.bai_giang_video" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
@@ -865,6 +956,20 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ChiTietTienDo_KetQua">
+          <End Role="ket_qua_kiem_tra_tien_do" Type="Self.ket_qua_kiem_tra_tien_do" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="chi_tiet_kiem_tra_tien_do" Type="Self.chi_tiet_kiem_tra_tien_do" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ket_qua_kiem_tra_tien_do">
+              <PropertyRef Name="id_ket_qua" />
+            </Principal>
+            <Dependent Role="chi_tiet_kiem_tra_tien_do">
+              <PropertyRef Name="id_ket_qua" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Idiom_CapDo">
           <End Role="cap_do" Type="Self.cap_do" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
@@ -876,6 +981,30 @@
             </Principal>
             <Dependent Role="Idiom">
               <PropertyRef Name="id_cap_do" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_KQTienDo_CapDo">
+          <End Role="cap_do" Type="Self.cap_do" Multiplicity="1" />
+          <End Role="ket_qua_kiem_tra_tien_do" Type="Self.ket_qua_kiem_tra_tien_do" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="cap_do">
+              <PropertyRef Name="id_cap_do" />
+            </Principal>
+            <Dependent Role="ket_qua_kiem_tra_tien_do">
+              <PropertyRef Name="id_cap_do" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_KQTienDo_NguoiDung">
+          <End Role="nguoi_dung" Type="Self.nguoi_dung" Multiplicity="1" />
+          <End Role="ket_qua_kiem_tra_tien_do" Type="Self.ket_qua_kiem_tra_tien_do" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="nguoi_dung">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Principal>
+            <Dependent Role="ket_qua_kiem_tra_tien_do">
+              <PropertyRef Name="id_nguoi_dung" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -924,6 +1053,7 @@
         <EntityContainer Name="wed_learn_eModelStoreContainer">
           <EntitySet Name="bai_giang_video" EntityType="Self.bai_giang_video" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="bai_kiem_tra_dau_vao" EntityType="Self.bai_kiem_tra_dau_vao" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="bai_kiem_tra_tien_do" EntityType="Self.bai_kiem_tra_tien_do" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="bai_luyen_nghe" EntityType="Self.bai_luyen_nghe" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="bai_luyen_noi" EntityType="Self.bai_luyen_noi" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="bai_luyen_viet" EntityType="Self.bai_luyen_viet" Schema="dbo" store:Type="Tables" />
@@ -933,15 +1063,18 @@
           <EntitySet Name="cap_do" EntityType="Self.cap_do" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="cau_hoi_kho_bau" EntityType="Self.cau_hoi_kho_bau" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="cau_hoi_kiem_tra" EntityType="Self.cau_hoi_kiem_tra" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="cau_hoi_kiem_tra_tien_do" EntityType="Self.cau_hoi_kiem_tra_tien_do" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="cau_hoi_luyen_nghe" EntityType="Self.cau_hoi_luyen_nghe" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="cau_hoi_luyen_viet" EntityType="Self.cau_hoi_luyen_viet" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="cau_hoi_sap_xep" EntityType="Self.cau_hoi_sap_xep" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="cau_hoi_video" EntityType="Self.cau_hoi_video" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="chi_tiet_kiem_tra_tien_do" EntityType="Self.chi_tiet_kiem_tra_tien_do" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="feature_trang_chu" EntityType="Self.feature_trang_chu" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="footer_cot" EntityType="Self.footer_cot" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="game_kho_bau" EntityType="Self.game_kho_bau" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Idiom" EntityType="Self.Idiom" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ket_qua_kiem_tra" EntityType="Self.ket_qua_kiem_tra" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ket_qua_kiem_tra_tien_do" EntityType="Self.ket_qua_kiem_tra_tien_do" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="khoa_hoc" EntityType="Self.khoa_hoc" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="lich_su_kho_bau" EntityType="Self.lich_su_kho_bau" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="lich_su_luyen_nghe" EntityType="Self.lich_su_luyen_nghe" Schema="dbo" store:Type="Tables" />
@@ -1101,6 +1234,10 @@
             <End Role="khoa_hoc" EntitySet="khoa_hoc" />
             <End Role="tu_vung" EntitySet="tu_vung" />
           </AssociationSet>
+          <AssociationSet Name="FK_BaiKTTienDo_CapDo" Association="Self.FK_BaiKTTienDo_CapDo">
+            <End Role="cap_do" EntitySet="cap_do" />
+            <End Role="bai_kiem_tra_tien_do" EntitySet="bai_kiem_tra_tien_do" />
+          </AssociationSet>
           <AssociationSet Name="FK_BinhLuan_CapDo" Association="Self.FK_BinhLuan_CapDo">
             <End Role="cap_do" EntitySet="cap_do" />
             <End Role="binh_luan" EntitySet="binh_luan" />
@@ -1109,13 +1246,33 @@
             <End Role="nguoi_dung" EntitySet="nguoi_dung" />
             <End Role="binh_luan" EntitySet="binh_luan" />
           </AssociationSet>
+          <AssociationSet Name="FK_CauHoiTienDo_BaiKT" Association="Self.FK_CauHoiTienDo_BaiKT">
+            <End Role="bai_kiem_tra_tien_do" EntitySet="bai_kiem_tra_tien_do" />
+            <End Role="cau_hoi_kiem_tra_tien_do" EntitySet="cau_hoi_kiem_tra_tien_do" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CauHoiTienDo_CapDo" Association="Self.FK_CauHoiTienDo_CapDo">
+            <End Role="cap_do" EntitySet="cap_do" />
+            <End Role="cau_hoi_kiem_tra_tien_do" EntitySet="cau_hoi_kiem_tra_tien_do" />
+          </AssociationSet>
           <AssociationSet Name="FK_CauHoiVideo_BaiGiangVideo" Association="Self.FK_CauHoiVideo_BaiGiangVideo">
             <End Role="bai_giang_video" EntitySet="bai_giang_video" />
             <End Role="cau_hoi_video" EntitySet="cau_hoi_video" />
           </AssociationSet>
+          <AssociationSet Name="FK_ChiTietTienDo_KetQua" Association="Self.FK_ChiTietTienDo_KetQua">
+            <End Role="ket_qua_kiem_tra_tien_do" EntitySet="ket_qua_kiem_tra_tien_do" />
+            <End Role="chi_tiet_kiem_tra_tien_do" EntitySet="chi_tiet_kiem_tra_tien_do" />
+          </AssociationSet>
           <AssociationSet Name="FK_Idiom_CapDo" Association="Self.FK_Idiom_CapDo">
             <End Role="cap_do" EntitySet="cap_do" />
             <End Role="Idiom" EntitySet="Idiom" />
+          </AssociationSet>
+          <AssociationSet Name="FK_KQTienDo_CapDo" Association="Self.FK_KQTienDo_CapDo">
+            <End Role="cap_do" EntitySet="cap_do" />
+            <End Role="ket_qua_kiem_tra_tien_do" EntitySet="ket_qua_kiem_tra_tien_do" />
+          </AssociationSet>
+          <AssociationSet Name="FK_KQTienDo_NguoiDung" Association="Self.FK_KQTienDo_NguoiDung">
+            <End Role="nguoi_dung" EntitySet="nguoi_dung" />
+            <End Role="ket_qua_kiem_tra_tien_do" EntitySet="ket_qua_kiem_tra_tien_do" />
           </AssociationSet>
           <AssociationSet Name="FK_NguPhap_CapDo" Association="Self.FK_NguPhap_CapDo">
             <End Role="cap_do" EntitySet="cap_do" />
@@ -1187,6 +1344,9 @@
           <NavigationProperty Name="Idioms" Relationship="wed_learn_eModel.FK_Idiom_CapDo" FromRole="cap_do" ToRole="Idiom" />
           <NavigationProperty Name="ngu_phap" Relationship="wed_learn_eModel.FK_NguPhap_CapDo" FromRole="cap_do" ToRole="ngu_phap" />
           <NavigationProperty Name="Vocabularies" Relationship="wed_learn_eModel.FK_Vocabulary_CapDo" FromRole="cap_do" ToRole="Vocabulary" />
+          <NavigationProperty Name="ket_qua_kiem_tra_tien_do" Relationship="wed_learn_eModel.FK_KQTienDo_CapDo" FromRole="cap_do" ToRole="ket_qua_kiem_tra_tien_do" />
+          <NavigationProperty Name="cau_hoi_kiem_tra_tien_do" Relationship="wed_learn_eModel.FK_CauHoiTienDo_CapDo" FromRole="cap_do" ToRole="cau_hoi_kiem_tra_tien_do" />
+          <NavigationProperty Name="bai_kiem_tra_tien_do" Relationship="wed_learn_eModel.FK_BaiKTTienDo_CapDo" FromRole="cap_do" ToRole="bai_kiem_tra_tien_do" />
         </EntityType>
         <EntityType Name="cau_hoi_kiem_tra">
           <Key>
@@ -1279,6 +1439,7 @@
           <NavigationProperty Name="binh_luan" Relationship="wed_learn_eModel.FK_BinhLuan_NguoiDung" FromRole="nguoi_dung" ToRole="binh_luan" />
           <Property Name="anh_dai_dien" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="ngay_het_han_vip" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="ket_qua_kiem_tra_tien_do" Relationship="wed_learn_eModel.FK_KQTienDo_NguoiDung" FromRole="nguoi_dung" ToRole="ket_qua_kiem_tra_tien_do" />
         </EntityType>
         <EntityType Name="nhat_ky_quan_tri">
           <Key>
@@ -1743,6 +1904,34 @@
           <AssociationSet Name="FK_Vocabulary_CapDo" Association="wed_learn_eModel.FK_Vocabulary_CapDo">
             <End Role="cap_do" EntitySet="cap_do" />
             <End Role="Vocabulary" EntitySet="Vocabularies" />
+          </AssociationSet>
+          <EntitySet Name="chi_tiet_kiem_tra_tien_do" EntityType="wed_learn_eModel.chi_tiet_kiem_tra_tien_do" />
+          <EntitySet Name="ket_qua_kiem_tra_tien_do" EntityType="wed_learn_eModel.ket_qua_kiem_tra_tien_do" />
+          <AssociationSet Name="FK_KQTienDo_CapDo" Association="wed_learn_eModel.FK_KQTienDo_CapDo">
+            <End Role="cap_do" EntitySet="cap_do" />
+            <End Role="ket_qua_kiem_tra_tien_do" EntitySet="ket_qua_kiem_tra_tien_do" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ChiTietTienDo_KetQua" Association="wed_learn_eModel.FK_ChiTietTienDo_KetQua">
+            <End Role="ket_qua_kiem_tra_tien_do" EntitySet="ket_qua_kiem_tra_tien_do" />
+            <End Role="chi_tiet_kiem_tra_tien_do" EntitySet="chi_tiet_kiem_tra_tien_do" />
+          </AssociationSet>
+          <AssociationSet Name="FK_KQTienDo_NguoiDung" Association="wed_learn_eModel.FK_KQTienDo_NguoiDung">
+            <End Role="nguoi_dung" EntitySet="nguoi_dung" />
+            <End Role="ket_qua_kiem_tra_tien_do" EntitySet="ket_qua_kiem_tra_tien_do" />
+          </AssociationSet>
+          <EntitySet Name="cau_hoi_kiem_tra_tien_do" EntityType="wed_learn_eModel.cau_hoi_kiem_tra_tien_do" />
+          <AssociationSet Name="FK_CauHoiTienDo_CapDo" Association="wed_learn_eModel.FK_CauHoiTienDo_CapDo">
+            <End Role="cap_do" EntitySet="cap_do" />
+            <End Role="cau_hoi_kiem_tra_tien_do" EntitySet="cau_hoi_kiem_tra_tien_do" />
+          </AssociationSet>
+          <EntitySet Name="bai_kiem_tra_tien_do" EntityType="wed_learn_eModel.bai_kiem_tra_tien_do" />
+          <AssociationSet Name="FK_BaiKTTienDo_CapDo" Association="wed_learn_eModel.FK_BaiKTTienDo_CapDo">
+            <End Role="cap_do" EntitySet="cap_do" />
+            <End Role="bai_kiem_tra_tien_do" EntitySet="bai_kiem_tra_tien_do" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CauHoiTienDo_BaiKT" Association="wed_learn_eModel.FK_CauHoiTienDo_BaiKT">
+            <End Role="bai_kiem_tra_tien_do" EntitySet="bai_kiem_tra_tien_do" />
+            <End Role="cau_hoi_kiem_tra_tien_do" EntitySet="cau_hoi_kiem_tra_tien_do" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="bai_luyen_noi">
@@ -2345,6 +2534,143 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="chi_tiet_kiem_tra_tien_do">
+          <Key>
+            <PropertyRef Name="id_chi_tiet" />
+          </Key>
+          <Property Name="id_chi_tiet" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_ket_qua" Type="Int32" Nullable="false" />
+          <Property Name="nguon_ky_nang" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="noi_dung_cau_hoi" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="dap_an_chon" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="dap_an_dung" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="is_dung" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="ket_qua_kiem_tra_tien_do" Relationship="wed_learn_eModel.FK_ChiTietTienDo_KetQua" FromRole="chi_tiet_kiem_tra_tien_do" ToRole="ket_qua_kiem_tra_tien_do" />
+        </EntityType>
+        <EntityType Name="ket_qua_kiem_tra_tien_do">
+          <Key>
+            <PropertyRef Name="id_ket_qua" />
+          </Key>
+          <Property Name="id_ket_qua" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_nguoi_dung" Type="Int32" Nullable="false" />
+          <Property Name="id_cap_do" Type="Int32" Nullable="false" />
+          <Property Name="so_cau_dung" Type="Int32" Nullable="false" />
+          <Property Name="tong_so_cau" Type="Int32" Nullable="false" />
+          <Property Name="phan_tram" Type="Decimal" Nullable="false" Precision="5" Scale="2" />
+          <Property Name="dat_yeu_cau" Type="Boolean" Nullable="false" />
+          <Property Name="ngay_lam_bai" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="cap_do" Relationship="wed_learn_eModel.FK_KQTienDo_CapDo" FromRole="ket_qua_kiem_tra_tien_do" ToRole="cap_do" />
+          <NavigationProperty Name="chi_tiet_kiem_tra_tien_do" Relationship="wed_learn_eModel.FK_ChiTietTienDo_KetQua" FromRole="ket_qua_kiem_tra_tien_do" ToRole="chi_tiet_kiem_tra_tien_do" />
+          <NavigationProperty Name="nguoi_dung" Relationship="wed_learn_eModel.FK_KQTienDo_NguoiDung" FromRole="ket_qua_kiem_tra_tien_do" ToRole="nguoi_dung" />
+        </EntityType>
+        <Association Name="FK_KQTienDo_CapDo">
+          <End Type="wed_learn_eModel.cap_do" Role="cap_do" Multiplicity="1" />
+          <End Type="wed_learn_eModel.ket_qua_kiem_tra_tien_do" Role="ket_qua_kiem_tra_tien_do" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="cap_do">
+              <PropertyRef Name="id_cap_do" />
+            </Principal>
+            <Dependent Role="ket_qua_kiem_tra_tien_do">
+              <PropertyRef Name="id_cap_do" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ChiTietTienDo_KetQua">
+          <End Type="wed_learn_eModel.ket_qua_kiem_tra_tien_do" Role="ket_qua_kiem_tra_tien_do" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="wed_learn_eModel.chi_tiet_kiem_tra_tien_do" Role="chi_tiet_kiem_tra_tien_do" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ket_qua_kiem_tra_tien_do">
+              <PropertyRef Name="id_ket_qua" />
+            </Principal>
+            <Dependent Role="chi_tiet_kiem_tra_tien_do">
+              <PropertyRef Name="id_ket_qua" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_KQTienDo_NguoiDung">
+          <End Type="wed_learn_eModel.nguoi_dung" Role="nguoi_dung" Multiplicity="1" />
+          <End Type="wed_learn_eModel.ket_qua_kiem_tra_tien_do" Role="ket_qua_kiem_tra_tien_do" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="nguoi_dung">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Principal>
+            <Dependent Role="ket_qua_kiem_tra_tien_do">
+              <PropertyRef Name="id_nguoi_dung" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="cau_hoi_kiem_tra_tien_do">
+          <Key>
+            <PropertyRef Name="id_cau_hoi" />
+          </Key>
+          <Property Name="id_cau_hoi" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_cap_do" Type="Int32" Nullable="false" />
+          <Property Name="loai_cau_hoi" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="noi_dung" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="file_am_thanh" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ghi_chu" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="dap_an_a" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="dap_an_b" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="dap_an_c" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="dap_an_d" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="dap_an_dung" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="cap_do" Relationship="wed_learn_eModel.FK_CauHoiTienDo_CapDo" FromRole="cau_hoi_kiem_tra_tien_do" ToRole="cap_do" />
+          <Property Name="id_bai_kiem_tra" Type="Int32" />
+          <NavigationProperty Name="bai_kiem_tra_tien_do" Relationship="wed_learn_eModel.FK_CauHoiTienDo_BaiKT" FromRole="cau_hoi_kiem_tra_tien_do" ToRole="bai_kiem_tra_tien_do" />
+        </EntityType>
+        <Association Name="FK_CauHoiTienDo_CapDo">
+          <End Type="wed_learn_eModel.cap_do" Role="cap_do" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="wed_learn_eModel.cau_hoi_kiem_tra_tien_do" Role="cau_hoi_kiem_tra_tien_do" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="cap_do">
+              <PropertyRef Name="id_cap_do" />
+            </Principal>
+            <Dependent Role="cau_hoi_kiem_tra_tien_do">
+              <PropertyRef Name="id_cap_do" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="bai_kiem_tra_tien_do">
+          <Key>
+            <PropertyRef Name="id_bai_kiem_tra" />
+          </Key>
+          <Property Name="id_bai_kiem_tra" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_cap_do" Type="Int32" Nullable="false" />
+          <Property Name="tieu_de" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="mo_ta" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="thoi_gian_phut" Type="Int32" />
+          <Property Name="ngay_tao" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="cap_do" Relationship="wed_learn_eModel.FK_BaiKTTienDo_CapDo" FromRole="bai_kiem_tra_tien_do" ToRole="cap_do" />
+          <NavigationProperty Name="cau_hoi_kiem_tra_tien_do" Relationship="wed_learn_eModel.FK_CauHoiTienDo_BaiKT" FromRole="bai_kiem_tra_tien_do" ToRole="cau_hoi_kiem_tra_tien_do" />
+        </EntityType>
+        <Association Name="FK_BaiKTTienDo_CapDo">
+          <End Type="wed_learn_eModel.cap_do" Role="cap_do" Multiplicity="1" />
+          <End Type="wed_learn_eModel.bai_kiem_tra_tien_do" Role="bai_kiem_tra_tien_do" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="cap_do">
+              <PropertyRef Name="id_cap_do" />
+            </Principal>
+            <Dependent Role="bai_kiem_tra_tien_do">
+              <PropertyRef Name="id_cap_do" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CauHoiTienDo_BaiKT">
+          <End Type="wed_learn_eModel.bai_kiem_tra_tien_do" Role="bai_kiem_tra_tien_do" Multiplicity="0..1" />
+          <End Type="wed_learn_eModel.cau_hoi_kiem_tra_tien_do" Role="cau_hoi_kiem_tra_tien_do" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bai_kiem_tra_tien_do">
+              <PropertyRef Name="id_bai_kiem_tra" />
+            </Principal>
+            <Dependent Role="cau_hoi_kiem_tra_tien_do">
+              <PropertyRef Name="id_bai_kiem_tra" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2773,6 +3099,63 @@
                 <ScalarProperty Name="noi_dung_html" ColumnName="noi_dung_html" />
                 <ScalarProperty Name="id_khoa_hoc" ColumnName="id_khoa_hoc" />
                 <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="chi_tiet_kiem_tra_tien_do">
+            <EntityTypeMapping TypeName="wed_learn_eModel.chi_tiet_kiem_tra_tien_do">
+              <MappingFragment StoreEntitySet="chi_tiet_kiem_tra_tien_do">
+                <ScalarProperty Name="is_dung" ColumnName="is_dung" />
+                <ScalarProperty Name="dap_an_dung" ColumnName="dap_an_dung" />
+                <ScalarProperty Name="dap_an_chon" ColumnName="dap_an_chon" />
+                <ScalarProperty Name="noi_dung_cau_hoi" ColumnName="noi_dung_cau_hoi" />
+                <ScalarProperty Name="nguon_ky_nang" ColumnName="nguon_ky_nang" />
+                <ScalarProperty Name="id_ket_qua" ColumnName="id_ket_qua" />
+                <ScalarProperty Name="id_chi_tiet" ColumnName="id_chi_tiet" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ket_qua_kiem_tra_tien_do">
+            <EntityTypeMapping TypeName="wed_learn_eModel.ket_qua_kiem_tra_tien_do">
+              <MappingFragment StoreEntitySet="ket_qua_kiem_tra_tien_do">
+                <ScalarProperty Name="ngay_lam_bai" ColumnName="ngay_lam_bai" />
+                <ScalarProperty Name="dat_yeu_cau" ColumnName="dat_yeu_cau" />
+                <ScalarProperty Name="phan_tram" ColumnName="phan_tram" />
+                <ScalarProperty Name="tong_so_cau" ColumnName="tong_so_cau" />
+                <ScalarProperty Name="so_cau_dung" ColumnName="so_cau_dung" />
+                <ScalarProperty Name="id_cap_do" ColumnName="id_cap_do" />
+                <ScalarProperty Name="id_nguoi_dung" ColumnName="id_nguoi_dung" />
+                <ScalarProperty Name="id_ket_qua" ColumnName="id_ket_qua" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="cau_hoi_kiem_tra_tien_do">
+            <EntityTypeMapping TypeName="wed_learn_eModel.cau_hoi_kiem_tra_tien_do">
+              <MappingFragment StoreEntitySet="cau_hoi_kiem_tra_tien_do">
+                <ScalarProperty Name="id_bai_kiem_tra" ColumnName="id_bai_kiem_tra" />
+                <ScalarProperty Name="dap_an_dung" ColumnName="dap_an_dung" />
+                <ScalarProperty Name="dap_an_d" ColumnName="dap_an_d" />
+                <ScalarProperty Name="dap_an_c" ColumnName="dap_an_c" />
+                <ScalarProperty Name="dap_an_b" ColumnName="dap_an_b" />
+                <ScalarProperty Name="dap_an_a" ColumnName="dap_an_a" />
+                <ScalarProperty Name="ghi_chu" ColumnName="ghi_chu" />
+                <ScalarProperty Name="file_am_thanh" ColumnName="file_am_thanh" />
+                <ScalarProperty Name="noi_dung" ColumnName="noi_dung" />
+                <ScalarProperty Name="loai_cau_hoi" ColumnName="loai_cau_hoi" />
+                <ScalarProperty Name="id_cap_do" ColumnName="id_cap_do" />
+                <ScalarProperty Name="id_cau_hoi" ColumnName="id_cau_hoi" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="bai_kiem_tra_tien_do">
+            <EntityTypeMapping TypeName="wed_learn_eModel.bai_kiem_tra_tien_do">
+              <MappingFragment StoreEntitySet="bai_kiem_tra_tien_do">
+                <ScalarProperty Name="ngay_tao" ColumnName="ngay_tao" />
+                <ScalarProperty Name="thoi_gian_phut" ColumnName="thoi_gian_phut" />
+                <ScalarProperty Name="mo_ta" ColumnName="mo_ta" />
+                <ScalarProperty Name="tieu_de" ColumnName="tieu_de" />
+                <ScalarProperty Name="id_cap_do" ColumnName="id_cap_do" />
+                <ScalarProperty Name="id_bai_kiem_tra" ColumnName="id_bai_kiem_tra" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -143,6 +143,9 @@
     <Compile Include="Models\bai_kiem_tra_dau_vao.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\bai_kiem_tra_tien_do.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\bai_luyen_nghe.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -164,10 +167,14 @@
     <Compile Include="Models\cap_do.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\CauHoiTongHopVM.cs" />
     <Compile Include="Models\cau_hoi_kho_bau.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\cau_hoi_kiem_tra.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\cau_hoi_kiem_tra_tien_do.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\cau_hoi_luyen_nghe.cs">
@@ -180,6 +187,9 @@
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\cau_hoi_video.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\chi_tiet_kiem_tra_tien_do.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\feature_trang_chu.cs">
@@ -197,9 +207,13 @@
     <Compile Include="Models\ket_qua_kiem_tra.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ket_qua_kiem_tra_tien_do.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\khoa_hoc.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\LichSuTienDoVM.cs" />
     <Compile Include="Models\lich_su_kho_bau.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -1288,6 +1302,8 @@
     <Content Include="Views\Shared\HeThongBaoTri.cshtml" />
     <Content Include="Views\Trang_chu\nav_Trang_chu.cshtml" />
     <Content Include="Views\Page\NoiDungKhoaHoc.cshtml" />
+    <Content Include="Views\bai_test\KetQuaTienDo.cshtml" />
+    <Content Include="Views\bai_test\KiemTraTienDo.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />

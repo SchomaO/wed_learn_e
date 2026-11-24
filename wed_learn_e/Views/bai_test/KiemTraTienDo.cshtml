@@ -1,0 +1,494 @@
+﻿@model wed_learn_e.Models.CauHoiTongHopVM
+@{
+    ViewBag.Title = "Kiểm tra tiến độ khóa học";
+    Layout = "~/Views/Shared/_Layoutcauhoi.cshtml";
+    int idCapDo = ViewBag.IdCapDo;
+    string daChon = Session["tiendo_ans_" + idCapDo + "_" + ViewBag.Index]?.ToString() ?? "";
+}
+
+<style>
+    body {
+        background: linear-gradient(177deg, #dcdcdc, #ffffff, #bfe7ff, #d6f4ff, #006c97);
+        font-family: Arial;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding-top: 90px;
+        margin: 0;
+        min-height: 100vh;
+    }
+
+    .container {
+        display: flex;
+        gap: 30px;
+    }
+
+    .left-panel {
+        width: 520px;
+    }
+
+    .right-panel {
+        width: 240px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .quiz-box {
+        background: white;
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    .skill-badge {
+        display: inline-block;
+        background: #dff3ff;
+        color: #0d6efd;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: bold;
+        margin-bottom: 12px;
+    }
+
+    .question {
+        font-size: 22px;
+        font-weight: bold;
+        margin-bottom: 25px;
+        color: #2b4a5a;
+        line-height: 1.4;
+    }
+
+    .answers {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+        .answers input {
+            display: none;
+        }
+
+    .answer {
+        background: #eef8ff;
+        padding: 15px;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: 0.3s;
+        border: 2px solid transparent;
+        font-size: 16px;
+    }
+
+        .answer:hover {
+            background: #dff3ff;
+            transform: scale(1.02);
+        }
+
+    .answers input:checked + .answer {
+        background: #bfe9ff;
+        border: 2px solid #6ec8ff;
+        font-weight: bold;
+    }
+
+    .nav-question {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 25px;
+    }
+
+    .btn-nav {
+        text-decoration: none;
+        background: #bfe9ff;
+        padding: 10px 18px;
+        border: none;
+        border-radius: 10px;
+        color: #1b4d63;
+        font-weight: bold;
+        transition: 0.2s;
+        cursor: pointer;
+    }
+
+        .btn-nav:hover {
+            background: #9edcff;
+        }
+
+    .timer-box, .question-list, .submit-box {
+        background: white;
+        padding: 15px;
+        border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    .timer-box {
+        text-align: center;
+    }
+
+    .timer-title {
+        color: #555;
+        font-size: 14px;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .timer-display {
+        font-size: 32px;
+        font-weight: bold;
+        color: #0d6efd;
+        letter-spacing: 2px;
+    }
+
+        .timer-display.warning {
+            animation: blink 1s infinite;
+            color: #e74c3c;
+        }
+
+    @@keyframes blink {
+        50% {
+            opacity: 0.4;
+        }
+    }
+
+    .question-list {
+        padding: 20px;
+    }
+
+        .question-list h3 {
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #2b4a5a;
+        }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 10px;
+    }
+
+    .q-number {
+        background: #eef8ff;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: 0.2s;
+        text-decoration: none;
+        color: #333;
+        font-weight: bold;
+    }
+
+        .q-number:hover {
+            background: #dff3ff;
+        }
+
+    .done {
+        background: #6ec8ff !important;
+        color: white;
+    }
+
+    .submit-btn {
+        width: 100%;
+        padding: 15px;
+        border: none;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #ff6b6b, #ff4b4b);
+        color: white;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.25s;
+        text-transform: uppercase;
+    }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 75, 75, 0.4);
+        }
+
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.6);
+        backdrop-filter: blur(5px);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-box {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        width: 400px;
+        text-align: center;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        animation: popUp 0.3s ease-out;
+    }
+
+    @@keyframes popUp {
+        from {
+            transform: scale(0.8);
+            opacity: 0;
+        }
+
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    .modal-icon {
+        font-size: 60px;
+        margin-bottom: 15px;
+    }
+
+    .modal-title {
+        font-size: 24px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .modal-text {
+        color: #666;
+        margin-bottom: 25px;
+        font-size: 16px;
+        line-height: 1.5;
+    }
+
+    .modal-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .btn-cancel {
+        background: #f8f9fa;
+        color: #555;
+        padding: 12px 20px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        font-weight: bold;
+        cursor: pointer;
+        flex: 1;
+        font-size: 16px;
+    }
+
+    .btn-confirm-submit {
+        background: linear-gradient(135deg, #0d6efd, #4786e3);
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 10px;
+        font-weight: bold;
+        cursor: pointer;
+        flex: 1;
+        font-size: 16px;
+    }
+</style>
+
+<div class="container">
+    <div class="left-panel">
+        @using (Html.BeginForm("KiemTraTienDo", "bai_test", FormMethod.Post, new { id = "quizForm" }))
+        {
+            <input type="hidden" name="id_cap_do" value="@idCapDo" />
+            <input type="hidden" name="index" value="@ViewBag.Index" />
+            <input type="hidden" name="action" id="hiddenAction" value="" />
+            <div class="quiz-box">
+                <div class="skill-badge">@Model.NguonKyNang</div>
+
+                @if (Model.LoaiCauHoi == "nghe")
+                {
+                    <div style="margin-bottom: 15px;">
+                        <audio controls style="width: 100%; border-radius: 10px;">
+                            <source src="@Model.FileAmThanh" type="audio/mpeg" />
+                            Trình duyệt của bạn không hỗ trợ phát âm thanh.
+                        </audio>
+                    </div>
+                }
+
+                <div class="question">
+                    <span style="color:#0d6efd;">Câu @(ViewBag.Index + 1):</span><br>
+                    @if (Model.LoaiCauHoi == "viet")
+                    {
+                        <span>Dịch câu sau sang Tiếng Anh:</span><br />
+                        <span style="color:#1e293b;">"@Model.NoiDung"</span>
+                    }
+                    else if (Model.LoaiCauHoi == "noi")
+                    {
+                        <span>Hãy đọc to câu tiếng Anh sau:</span><br />
+                        <span style="color:#0d6efd;">"@Model.NoiDung"</span>
+                        if (!string.IsNullOrEmpty(Model.GhiChu))
+                        {
+                            <div style="font-size:14px; font-weight:normal; color:#64748b; margin-top:6px;">Nghĩa: @Model.GhiChu</div>
+                        }
+                    }
+                    else
+                    {
+                        @Model.NoiDung
+                    }
+                </div>
+
+                @if (Model.LoaiCauHoi == "viet")
+                {
+                    <textarea name="answer" rows="4" placeholder="Nhập câu tiếng Anh của bạn tại đây..."
+                              style="width:100%; padding:14px; border-radius:12px; border:2px solid #bfe9ff; font-size:16px; box-sizing:border-box;">@daChon</textarea>
+                }
+                else if (Model.LoaiCauHoi == "noi")
+                {
+                    <div style="text-align:center; padding:15px; background:#f8fbff; border-radius:12px; border:2px dashed #6ec8ff;">
+                        <button type="button" id="btnMic" onclick="batDauNoi()"
+                                style="background:#0d6efd; color:#fff; border:none; padding:12px 24px; border-radius:30px; font-size:16px; font-weight:bold; cursor:pointer;">
+                            🎤 Bấm để nói (Speak)
+                        </button>
+                        <div id="micStatus" style="margin-top:10px; font-size:14px; color:#64748b;">Nhấn nút micro và đọc rõ câu trên</div>
+                        <input type="text" id="spokenInput" name="answer" value="@daChon" readonly
+                               placeholder="Nội dung bạn nói sẽ hiện ở đây..."
+                               style="width:100%; margin-top:12px; padding:12px; border-radius:8px; border:1px solid #cbd5e1; text-align:center; font-size:16px; box-sizing:border-box;" />
+                    </div>
+                }
+                else
+                {
+                    <div class="answers">
+                        <label>
+                            <input type="radio" name="answer" value="A" @(daChon == "A" ? "checked" : "")>
+                            <div class="answer">A. @Model.DapAnA</div>
+                        </label>
+                        <label>
+                            <input type="radio" name="answer" value="B" @(daChon == "B" ? "checked" : "")>
+                            <div class="answer">B. @Model.DapAnB</div>
+                        </label>
+                        <label>
+                            <input type="radio" name="answer" value="C" @(daChon == "C" ? "checked" : "")>
+                            <div class="answer">C. @Model.DapAnC</div>
+                        </label>
+                        <label>
+                            <input type="radio" name="answer" value="D" @(daChon == "D" ? "checked" : "")>
+                            <div class="answer">D. @Model.DapAnD</div>
+                        </label>
+                    </div>
+                }
+
+            <div class="nav-question">
+                <button type="submit" class="btn-nav" onclick="document.getElementById('hiddenAction').value='prev'">← Câu trước</button>
+                <button type="submit" class="btn-nav" onclick="document.getElementById('hiddenAction').value='next'">Câu sau →</button>
+            </div>
+            </div>
+        }
+    </div>
+
+    <div class="right-panel">
+        <div class="timer-box">
+            <div class="timer-title">⏳ THỜI GIAN CÒN LẠI</div>
+            <div class="timer-display" id="timeDisplay">15:00</div>
+        </div>
+
+        <div class="question-list">
+            <h3>Danh sách câu hỏi</h3>
+            <div class="grid">
+                @for (int j = 0; j < ViewBag.Total; j++)
+                {
+                    <a href="@Url.Action("KiemTraTienDo", "bai_test", new { id_cap_do = idCapDo, index = j })"
+                       class="q-number @(Session["tiendo_q_" + idCapDo + "_" + j] != null ? "done" : "")">
+                        @(j + 1)
+                    </a>
+                }
+            </div>
+        </div>
+
+        <div class="submit-box">
+            <button type="button" class="submit-btn" onclick="XacNhanNopBai()">Nộp Bài</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="submitModal">
+    <div class="modal-box">
+        <div class="modal-icon">📤</div>
+        <div class="modal-title">Nộp bài kiểm tra tiến độ?</div>
+        <div class="modal-text">Bạn cần đạt từ <b>70% trở lên</b> để được tính là hoàn thành khóa học này.</div>
+        <div class="modal-buttons">
+            <button type="button" class="btn-cancel" onclick="DongModalNopBai()">Kiểm tra lại</button>
+            <button type="button" class="btn-confirm-submit" onclick="TienHanhNopBai()">Chắc chắn nộp</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    var totalSeconds = @(ViewBag.TimeLeft != null ? ViewBag.TimeLeft : 900);
+    var timeDisplay = document.getElementById("timeDisplay");
+    var urlKetQua = '@Url.Action("KetQuaTienDo", "bai_test", new { id_cap_do = idCapDo })';
+
+    function updateTimerDisplay() {
+        if (totalSeconds < 0) totalSeconds = 0;
+        var minutes = Math.floor(totalSeconds / 60);
+        var seconds = totalSeconds % 60;
+        timeDisplay.innerText = (minutes < 10 ? "0" + minutes : minutes) + ":" + (seconds < 10 ? "0" + seconds : seconds);
+        if (totalSeconds <= 60) timeDisplay.classList.add("warning");
+    }
+
+    updateTimerDisplay();
+
+    var countdown = setInterval(function () {
+        totalSeconds--;
+        updateTimerDisplay();
+        if (totalSeconds <= 0) {
+            clearInterval(countdown);
+            alert("⏳ Đã hết thời gian! Hệ thống sẽ tự động nộp bài và chấm điểm.");
+            location.href = urlKetQua;
+        }
+    }, 1000);
+
+    function XacNhanNopBai() { document.getElementById("submitModal").style.display = "flex"; }
+    function DongModalNopBai() { document.getElementById("submitModal").style.display = "none"; }
+function TienHanhNopBai() {
+    document.querySelector(".btn-confirm-submit").innerText = "Đang nộp...";
+    document.querySelector(".btn-confirm-submit").style.opacity = "0.7";
+    document.getElementById("hiddenAction").value = "submit";
+    document.getElementById("quizForm").submit();
+}
+
+    function batDauNoi() {
+        var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+            alert("Trình duyệt không hỗ trợ nhận diện giọng nói. Vui lòng dùng Chrome hoặc Edge!");
+            return;
+        }
+        var recognition = new SpeechRecognition();
+        recognition.lang = 'en-US';
+        recognition.interimResults = false;
+
+        var btn = document.getElementById("btnMic");
+        var status = document.getElementById("micStatus");
+
+        recognition.onstart = function () {
+            btn.innerText = "🔴 Đang nghe...";
+            btn.style.background = "#e74c3c";
+            status.innerText = "Hãy đọc câu tiếng Anh...";
+        };
+
+        recognition.onresult = function (event) {
+            var text = event.results[0][0].transcript;
+            document.getElementById("spokenInput").value = text;
+            status.innerText = "✅ Đã ghi nhận giọng nói! Bấm 'Câu sau' để lưu.";
+        };
+
+        recognition.onerror = function (event) {
+            status.innerText = "❌ Lỗi Micro: " + event.error;
+        };
+
+        recognition.onend = function () {
+            btn.innerText = "🎤 Nói lại (Speak again)";
+            btn.style.background = "#0d6efd";
+        };
+
+        recognition.start();
+    }
+</script>

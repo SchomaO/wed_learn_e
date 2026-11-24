@@ -1,0 +1,63 @@
+﻿@{
+    ViewBag.Title = "Kết quả kiểm tra tiến độ";
+    Layout = "~/Views/Shared/_Layoutcauhoi.cshtml";
+    bool dat = ViewBag.DatYeuCau;
+}
+
+<style>
+    body {
+        background: linear-gradient(177deg, #dcdcdc, #ffffff, #bfe7ff, #d6f4ff, #006c97);
+        font-family: Arial;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .result-card {
+        max-width: 520px; width: 90%; background: #fff; padding: 40px;
+        border-radius: 20px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+    }
+    .score-badge {
+        display: inline-block; padding: 10px 25px; border-radius: 30px;
+        font-size: 22px; font-weight: bold; margin: 15px 0;
+        background: @(dat ? "#e6f9ed" : "#fdecea");
+        color: @(dat ? "#1e7e34" : "#c82333");
+    }
+    .btn-group { display: flex; gap: 15px; justify-content: center; margin-top: 25px; }
+    .btn-action {
+        padding: 12px 24px; text-decoration: none; border-radius: 10px; font-weight: bold;
+    }
+</style>
+
+<div class="result-card">
+    <div style="font-size: 64px; margin-bottom: 10px;">@(dat ? "🎉" : "😥")</div>
+    <h2 style="color: @(dat ? "#28a745" : "#e74c3c"); margin: 0;">
+        @(dat ? "HOÀN THÀNH KHÓA HỌC!" : "CHƯA ĐẠT YÊU CẦU (CẦN ≥ 70%)")
+    </h2>
+
+    <div class="score-badge">
+        @ViewBag.SoCauDung / @ViewBag.TongCau câu (@ViewBag.PhanTram%)
+    </div>
+
+    <p style="color: #555; font-size: 15px; line-height: 1.5;">
+        @(dat
+            ? "Chúc mừng bạn đã vượt qua bài kiểm tra tiến độ. Trạng thái hoàn thành khóa học đã được cập nhật."
+            : "Bạn hãy ôn lại các kỹ năng còn yếu và làm lại bài kiểm tra để đạt từ 70% trở lên nhé!")
+    </p>
+
+    <div class="btn-group">
+        @if (!dat)
+        {
+            <a href="@Url.Action("KiemTraTienDo", "bai_test", new { id_cap_do = ViewBag.IdCapDo })"
+               class="btn-action" style="background: #0d6efd; color: #fff;">
+                🔄 Làm lại bài thi
+            </a>
+        }
+    <a href="@Url.Action("thong_tin_khoa_hoc", "Page", new { id = ViewBag.IdCapDo })"
+       class="btn-action" style="background: #eef8ff; color: #1b4d63;">
+        ← Quay về khóa học
+    </a>
+      
+    </div>
+</div>

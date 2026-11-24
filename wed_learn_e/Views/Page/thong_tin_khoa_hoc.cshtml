@@ -112,9 +112,9 @@
 
     <div class="course-box" style="background:#eef7ff">
         <div class="course-icon">📝</div>
-        <div class="course-title">Bài Kiểm Tra Trình Độ</div>
-        <div class="course-desc">Kiểm tra năng lực tại cấp độ này.</div>
-        <a class="btn-course" href="@Url.Action("thong_tin_bai_test", "bai_test")">Làm bài test</a>
+        <div class="course-title">Bài Kiểm Tra Tiến Độ</div>
+        <div class="course-desc">Tổng hợp kiến thức cấp độ @ViewBag.TenCapDo. Mở khóa khi hoàn thành tất cả kỹ năng (đạt ≥ 70%).</div>
+        <a class="btn-course" href="javascript:void(0);" onclick="kiemTraMoKhoa(@ViewBag.IdCapDo)">Làm bài test</a>
     </div>
 
     <div class="course-box" style="background:#f5fbff">
@@ -184,4 +184,182 @@
             </div>
         }
     }
-</div> 
+</div>
+<!-- CSS & HTML CHO POPUP THÔNG BÁO -->
+<style>
+    .lock-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.55);
+        backdrop-filter: blur(5px);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .lock-modal {
+        background: #ffffff;
+        width: 92%;
+        max-width: 440px;
+        border-radius: 20px;
+        padding: 32px 28px;
+        text-align: center;
+        box-shadow: 0 20px 45px rgba(0, 0, 0, 0.2);
+        animation: modalPop 0.25s ease-out;
+        font-family: Arial, sans-serif;
+    }
+
+    @@keyframes modalPop {
+        from {
+            transform: scale(0.88);
+            opacity: 0;
+        }
+
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    .lock-icon-wrap {
+        width: 72px;
+        height: 72px;
+        margin: 0 auto 16px;
+        background: #fff3cd;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 34px;
+        box-shadow: 0 6px 16px rgba(255, 193, 7, 0.25);
+    }
+
+    .lock-title {
+        font-size: 20px;
+        font-weight: bold;
+        color: #1e293b;
+        margin-bottom: 12px;
+    }
+
+    .lock-msg-vi {
+        font-size: 15px;
+        color: #334155;
+        line-height: 1.5;
+        margin-bottom: 8px;
+    }
+
+    .lock-msg-en {
+        font-size: 14px;
+        color: #64748b;
+        font-style: italic;
+        line-height: 1.5;
+        margin-bottom: 24px;
+        padding-top: 8px;
+        border-top: 1px dashed #e2e8f0;
+    }
+
+    .lock-btn {
+        background: linear-gradient(135deg, #0d6efd, #3b82f6);
+        color: #fff;
+        border: none;
+        padding: 12px 28px;
+        border-radius: 10px;
+        font-size: 15px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.2s;
+        width: 100%;
+    }
+
+        .lock-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(13, 110, 253, 0.35);
+        }
+</style>
+
+<div class="lock-overlay" id="lockModal" onclick="if(event.target === this) dongPopupKhoa()">
+    <div class="lock-modal">
+        <div class="lock-icon-wrap" id="lockIcon">🔒</div>
+        <div class="lock-title" id="lockTitle">Chưa mở khóa / Test Locked</div>
+        <div class="lock-msg-vi" id="lockMsgVi"></div>
+        <div class="lock-msg-en" id="lockMsgEn"></div>
+        <div style="display:flex; gap:12px;">
+            <button type="button" id="lockBtnCancel" onclick="dongPopupKhoa()"
+                    style="display:none; flex:1; background:#f1f5f9; color:#475569; border:1px solid #cbd5e1; padding:12px; border-radius:10px; font-size:15px; font-weight:bold; cursor:pointer;">
+                Đóng / Cancel
+            </button>
+            <button type="button" class="lock-btn" id="lockBtn" onclick="xacNhanPopup()" style="flex:1;">
+                Đã hiểu / Got it
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+        var pendingRedirect = null;
+
+        function moPopupKhoa(title, msgVi, msgEn, redirectUrl, isConfirmRetake, daDat) {
+            document.getElementById("lockTitle").innerText = title;
+            document.getElementById("lockMsgVi").innerHTML = msgVi;
+            document.getElementById("lockMsgEn").innerHTML = msgEn;
+            pendingRedirect = redirectUrl || null;
+
+            var iconEl = document.getElementById("lockIcon");
+            var btnMain = document.getElementById("lockBtn");
+            var btnCancel = document.getElementById("lockBtnCancel");
+
+            if (isConfirmRetake) {
+                iconEl.innerText = daDat ? "🏆" : "📝";
+                iconEl.style.background = daDat ? "#dcfce7" : "#dbeafe";
+                btnCancel.style.display = "block";
+                btnMain.innerText = "🔄 Làm lại / Retake";
+            } else {
+                iconEl.innerText = "🔒";
+                iconEl.style.background = "#fff3cd";
+                btnCancel.style.display = "none";
+                btnMain.innerText = pendingRedirect ? "Đăng nhập ngay / Sign in" : "Tiếp tục học / Continue Learning";
+            }
+
+            document.getElementById("lockModal").style.display = "flex";
+        }
+
+        function dongPopupKhoa() {
+            document.getElementById("lockModal").style.display = "none";
+            pendingRedirect = null;
+        }
+
+        function xacNhanPopup() {
+            var url = pendingRedirect;
+            document.getElementById("lockModal").style.display = "none";
+            if (url) {
+                window.location.href = url;
+            }
+        }
+
+        function kiemTraMoKhoa(idCapDo) {
+            fetch('/bai_test/KiemTraDieuKienTienDo?id_cap_do=' + idCapDo)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        if (data.hasHistory) {
+                            // Đã từng làm -> hiện % cũ và hỏi có muốn làm lại không
+                            moPopupKhoa(data.title, data.msgVi, data.msgEn, data.redirectUrl, true, data.daDat);
+                        } else {
+                            // Chưa làm lần nào -> vào thẳng trang làm bài
+                            window.location.href = data.redirectUrl;
+                        }
+                    } else {
+                        moPopupKhoa(data.title, data.msgVi, data.msgEn, data.redirectUrl, false, false);
+                    }
+                })
+                .catch(() => {
+                    moPopupKhoa(
+                        "Lỗi kết nối / Connection Error",
+                        "Không thể kết nối đến máy chủ. Vui lòng thử lại sau.",
+                        "Unable to connect to the server. Please try again later.",
+                        null, false, false
+                    );
+                });
+        }
+</script>
