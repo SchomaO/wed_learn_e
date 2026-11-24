@@ -1,9 +1,12 @@
 ﻿<div class="footer-container">
-    @foreach (var ft in ViewBag.ListFooter as List<wed_learn_e.Models.footer_cot>)
+    @if (ViewBag.ListFooter != null)
     {
-        <div class="footer-col">
-            <h3>@ft.tieu_de</h3>
-            @Html.Raw(ft.noi_dung_html)
-        </div>
+        foreach (var ft in ViewBag.ListFooter as List<wed_learn_e.Models.footer_cot>)
+        {
+            <div class="footer-col">
+                <h3>@ft.tieu_de</h3>
+                @Html.Raw(ft.noi_dung_html)
+            </div>
+        }
     }
 </div>

@@ -48,6 +48,9 @@
     <Reference Include="EntityFramework, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=2.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="PagedList, Version=1.17.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
       <HintPath>..\packages\PagedList.1.17.0.0\lib\net40\PagedList.dll</HintPath>
@@ -118,18 +121,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
-      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\BundleConfig2.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Admin\Controllers\QuanLyTaiChinhController.cs" />
     <Compile Include="Areas\Admin\Controllers\Trang_AdminController.cs" />
     <Compile Include="Controllers\bai_testController.cs" />
+    <Compile Include="Controllers\MuaKhoaHocController.cs" />
+    <Compile Include="Controllers\NangCapController.cs" />
     <Compile Include="Controllers\PageController.cs" />
     <Compile Include="Controllers\tinh_nangController.cs" />
     <Compile Include="Controllers\Trang_chuController.cs" />
@@ -210,6 +211,7 @@
     <Compile Include="Models\ket_qua_kiem_tra_tien_do.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\KhoaHocBanModels.cs" />
     <Compile Include="Models\khoa_hoc.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -247,6 +249,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Model1.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\NangCapModels.cs" />
     <Compile Include="Models\nguoi_dung.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -256,6 +259,7 @@
     <Compile Include="Models\nhat_ky_quan_tri.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\QuanLyTaiChinhModels.cs" />
     <Compile Include="Models\sysdiagram.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -1238,6 +1242,7 @@
     <Content Include="ckeditor\skins\moono\readme.md" />
     <Content Include="ckfinder\plugins\fileeditor\codemirror\LICENSE" />
     <Content Include="Areas\Admin\Views\Trang_Admin\QuanLyBaiTest.cshtml" />
+    <Content Include="Areas\Admin\Views\QuanLyTaiChinh\Index.cshtml" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
     <Content Include="Scripts\jquery-3.7.0.min.js" />
@@ -1293,7 +1298,6 @@
     <Content Include="Views\tinh_nang\MiniTestHangNgay.cshtml" />
     <Content Include="Views\tinh_nang\BanDoKhoBau.cshtml" />
     <Content Include="Views\tinh_nang\GiaiMaCauHoi.cshtml" />
-    <Content Include="Views\Page\TrangMuaVIP.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_LayoutAdmin.cshtml" />
     <Content Include="Views\Trang_chu\LienHe.cshtml" />
     <Content Include="Views\Shared\_NutQuayLai.cshtml" />
@@ -1304,6 +1308,9 @@
     <Content Include="Views\Page\NoiDungKhoaHoc.cshtml" />
     <Content Include="Views\bai_test\KetQuaTienDo.cshtml" />
     <Content Include="Views\bai_test\KiemTraTienDo.cshtml" />
+    <Content Include="Views\NangCap\Index.cshtml" />
+    <Content Include="Views\NangCap\ThanhToan.cshtml" />
+    <Content Include="Views\MuaKhoaHoc\ThanhToan.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />

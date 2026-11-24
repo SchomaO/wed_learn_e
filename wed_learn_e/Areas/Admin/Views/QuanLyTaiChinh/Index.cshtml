@@ -1,0 +1,352 @@
+﻿@model wed_learn_e.Models.QuanLyTaiChinhViewModel
+@{
+    ViewBag.Title = "Quản lý Tài chính & Bảng giá";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="space-y-6 text-slate-800">
+
+    @* Nút quay về trang Admin chính nằm bên trái *@
+    <div class="flex justify-start">
+        <a href="@Url.Action("Index", "Trang_Admin", new { area = "Admin" })"
+           class="inline-flex items-center gap-2 bg-white hover:bg-slate-900 text-slate-700 hover:text-white border border-gray-300 px-4 py-2 rounded-lg text-sm font-semibold shadow-sm transition">
+            ← Quay lại
+        </a>
+    </div>
+
+    @* 1. THỐNG KÊ TỔNG QUAN *@
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Tổng doanh thu thực nhận</p>
+            <h3 class="text-2xl font-bold text-slate-900 mt-1">@Model.TongDoanhThu.ToString("N0") đ</h3>
+        </div>
+        <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Giao dịch chờ xác nhận</p>
+            <div class="flex items-center gap-2 mt-1">
+                <h3 class="text-2xl font-bold text-slate-900">@Model.SoDonChoDuyet</h3>
+                @if (Model.CoDonDangCho)
+                {
+                    <span class="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-medium">Đang khóa sửa giá gói</span>
+                }
+            </div>
+        </div>
+        <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Tài khoản VIP vĩnh viễn</p>
+            <h3 class="text-2xl font-bold text-slate-900 mt-1">@Model.TongTaiKhoanVip</h3>
+        </div>
+    </div>
+
+    @* 2. LỊCH SỬ GIAO DỊCH *@
+    <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200 flex flex-wrap justify-between items-center gap-3">
+            <div>
+                <h3 class="font-bold text-base text-slate-900">Lịch sử giao dịch & Duyệt thanh toán</h3>
+                <p class="text-xs text-slate-500">Giao dịch đã hoàn tất (SUCCESS) hoặc đã hủy (FAILED) được khóa cố định.</p>
+            </div>
+            <select id="filterTrangThai" onchange="filterTransactions()" class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm text-slate-700 outline-none focus:border-slate-800">
+                <option value="ALL">Tất cả trạng thái</option>
+                <option value="PENDING">Chờ thanh toán (PENDING)</option>
+                <option value="SUCCESS">Thành công (SUCCESS)</option>
+                <option value="FAILED">Đã hủy (FAILED)</option>
+            </select>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-sm">
+                <thead>
+                    <tr class="bg-gray-50 border-b border-gray-200 text-slate-500 text-xs uppercase">
+                        <th class="px-5 py-3">Mã đơn</th>
+                        <th class="px-5 py-3">Học viên</th>
+                        <th class="px-5 py-3">Nội dung</th>
+                        <th class="px-5 py-3 text-right">Giá gốc</th>
+                        <th class="px-5 py-3 text-right">Giảm</th>
+                        <th class="px-5 py-3 text-right">Thực thu</th>
+                        <th class="px-5 py-3 text-center">Trạng thái</th>
+                        <th class="px-5 py-3 text-right">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    @foreach (var gd in Model.DanhSachGiaoDich)
+                    {
+                        <tr class="hover:bg-gray-50 gd-row" data-status="@gd.TrangThai">
+                            <td class="px-5 py-3.5 font-mono font-semibold text-slate-800">
+                                @gd.MaDonHang
+                                <div class="text-[11px] font-sans font-normal text-slate-400">@gd.NgayTao.ToString("dd/MM/yyyy HH:mm")</div>
+                            </td>
+                            <td class="px-5 py-3.5">
+                                <div class="font-medium text-slate-800">@gd.HoVaTen</div>
+                                <div class="text-xs text-slate-400">@gd.TenDangNhap</div>
+                            </td>
+                            <td class="px-5 py-3.5 text-slate-700">@gd.TenDichVu</td>
+                            <td class="px-5 py-3.5 text-right text-slate-500">@gd.GiaGoc.ToString("N0")đ</td>
+                            <td class="px-5 py-3.5 text-right text-slate-500">-@gd.SoTienGiam.ToString("N0")đ</td>
+                            <td class="px-5 py-3.5 text-right font-bold text-slate-900">@gd.ThanhTien.ToString("N0")đ</td>
+                            <td class="px-5 py-3.5 text-center">
+                                @if (gd.TrangThai == "PENDING")
+                                {
+                                    <span class="px-2.5 py-1 rounded text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">Chờ duyệt</span>
+                                }
+                                else if (gd.TrangThai == "SUCCESS")
+                                {
+                                    <span class="px-2.5 py-1 rounded text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">Thành công</span>
+                                }
+                                else
+                                {
+                                    <span class="px-2.5 py-1 rounded text-xs font-semibold bg-gray-100 text-slate-500 border border-gray-200">Đã hủy</span>
+                                }
+                            </td>
+                            <td class="px-5 py-3.5 text-right whitespace-nowrap">
+                                @if (gd.TrangThai == "PENDING")
+                                {
+                                    <button type="button" data-ma="@gd.MaDonHang" onclick="xuLyDon(this, 'DuyetGiaoDich')" class="px-3 py-1.5 bg-slate-900 hover:bg-slate-700 text-white text-xs font-semibold rounded-lg mr-1">
+                                        Xác nhận thu
+                                    </button>
+                                    <button type="button" data-ma="@gd.MaDonHang" onclick="xuLyDon(this, 'HuyGiaoDich')" class="px-3 py-1.5 bg-white hover:bg-gray-100 text-slate-600 border border-gray-300 text-xs font-semibold rounded-lg">
+                                        Hủy
+                                    </button>
+                                }
+                                else
+                                {
+                                    <span class="text-xs text-slate-400 italic">Đã khóa</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    @* 3. CẤU HÌNH GÓI NÂNG CẤP & BẢNG GIÁ CẤP ĐỘ *@
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-5 bg-white rounded-xl border border-gray-200 shadow-sm p-6 h-fit">
+            <div class="flex justify-between items-start mb-4 border-b border-gray-100 pb-3">
+                <div>
+                    <h3 class="font-bold text-base text-slate-900">Cấu hình Gói Nâng Cấp</h3>
+                    <p class="text-xs text-slate-500 mt-0.5">Cập nhật lần cuối: @Model.GoiNangCap.NgayCapNhat.ToString("dd/MM/yyyy HH:mm")</p>
+                </div>
+                @if (Model.CoDonDangCho)
+                {
+                    <span class="text-xs bg-gray-100 text-slate-600 border border-gray-300 px-2.5 py-1 rounded font-semibold">Đang khóa</span>
+                }
+            </div>
+
+            @if (Model.CoDonDangCho)
+            {
+                <div class="p-3 mb-4 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-800">
+                    Đang có <strong>@Model.SoDonChoDuyet giao dịch chờ thanh toán</strong>. Hệ thống tạm khóa chỉnh sửa giá gói và % chiết khấu.
+                </div>
+            }
+
+            <div class="space-y-4 text-sm">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Tên gói</label>
+                    <input type="text" id="cfgTenGoi" value="@Model.GoiNangCap.TenGoi" @(Model.CoDonDangCho ? "disabled" : "")
+                           class="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-slate-800 disabled:bg-gray-100 disabled:text-slate-400" />
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Giá nâng cấp (VNĐ)</label>
+                        <input type="number" id="cfgGiaGoi" min="0" step="1000" value="@Convert.ToInt64(Model.GoiNangCap.GiaNangCap)" @(Model.CoDonDangCho ? "disabled" : "")
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2 font-semibold outline-none focus:border-slate-800 disabled:bg-gray-100 disabled:text-slate-400" />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Giảm giá cấp độ (%)</label>
+                        <input type="number" id="cfgPhanTram" min="0" max="100" value="@Model.GoiNangCap.PhanTramGiam" @(Model.CoDonDangCho ? "disabled" : "")
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2 font-semibold outline-none focus:border-slate-800 disabled:bg-gray-100 disabled:text-slate-400" />
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Mô tả hiển thị</label>
+                    <textarea id="cfgMoTa" rows="2" @(Model.CoDonDangCho ? "disabled" : "")
+                              class="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-slate-800 disabled:bg-gray-100 disabled:text-slate-400">@Model.GoiNangCap.MoTa</textarea>
+                </div>
+
+                <button type="button" onclick="luuGoiNangCap()" @(Model.CoDonDangCho ? "disabled" : "")
+                        class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition">
+                    Lưu cấu hình gói
+                </button>
+            </div>
+        </div>
+
+        <div class="lg:col-span-7 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="font-bold text-base text-slate-900">Bảng giá Cấp độ (Khóa đào tạo)</h3>
+                <p class="text-xs text-slate-500">
+                    Hiện đang cấu hình <strong>@Model.SoCapDoMienPhi cấp độ đầu tiên</strong> miễn phí theo mục <em>Cài đặt giới hạn học thử</em>.
+                </p>
+            </div>
+            <div class="overflow-x-auto max-h-[420px]">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead class="bg-gray-50 border-b border-gray-200 text-slate-500 text-xs uppercase sticky top-0">
+                        <tr>
+                            <th class="px-5 py-3">Cấp độ</th>
+                            <th class="px-5 py-3">Trạng thái áp dụng</th>
+                            <th class="px-5 py-3">Giá mở khóa (VNĐ)</th>
+                            <th class="px-5 py-3 text-right">Cập nhật</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        @foreach (var cd in Model.DanhSachGiaCapDo)
+                        {
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-5 py-3 font-medium text-slate-800">
+                                    @cd.TenCapDo
+                                    @if (cd.DangCoDonCho)
+                                    {
+                                        <span class="ml-2 text-[11px] bg-amber-50 text-amber-700 border border-amber-200 px-1.5 py-0.5 rounded">Có đơn chờ</span>
+                                    }
+                                </td>
+                                <td class="px-5 py-3">
+                                    @if (cd.IsMienPhiTheoGioiHan)
+                                    {
+                                        <span class="px-2 py-0.5 rounded text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">Miễn phí (Top @Model.SoCapDoMienPhi)</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="px-2 py-0.5 rounded text-xs font-semibold bg-gray-100 text-slate-600">Tính phí</span>
+                                    }
+                                </td>
+                                <td class="px-5 py-3">
+                                    <input type="number" id="gia_cd_@cd.IdCapDo" min="0" step="1000" value="@Convert.ToInt64(cd.GiaTien)"
+                                           @(cd.DangCoDonCho ? "disabled" : "")
+                                           class="w-32 border border-gray-300 rounded px-2.5 py-1 text-right font-semibold outline-none focus:border-slate-800 disabled:bg-gray-100 disabled:text-slate-400" />
+                                </td>
+                                <td class="px-5 py-3 text-right">
+                                    @if (cd.DangCoDonCho)
+                                    {
+                                        <span class="text-xs text-slate-400">Đã khóa</span>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" data-id="@cd.IdCapDo" onclick="luuGiaCapDo(this)"
+                                                class="px-3 py-1 bg-white hover:bg-slate-900 hover:text-white text-slate-700 border border-gray-300 rounded text-xs font-semibold transition">
+                                            Lưu
+                                        </button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    @* 4. DANH SÁCH TÀI KHOẢN ĐÃ NÂNG CẤP VIP *@
+    <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h3 class="font-bold text-base text-slate-900">Danh sách tài khoản đã nâng cấp vĩnh viễn</h3>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-sm">
+                <thead>
+                    <tr class="bg-gray-50 border-b border-gray-200 text-slate-500 text-xs uppercase">
+                        <th class="px-6 py-3">Học viên</th>
+                        <th class="px-6 py-3">Email</th>
+                        <th class="px-6 py-3 text-center">Ngày kích hoạt</th>
+                        <th class="px-6 py-3 text-center">Cấp độ đã mua</th>
+                        <th class="px-6 py-3 text-right">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    @foreach (var vip in Model.DanhSachTaiKhoanVip)
+                    {
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-3.5">
+                                <div class="font-semibold text-slate-800">@vip.HoVaTen</div>
+                                <div class="text-xs text-slate-400">@vip.TenDangNhap</div>
+                            </td>
+                            <td class="px-6 py-3.5 text-slate-600">@vip.Email</td>
+                            <td class="px-6 py-3.5 text-center text-slate-600">@vip.NgayNangCap.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td class="px-6 py-3.5 text-center font-semibold text-slate-800">@vip.SoCapDoDaMua</td>
+                            <td class="px-6 py-3.5 text-right">
+                                <button type="button" data-id="@vip.IdNguoiDung" data-name="@vip.HoVaTen" onclick="thuHoiVip(this)"
+                                        class="px-3 py-1 text-xs font-semibold text-slate-600 hover:text-red-700 border border-gray-300 hover:border-red-300 rounded-lg transition">
+                                    Thu hồi VIP
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+@section scripts {
+    <script>
+                async function postData(url = "", payload = {}) {
+                    const res = await fetch(url, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(payload)
+                    });
+                    return await res.json();
+                }
+
+                function filterTransactions() {
+                    const el = document.getElementById("filterTrangThai");
+                    const val = el ? el.value : "ALL";
+                    document.querySelectorAll(".gd-row").forEach(row => {
+                        row.style.display = (val === "ALL" || row.getAttribute("data-status") === val) ? "" : "none";
+                    });
+                }
+
+                async function xuLyDon(btn, action = "") {
+                    const maDonHang = btn.getAttribute("data-ma");
+                    const msg = action === "DuyetGiaoDich"
+                        ? `Xác nhận đã nhận tiền và kích hoạt quyền lợi cho đơn ${maDonHang}?`
+                        : `Chắc chắn hủy giao dịch ${maDonHang}?`;
+                    if (!confirm(msg)) return;
+
+                    const res = await postData(`/Admin/QuanLyTaiChinh/${action}`, { maDonHang });
+                    alert(res.message);
+                    if (res.success) location.reload();
+                }
+
+                async function luuGoiNangCap() {
+                    const payload = {
+                        tenGoi: document.getElementById("cfgTenGoi").value,
+                        giaNangCap: Number(document.getElementById("cfgGiaGoi").value),
+                        phanTramGiam: Number(document.getElementById("cfgPhanTram").value),
+                        moTa: document.getElementById("cfgMoTa").value
+                    };
+
+                    if (payload.giaNangCap < 0 || payload.phanTramGiam < 0 || payload.phanTramGiam > 100) {
+                        alert("Dữ liệu giá hoặc phần trăm chiết khấu không hợp lệ.");
+                        return;
+                    }
+                    if (!confirm("Xác nhận lưu thay đổi bảng giá gói nâng cấp?")) return;
+
+                    const res = await postData("/Admin/QuanLyTaiChinh/CapNhatGoiNangCap", payload);
+                    alert(res.message);
+                    if (res.success) location.reload();
+                }
+
+                async function luuGiaCapDo(btn) {
+                    const idCapDo = Number(btn.getAttribute("data-id"));
+                    const giaTien = Number(document.getElementById(`gia_cd_${idCapDo}`).value);
+
+                    if (giaTien < 0) {
+                        alert("Giá cấp độ không được nhỏ hơn 0.");
+                        return;
+                    }
+
+                    const res = await postData("/Admin/QuanLyTaiChinh/CapNhatGiaCapDo", { idCapDo, giaTien });
+                    alert(res.message);
+                    if (res.success) location.reload();
+                }
+
+                async function thuHoiVip(btn) {
+                    const idNguoiDung = Number(btn.getAttribute("data-id"));
+                    const hoTen = btn.getAttribute("data-name");
+                    if (!confirm(`Thu hồi quyền nâng cấp vĩnh viễn của học viên "${hoTen}"?`)) return;
+
+                    const res = await postData("/Admin/QuanLyTaiChinh/ThuHoiVip", { idNguoiDung });
+                    alert(res.message);
+                    if (res.success) location.reload();
+                }
+    </script>
+}

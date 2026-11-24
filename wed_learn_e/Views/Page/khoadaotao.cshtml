@@ -1,5 +1,4 @@
-﻿@model List<wed_learn_e.Models.cap_do>
-
+﻿@model wed_learn_e.Models.DanhSachCapDoViewModel
 @{
     ViewBag.Title = "Khóa Đào Tạo";
     Layout = "~/Views/Shared/_Layoutcauhoi.cshtml";
@@ -8,85 +7,279 @@
 <style>
     body {
         margin: 0;
-        font-family: Arial;
+        font-family: Arial, sans-serif;
         background: #e9f5ff;
+        overflow-x: hidden;
     }
 
-    /* --- GIAO DIỆN KHÓA HỌC --- */
-    .title {
-        text-align: center;
-        padding: 40px;
-        font-size: 32px;
-        font-weight: bold;
-        color: #0d6efd;
+    .kdt-container,
+    .kdt-container *,
+    .kdt-container *::before,
+    .kdt-container *::after {
+        box-sizing: border-box;
     }
 
-    .course-container {
+    .kdt-container {
         width: 90%;
-        margin: auto;
-        display: grid;
-        grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
-        gap: 25px;
-        padding-bottom: 50px;
+        max-width: 1140px;
+        margin: 0 auto;
+        padding: 6px 0 60px;
     }
 
-    .course-box {
-        background: white;
-        border-radius: 12px;
-        padding: 25px;
+    .kdt-subtitle {
         text-align: center;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        transition: 0.3s;
+        color: #475569;
+        font-size: 14px;
+        margin: 0 0 20px;
+    }
+
+    /* Thanh trạng thái VIP gọn gàng */
+    .kdt-vip-bar {
+        width: 100%;
+        background: #ffffff;
+        border: 1px solid #cfe2ff;
+        border-radius: 12px;
+        padding: 12px 18px;
+        margin-bottom: 24px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        font-size: 14px;
+        box-shadow: 0 3px 10px rgba(13, 110, 253, 0.06);
+    }
+
+        .kdt-vip-bar.is-vip {
+            background: #fffbeb;
+            border-color: #fcd34d;
+        }
+
+    .kdt-btn-vip {
+        background: #f59e0b;
+        color: #111827;
+        font-weight: bold;
+        padding: 7px 14px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 13px;
+        white-space: nowrap;
+        transition: 0.2s;
+    }
+
+        .kdt-btn-vip:hover {
+            background: #d97706;
+            color: #fff;
+        }
+
+    /* Lưới thẻ gọn giống kích thước ban đầu */
+    .kdt-grid {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 22px;
+    }
+
+    .kdt-card {
+        min-width: 0;
+        border-radius: 12px;
+        padding: 20px 18px;
+        text-align: center;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(13, 110, 253, 0.08);
+        transition: 0.25s;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
     }
 
-        .course-box:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        .kdt-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.14);
         }
 
-    .course-icon {
-        font-size: 40px;
-        margin-bottom: 15px;
+    .kdt-card-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
     }
 
-    .course-title {
-        font-size: 20px;
+    .kdt-icon {
+        font-size: 32px;
+        line-height: 1;
+    }
+
+    .kdt-badge {
+        font-size: 11px;
         font-weight: bold;
-        margin-bottom: 10px;
+        padding: 3px 9px;
+        border-radius: 999px;
+    }
+
+    .badge-free {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+    .badge-owned {
+        background: #dbeafe;
+        color: #1d4ed8;
+    }
+
+    .badge-forever {
+        background: #e2e8f0;
+        color: #475569;
+    }
+
+    .kdt-title {
+        font-size: 19px;
+        font-weight: bold;
+        margin-bottom: 8px;
         color: #007bff;
     }
 
-    .course-desc {
-        font-size: 14px;
+    .kdt-desc {
+        font-size: 13.5px;
         color: #555;
-        margin-bottom: 20px;
+        line-height: 1.45;
+        margin-bottom: 16px;
         flex-grow: 1;
     }
 
-    .btn-course {
-        background: #0d6efd;
-        color: white;
-        padding: 10px 18px;
-        border-radius: 6px;
-        text-decoration: none;
-        align-self: center;
-        cursor: pointer;
-        border: none;
-        font-size: 16px;
+    .kdt-price-box {
+        border-top: 1px dashed #cbd5e1;
+        padding-top: 12px;
+        margin-bottom: 14px;
+        min-height: 58px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
     }
 
-        .btn-course:hover {
-            background: #0b5ed7;
+    .kdt-price-old {
+        font-size: 13px;
+        color: #94a3b8;
+        text-decoration: line-through;
+        margin-right: 5px;
+    }
+
+    .kdt-discount-tag {
+        background: #fef3c7;
+        color: #b45309;
+        font-size: 11px;
+        font-weight: bold;
+        padding: 2px 7px;
+        border-radius: 999px;
+    }
+
+    .kdt-price-now {
+        font-size: 20px;
+        font-weight: bold;
+        color: #dc2626;
+        margin-top: 2px;
+    }
+
+    .kdt-price-free {
+        font-size: 17px;
+        font-weight: bold;
+        color: #16a34a;
+    }
+
+    .kdt-vip-note {
+        font-size: 11.5px;
+        color: #b45309;
+        margin-top: 3px;
+    }
+
+    .kdt-btn {
+        display: inline-block;
+        width: 100%;
+        padding: 9px 14px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        transition: 0.2s;
+    }
+
+    .kdt-btn-green {
+        background: #28a745;
+        color: #ffffff;
+    }
+
+        .kdt-btn-green:hover {
+            background: #218838;
+            color: #ffffff;
         }
+
+    .kdt-btn-blue {
+        background: #0d6efd;
+        color: #ffffff;
+    }
+
+        .kdt-btn-blue:hover {
+            background: #0b5ed7;
+            color: #ffffff;
+        }
+
+    .kdt-alert {
+        padding: 12px 16px;
+        border-radius: 10px;
+        margin-bottom: 16px;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .kdt-alert-ok {
+        background: #dcfce7;
+        color: #166534;
+        border: 1px solid #bbf7d0;
+    }
+
+    .kdt-alert-err {
+        background: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+    }
+
+    /* Con mèo góc dưới phải */
+    .cat-mascot {
+        position: fixed;
+        bottom: 18px;
+        right: 22px;
+        z-index: 99;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+
+        .cat-mascot img {
+            width: 46px;
+            height: 46px;
+        }
+
+    .cat-text {
+        background: #ffffff;
+        color: #1e293b;
+        padding: 5px 10px;
+        border-radius: 10px;
+        font-size: 12.5px;
+        font-weight: bold;
+        white-space: nowrap;
+        margin-bottom: 5px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
 
     .extra-title {
         text-align: center;
-        margin-top: 80px;
-        margin-bottom: 20px;
-        font-size: 28px;
+        margin-top: 25px;
+        margin-bottom: 14px;
+        font-size: 32px;
         font-weight: bold;
         color: #0b5ed7;
         position: relative;
@@ -94,267 +287,161 @@
 
         .extra-title:after {
             content: "";
-            width: 120px;
-            height: 3px;
+            width: 130px;
+            height: 4px;
             background: #0d6efd;
             display: block;
-            margin: 10px auto;
-            border-radius: 3px;
+            margin: 10px auto 0;
+            border-radius: 4px;
         }
-
-    /* --- GIAO DIỆN CON MÈO --- */
-    .cat-mascot {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        font-size: 55px;
-        animation: floatCat 10s infinite ease-in-out;
-    }
-
-    .cat-text {
-        position: absolute;
-        bottom: 70px;
-        right: 0;
-        background: white;
-        padding: 6px 10px;
-        border-radius: 10px;
-        font-size: 14px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    }
-
-    @@keyframes floatCat {
-        0% {
-            transform: translateY(0);
-        }
-
-        50% {
-            transform: translateY(-8px);
-        }
-
-        100% {
-            transform: translateY(0);
-        }
-    }
-
-    /* --- GIAO DIỆN BẢNG THÔNG BÁO NỔI --- */
-    .custom-modal-overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.6);
-        z-index: 9999;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .custom-modal-box {
-        background: #fff;
-        padding: 30px;
-        border-radius: 15px;
-        width: 400px;
-        max-width: 90%;
-        text-align: center;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        animation: modalFadeIn 0.3s ease;
-    }
-
-    .custom-modal-title {
-        font-size: 22px;
-        font-weight: bold;
-        margin-bottom: 15px;
-        color: #0d6efd;
-    }
-
-    .custom-modal-message {
-        font-size: 16px;
-        color: #444;
-        margin-bottom: 25px;
-        line-height: 1.5;
-        white-space: pre-line;
-    }
-
-    .custom-modal-buttons {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-    }
-
-    .btn-modal {
-        padding: 10px 24px;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: bold;
-        font-size: 15px;
-        transition: 0.2s;
-    }
-
-    .btn-modal-cancel {
-        background: #e9ecef;
-        color: #495057;
-    }
-
-        .btn-modal-cancel:hover {
-            background: #dde2e6;
-        }
-
-    .btn-modal-confirm {
-        background: #0d6efd;
-        color: #fff;
-    }
-
-        .btn-modal-confirm:hover {
-            background: #0b5ed7;
-        }
-
-    @@keyframes modalFadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(-20px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
 </style>
 
-<div class="extra-title">Khóa Đào Tạo Tiếng Anh</div>
+@Html.Partial("_NutQuayLai", new ViewDataDictionary {
+    { "LinkQuayVe", Url.Action("Index", "Trang_chu") },
+    { "TieuDe", "Khóa Đào Tạo Theo Cấp Độ" }
+})
 
-<div class="custom-modal-overlay" id="myCustomModal">
-    <div class="custom-modal-box">
-        <div class="custom-modal-title" id="modalTitle">Thông báo</div>
-        <div class="custom-modal-message" id="modalMessage">Nội dung...</div>
-        <div class="custom-modal-buttons">
-            <button class="btn-modal btn-modal-cancel" id="btnModalCancel">Hủy</button>
-            <button class="btn-modal btn-modal-confirm" id="btnModalConfirm">Đồng ý</button>
-        </div>
-    </div>
-</div>
+<div class="kdt-container">
+    <p class="kdt-subtitle">Chọn cấp độ phù hợp để luyện tập đầy đủ các kỹ năng • Mua 1 lần sở hữu trọn đời</p>
 
-<div class="course-container">
-    @{
-        string[] colors = { "#ffffff", "#f0f8ff", "#e6f4ff", "#f5fbff", "#eef7ff", "#f2f9ff" };
-        string[] icons = { "📘", "📗", "📙", "📕", "🎓", "🏆" };
-
-        // Hứng danh sách đã đăng ký từ Controller sang
-        var daDangKy = ViewBag.DaDangKy as List<int> ?? new List<int>();
+    @if (TempData["Success"] != null)
+    {
+        <div class="kdt-alert kdt-alert-ok">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="kdt-alert kdt-alert-err">@TempData["Error"]</div>
     }
 
-    @for (int i = 0; i < Model.Count; i++)
-    {
-        var item = Model[i];
-        <div class="course-box" style="background: @(colors[i % colors.Length])">
-            <div class="course-icon">@(icons[i % icons.Length])</div>
-            <div class="course-title">@item.ten_cap_do</div>
-            <div class="course-desc">@item.mo_ta</div>
-
-            @if (daDangKy.Contains(item.id_cap_do))
+    @* Thanh trạng thái VIP *@
+    <div class="kdt-vip-bar @(Model.DaNangCap ? "is-vip" : "")">
+        @if (Model.DaNangCap)
+        {
+            <div>
+                <strong style="color: #b45309;">👑 Tài khoản đã nâng cấp vĩnh viễn:</strong>
+                <span>Hệ thống tự động giảm <strong>@Model.PhanTramGiamVip%</strong> học phí cho tất cả cấp độ bên dưới.</span>
+            </div>
+        }
+        else
+        {
+            <div>
+                <strong>💡 Ưu đãi học viên nâng cấp:</strong>
+                <span>Nâng cấp 1 lần (@Model.GiaGoiNangCap.ToString("N0")đ) để được giảm ngay <strong>@Model.PhanTramGiamVip%</strong> học phí cho mọi cấp độ!</span>
+            </div>
+            if (Model.DaDangNhap)
             {
-                <a href="@Url.Action("thong_tin_khoa_hoc", "Page", new { id = item.id_cap_do })" class="btn-course" style="background: #28a745; text-decoration: none; display: inline-block;">
-                    Tiếp tục học
-                </a>
+                <a href="@Url.Action("Index", "NangCap")" class="kdt-btn-vip">Nâng cấp tài khoản</a>
             }
             else
             {
-                <button class="btn-course" onclick="xacNhanDangKy(@item.id_cap_do)">
-                    Chọn khóa học
-                </button>
+                <a href="@Url.Action("Index", "Home")" class="kdt-btn-vip">Đăng nhập để nâng cấp</a>
             }
-        </div>
-    }
+        }
+    </div>
+
+    @* Danh sách các Cấp độ *@
+    <div class="kdt-grid">
+        @{
+            string[] colors = { "#ffffff", "#f0f8ff", "#e6f4ff", "#f5fbff", "#eef7ff", "#f2f9ff" };
+            string[] icons = { "📘", "📗", "📙", "📕", "🎓", "🏆" };
+        }
+
+        @for (int i = 0; i < Model.DanhSachCapDo.Count; i++)
+        {
+            var item = Model.DanhSachCapDo[i];
+
+            <div class="kdt-card" style="background: @(colors[i % colors.Length]);">
+                <div>
+                    <div class="kdt-card-top">
+                        <span class="kdt-icon">@(icons[i % icons.Length])</span>
+                        @if (item.IsMienPhiTheoGioiHan)
+                        {
+                            <span class="kdt-badge badge-free">Miễn phí</span>
+                        }
+                        else if (item.DaSoHuu)
+                        {
+                            <span class="kdt-badge badge-owned">✓ Đã sở hữu</span>
+                        }
+                        else
+                        {
+                            <span class="kdt-badge badge-forever">Trọn đời</span>
+                        }
+                    </div>
+
+                    <div class="kdt-title">@item.TenCapDo</div>
+                    <div class="kdt-desc">@item.MoTa</div>
+                </div>
+
+                <div>
+                    @if (item.IsMienPhiTheoGioiHan)
+                    {
+                        <div class="kdt-price-box">
+                            <div class="kdt-price-free">Miễn phí học thử</div>
+                        </div>
+                        <a href="@Url.Action("thong_tin_khoa_hoc", "Page", new { id = item.IdCapDo })" class="kdt-btn kdt-btn-green">
+                            Vào học ngay
+                        </a>
+                    }
+                    else if (item.DaSoHuu)
+                    {
+                        <div class="kdt-price-box">
+                            <div style="font-size: 12.5px; color: #16a34a; font-weight: bold;">
+                                Kích hoạt @(item.NgayMua.HasValue ? item.NgayMua.Value.ToString("dd/MM/yyyy") : "vĩnh viễn")
+                            </div>
+                        </div>
+                        <a href="@Url.Action("thong_tin_khoa_hoc", "Page", new { id = item.IdCapDo })" class="kdt-btn kdt-btn-green">
+                            Tiếp tục học
+                        </a>
+                    }
+                    else
+                    {
+                        <div class="kdt-price-box">
+                            @if (Model.DaNangCap && item.PhanTramGiam > 0)
+                            {
+                                <div>
+                                    <span class="kdt-price-old">@item.GiaGoc.ToString("N0")đ</span>
+                                    <span class="kdt-discount-tag">-@item.PhanTramGiam% VIP</span>
+                                </div>
+                                <div class="kdt-price-now">@item.GiaSauGiam.ToString("N0")đ</div>
+                            }
+                            else
+                            {
+                                decimal giaNeuVip = Math.Round(item.GiaGoc * (100 - Model.PhanTramGiamVip) / 100m, 0, MidpointRounding.AwayFromZero);
+                                <div class="kdt-price-now">@item.GiaGoc.ToString("N0")đ</div>
+                                <div class="kdt-vip-note">VIP chỉ còn <strong>@giaNeuVip.ToString("N0")đ</strong> (-@Model.PhanTramGiamVip%)</div>
+                            }
+                        </div>
+
+                        if (!Model.DaDangNhap)
+                        {
+                            <a href="@Url.Action("Index", "Home")" class="kdt-btn kdt-btn-blue">Đăng nhập để mua</a>
+                        }
+                        else
+                        {
+                            using (Html.BeginForm("TaoDonCapDo", "MuaKhoaHoc", FormMethod.Post))
+                            {
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="idCapDo" value="@item.IdCapDo" />
+                                <button type="submit" class="kdt-btn kdt-btn-blue">
+                                    Mở khóa • @item.GiaSauGiam.ToString("N0")đ
+                                </button>
+                            }
+                        }
+                    }
+                </div>
+            </div>
+        }
+    </div>
 </div>
 
 <div class="cat-mascot">
-    <img src="https://cdn-icons-png.flaticon.com/512/763/763704.png" width="50" alt="cat">
     <div class="cat-text" id="catText">Let's learn English!</div>
+    <img src="https://cdn-icons-png.flaticon.com/512/763/763704.png" alt="cat">
 </div>
 
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    // --- 1. Script cho con mèo ---
-    var texts = [
-        "Let's learn English!",
-        "Practice makes perfect!",
-        "Keep studying!",
-        "You can do it!",
-        "New words today?"
-    ];
-    function changeText() {
-        var random = Math.floor(Math.random() * texts.length);
-        document.getElementById("catText").innerText = texts[random];
-    }
-    setInterval(changeText, 10000);
-
-    // --- 2. Hàm điều khiển Bảng thông báo nổi ---
-    function showModal(title, message, isConfirm, onConfirmCallback) {
-        $("#modalTitle").text(title);
-        $("#modalMessage").text(message);
-
-        // Nút Hủy chỉ hiện khi là câu hỏi Xác nhận
-        if (isConfirm) {
-            $("#btnModalCancel").show();
-        } else {
-            $("#btnModalCancel").hide();
-        }
-
-        // Hiện popup lên
-        $("#myCustomModal").css("display", "flex");
-
-        // Gắn sự kiện nút Đồng ý
-        $("#btnModalConfirm").off("click").on("click", function () {
-            $("#myCustomModal").css("display", "none");
-            if (typeof onConfirmCallback === "function") {
-                onConfirmCallback();
-            }
-        });
-
-        // Gắn sự kiện nút Hủy
-        $("#btnModalCancel").off("click").on("click", function () {
-            $("#myCustomModal").css("display", "none");
-        });
-    }
-
-    // --- 3. AJAX Xử lý Đăng ký khóa học ---
-    function xacNhanDangKy(idCapDo) {
-        showModal("Xác nhận đăng ký", "Bạn có chắc chắn muốn đăng ký tham gia khóa học cấp độ này không?", true, function () {
-
-            // Chạy AJAX sau khi người dùng bấm Đồng ý
-            $.ajax({
-                url: '@Url.Action("DangKyKhoaHoc", "Page")',
-                type: 'POST',
-                data: { id_cap_do: idCapDo },
-                success: function (res) {
-                    if (res.success) {
-                        window.location.href = res.redirect;
-                    } else {
-                        // Vượt giới hạn tài khoản Thường
-                        if (res.type === "limit_reached") {
-                            showModal("Giới hạn tài khoản", res.message + "\n\nBạn có muốn chuyển đến trang Nâng cấp VIP ngay?", true, function() {
-                                window.location.href = res.redirect;
-                            });
-                        }
-                        // Chưa đăng nhập
-                        else if (res.type === "not_logged_in") {
-                            showModal("Yêu cầu đăng nhập", res.message, false, function() {
-                                window.location.href = res.redirect;
-                            });
-                        }
-                        // Các lỗi khác
-                        else {
-                            showModal("Lỗi", res.message, false);
-                        }
-                    }
-                },
-                error: function () {
-                    showModal("Lỗi kết nối", "Có lỗi xảy ra khi kết nối với máy chủ! Vui lòng thử lại.", false);
-                }
-            });
-        });
-    }
+            const texts = ["Let's learn English!", "Practice makes perfect!", "Keep studying!", "You can do it!"];
+            setInterval(() => {
+                document.getElementById("catText").innerText = texts[Math.floor(Math.random() * texts.length)];
+            }, 10000);
 </script>

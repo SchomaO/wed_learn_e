@@ -61,37 +61,22 @@ namespace wed_learn_e.Controllers
         }
         public ActionResult khoadaotao()
         {
-            var danhSachCapDo = db.cap_do.ToList();
-
-            // 1. Khởi tạo danh sách các cấp độ đã đăng ký (ban đầu rỗng)
-            List<int> listCapDoDaDangKy = new List<int>();
-
-            // 2. Nếu người dùng đã đăng nhập, tiến hành tìm các khóa đã mua
-            if (Session["user_id"] != null)
+            int? userId = null;
+            if (Session["id_nguoi_dung"] != null)
+                userId = Convert.ToInt32(Session["id_nguoi_dung"]);
+            else if (Session["TenDN"] != null)
             {
-                int userId = Convert.ToInt32(Session["user_id"]);
-
-                // Tìm ID của các bài học nhỏ đã có trong bảng Tiến độ
-                var idKhoaHocs = db.tien_do_hoc_tap
-                                   .Where(t => t.id_nguoi_dung == userId)
-                                   .Select(t => t.id_khoa_hoc)
-                                   .ToList();
-
-                // Từ bài học nhỏ, truy ngược ra ID Cấp độ (A1, A2...)
-                if (idKhoaHocs.Any())
+                string tenDn = Session["TenDN"].ToString();
+                var user = db.nguoi_dung.FirstOrDefault(u => u.ten_dang_nhap == tenDn);
+                if (user != null)
                 {
-                    listCapDoDaDangKy = db.khoa_hoc
-                                          .Where(k => idKhoaHocs.Contains(k.id_khoa_hoc))
-                                          .Select(k => k.id_cap_do ?? 0)
-                                          .Distinct()
-                                          .ToList();
+                    userId = user.id_nguoi_dung;
+                    Session["id_nguoi_dung"] = userId;
                 }
             }
 
-            // 3. Ném danh sách này ra ViewBag để file HTML biết đường xử lý
-            ViewBag.DaDangKy = listCapDoDaDangKy;
-
-            return View(danhSachCapDo);
+            var vm = wed_learn_e.Controllers.MuaKhoaHocController.LayDuLieuCuaHangCapDo(userId);
+            return View(vm);
         }
 
         [HttpPost]
@@ -292,63 +277,6 @@ namespace wed_learn_e.Controllers
                 // Bắt lỗi ngầm để nếu gửi mail có lỗi thì web vẫn chạy tiếp không bị văng
                 Console.WriteLine("Lỗi gửi mail: " + ex.Message);
             }
-        }
-        // 2. Hàm xử lý AJAX khi bấm nút "Thanh toán"
-        [HttpPost]
-        public JsonResult XuLyThanhToan(string goi_vip, string phuong_thuc)
-        {
-            if (Session["user_id"] == null)
-                return Json(new { success = false, message = "Phiên đăng nhập đã hết hạn!" });
-
-            int userId = Convert.ToInt32(Session["user_id"]);
-            var user = db.nguoi_dung.FirstOrDefault(u => u.id_nguoi_dung == userId);
-
-            if (user != null)
-            {
-                string tenGoi = "";
-
-                if (goi_vip == "VIP_THANG")
-                {
-                    user.loai_tai_khoan = 2;
-                    user.ngay_het_han_vip = DateTime.Now.AddDays(30);
-                    tenGoi = "VIP 1 Tháng (99.000 VNĐ)";
-                }
-                else if (goi_vip == "VIP_NAM")
-                {
-                    user.loai_tai_khoan = 3;
-                    user.ngay_het_han_vip = DateTime.Now.AddDays(365);
-                    tenGoi = "VIP 1 Năm (799.000 VNĐ)";
-                }
-                else
-                {
-                    return Json(new { success = false, message = "Gói VIP không hợp lệ!" });
-                }
-
-                db.SaveChanges(); // Lưu vào cơ sở dữ liệu
-
-                // --- GỬI EMAIL THÔNG BÁO ---
-                // Chuyển mã phương thức thành chữ dễ đọc
-                string tenPhuongThuc = "Không xác định";
-                if (phuong_thuc == "VNPAY") tenPhuongThuc = "Thanh toán qua VNPAY";
-                else if (phuong_thuc == "MOMO") tenPhuongThuc = "Ví điện tử MoMo";
-                else if (phuong_thuc == "BANK") tenPhuongThuc = "Chuyển khoản ngân hàng";
-
-                // Gọi hàm gửi mail (chạy ngầm)
-                GuiEmailThongBao(user.email, user.ho_va_ten, tenGoi, tenPhuongThuc, user.ngay_het_han_vip);
-                // -----------------------------
-
-                // Cập nhật lại Session ngay lập tức để giao diện thay đổi mà không cần đăng nhập lại
-                Session["LoaiTaiKhoan"] = user.loai_tai_khoan;
-
-                return Json(new
-                {
-                    success = true,
-                    message = "🎉 Thanh toán thành công! Chào mừng bạn đến với đặc quyền VIP.",
-                    redirect = Url.Action("khoadaotao", "Page")
-                });
-            }
-
-            return Json(new { success = false, message = "Không tìm thấy thông tin người dùng!" });
         }
         
         // Thêm tham số id_cap_do vào hàm

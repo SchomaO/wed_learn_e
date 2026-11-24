@@ -1,0 +1,206 @@
+﻿@model wed_learn_e.Models.TrangNangCapViewModel
+@{
+    ViewBag.Title = "Nâng cấp tài khoản Kity PRO";
+    Layout = "~/Views/Shared/_Layoutcauhoi.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title - KityLearn</title>
+    <link rel="icon" type="image/png" href="@Url.Content("~/Img/Gemini_Generated_Image_xdycdaxdycdaxdyc-removebg-preview (1).png")" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        .nc-banner {
+            background: linear-gradient(135deg, #ff8c00 0%, #ffb703 100%);
+            color: #fff;
+            border-radius: 20px;
+            padding: 36px 30px;
+        }
+
+        .nc-card {
+            border: 2px solid #ffb703;
+            border-radius: 20px;
+            box-shadow: 0 12px 30px rgba(255, 140, 0, 0.12);
+        }
+
+        .nc-badge {
+            background: #fff3cd;
+            color: #b45309;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+        }
+
+        .qr-method-box {
+            border: 2px solid #ff8c00;
+            background-color: #fff8eb;
+            border-radius: 14px;
+            padding: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    @Html.Partial("_NutQuayLai", new ViewDataDictionary {
+    { "LinkQuayVe", Url.Action("Index", "Trang_chu") },
+    { "TieuDe", "Nâng Cấp Tài Khoản Vĩnh Viễn" }
+})
+    <div class="container py-5">
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show rounded-3" role="alert">
+                <i class="fa-solid fa-circle-check me-2"></i> @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show rounded-3" role="alert">
+                <i class="fa-solid fa-triangle-exclamation me-2"></i> @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <div class="nc-banner mb-4">
+            <span class="badge bg-dark text-warning mb-2 px-3 py-2 rounded-pill">
+                <i class="fa-solid fa-crown me-1"></i> ĐẶC QUYỀN HỌC VIÊN
+            </span>
+            <h2 class="fw-bold mb-1">Nâng cấp tài khoản 1 lần – Sử dụng trọn đời</h2>
+            <p class="mb-0">Giảm trực tiếp <strong>@Model.Goi.PhanTramGiamKhoaHoc%</strong> học phí khi mua bất kỳ khóa học nào trên hệ thống.</p>
+        </div>
+
+        <div class="row g-4 align-items-stretch">
+            <!-- Cột trái: Thông tin gói nâng cấp -->
+            <div class="col-lg-7">
+                <div class="card nc-card h-100 bg-white">
+                    <div class="card-body p-4 p-md-5">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="nc-badge"><i class="fa-solid fa-bolt me-1"></i> NÂNG CẤP VĨNH VIỄN</span>
+                            @if (Model.DaNangCap)
+                            {
+                                <span class="badge bg-success px-3 py-2 rounded-pill">
+                                    <i class="fa-solid fa-check me-1"></i> Đã nâng cấp trọn đời
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary px-3 py-2 rounded-pill">Tài khoản thường</span>
+                            }
+                        </div>
+
+                        <h3 class="fw-bold text-dark">@Model.Goi.TenGoi</h3>
+                        <p class="text-muted">@Model.Goi.MoTa</p>
+
+                        <div class="my-4 p-3 bg-light rounded-4 d-flex align-items-baseline gap-2">
+                            <span class="display-5 fw-bold text-warning">@Model.Goi.GiaNangCap.ToString("N0")đ</span>
+                            <span class="text-muted fs-5">/ Thanh toán 1 lần duy nhất</span>
+                        </div>
+
+                        <h6 class="fw-bold text-uppercase text-muted mb-3">Quyền lợi khi nâng cấp:</h6>
+                        <ul class="list-unstyled mb-4">
+                            <li class="mb-3 d-flex align-items-center">
+                                <i class="fa-solid fa-circle-check text-success fs-5 me-3"></i>
+                                <span>Giảm ngay <strong>@Model.Goi.PhanTramGiamKhoaHoc% giá tiền</strong> cho tất cả các khóa học (A1 – C2).</span>
+                            </li>
+                            <li class="mb-3 d-flex align-items-center">
+                                <i class="fa-solid fa-circle-check text-success fs-5 me-3"></i>
+                                <span>Hiệu lực <strong>vĩnh viễn trọn đời</strong>, không giới hạn thời gian, không cần gia hạn.</span>
+                            </li>
+                            <li class="mb-0 d-flex align-items-center">
+                                <i class="fa-solid fa-circle-check text-success fs-5 me-3"></i>
+                                <span>Mở khóa huy hiệu tài khoản nâng cấp trên toàn hệ thống KityLearn.</span>
+                            </li>
+                        </ul>
+
+                        <div class="border rounded-3 p-3 bg-warning bg-opacity-10">
+                            <div class="small fw-bold text-dark mb-1">
+                                <i class="fa-solid fa-calculator text-warning me-1"></i> Ví dụ mức tiết kiệm khi mua khóa học:
+                            </div>
+                            <div class="d-flex justify-content-between small">
+                                <span>Khóa học giá gốc <strong>299.000đ</strong>:</span>
+                                <span>
+                                    Chỉ còn <strong class="text-danger">@((299000 * (100 - Model.Goi.PhanTramGiamKhoaHoc) / 100).ToString("N0"))đ</strong>
+                                    (Tiết kiệm @((299000 * Model.Goi.PhanTramGiamKhoaHoc / 100).ToString("N0"))đ)
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cột phải: Phương thức thanh toán duy nhất (QR Ngân hàng) -->
+            <div class="col-lg-5">
+                <div class="card border-0 shadow-sm rounded-4 h-100">
+                    <div class="card-body p-4 d-flex flex-column justify-content-between">
+                        @if (Model.DaNangCap)
+                        {
+                            <div class="text-center my-auto py-4">
+                                <i class="fa-solid fa-crown text-warning display-1 mb-3"></i>
+                                <h4 class="fw-bold">Tài khoản đã được nâng cấp!</h4>
+                                <p class="text-muted">
+                                    Bạn đã nâng cấp tài khoản vĩnh viễn
+                                    @(Model.NgayNangCap.HasValue ? "vào ngày " + Model.NgayNangCap.Value.ToString("dd/MM/yyyy") : "").
+                                    Mọi khóa học của bạn đều được tự động giảm <strong>@Model.Goi.PhanTramGiamKhoaHoc%</strong>.
+                                </p>
+                                <a href="@Url.Action("khoadaotao", "Page")" class="btn btn-warning fw-bold px-4 py-2 rounded-3 text-dark">
+                                    Chọn khóa học ngay
+                                </a>
+                            </div>
+                        }
+                        else
+                        {
+                            using (Html.BeginForm("TaoDonNangCap", "NangCap", FormMethod.Post))
+                            {
+                                @Html.AntiForgeryToken()
+                                <div>
+                                    <h5 class="fw-bold mb-3">Phương thức thanh toán</h5>
+
+                                    <div class="qr-method-box mb-4 d-flex align-items-center justify-content-between">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fa-solid fa-qrcode text-warning fs-2 me-3"></i>
+                                            <div>
+                                                <div class="fw-bold text-dark">Chuyển khoản Ngân hàng (VietQR)</div>
+                                                <div class="small text-muted">Quét mã QR bằng app Ngân hàng bất kỳ</div>
+                                            </div>
+                                        </div>
+                                        <i class="fa-solid fa-circle-check text-warning fs-5"></i>
+                                    </div>
+
+                                    <hr />
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="text-muted">Gói đăng ký:</span>
+                                        <span class="fw-semibold">@Model.Goi.TenGoi</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="text-muted">Thời hạn:</span>
+                                        <span class="fw-semibold text-success">Vĩnh viễn</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mb-4">
+                                        <span class="fw-bold">Tổng thanh toán:</span>
+                                        <span class="fs-4 fw-bold text-danger">@Model.Goi.GiaNangCap.ToString("N0")đ</span>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-warning w-100 py-3 fw-bold fs-5 rounded-3 text-dark shadow-sm">
+                                    <i class="fa-solid fa-qrcode me-2"></i> Lấy mã QR thanh toán
+                                </button>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        @Html.Partial("~/Views/Trang_chu/Footer.cshtml", new ViewDataDictionary())
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

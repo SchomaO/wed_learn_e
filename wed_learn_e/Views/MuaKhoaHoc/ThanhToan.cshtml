@@ -1,0 +1,248 @@
+﻿@model wed_learn_e.Models.DonHangCapDoViewModel
+@{
+    ViewBag.Title = "Thanh toán cấp độ " + Model.MaDonHang;
+    Layout = "~/Views/Shared/_Layoutcauhoi.cshtml";
+}
+
+<style>
+    body {
+        background: #eef6ff;
+        font-family: 'Segoe UI', Arial, sans-serif;
+    }
+
+    .checkout-wrapper {
+        max-width: 920px;
+        margin: 28px auto 70px;
+        padding: 0 16px;
+    }
+
+    .top-nav-bar {
+        display: flex;
+        justify-content: flex-start;
+        margin-bottom: 18px;
+    }
+
+    .btn-back-left {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #ffffff;
+        color: #1e293b;
+        border: 1px solid #cbd5e1;
+        padding: 9px 18px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05);
+        transition: 0.2s;
+    }
+
+        .btn-back-left:hover {
+            background: #0d6efd;
+            color: #ffffff;
+            border-color: #0d6efd;
+        }
+
+    .checkout-card {
+        background: #fff;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        overflow: hidden;
+        box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06);
+    }
+
+    .checkout-header {
+        background: #0f172a;
+        color: #fff;
+        padding: 18px 28px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .checkout-body {
+        display: grid;
+        grid-template-columns: 1fr 1.3fr;
+        gap: 32px;
+        padding: 32px;
+    }
+
+    @@media (max-width: 768px) {
+        .checkout-body {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .qr-box {
+        text-align: center;
+        border-right: 1px solid #e2e8f0;
+        padding-right: 24px;
+    }
+
+    @@media (max-width: 768px) {
+        .qr-box {
+            border-right: none;
+            border-bottom: 1px solid #e2e8f0;
+            padding-right: 0;
+            padding-bottom: 24px;
+        }
+    }
+
+    .qr-frame {
+        display: inline-block;
+        padding: 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 14px;
+        background: #fff;
+        margin: 12px 0;
+    }
+
+    .info-table {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 16px 20px;
+        margin-bottom: 20px;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 9px 0;
+        border-bottom: 1px solid #e2e8f0;
+        font-size: 14px;
+    }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+    .btn-copy {
+        background: #fff;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        padding: 3px 8px;
+        font-size: 12px;
+        cursor: pointer;
+        margin-left: 6px;
+    }
+
+    .btn-confirm {
+        width: 100%;
+        padding: 13px;
+        background: #16a34a;
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+        .btn-confirm:hover {
+            background: #15803d;
+        }
+</style>
+
+<div class="checkout-wrapper">
+    @* Nút quay về danh sách cấp độ bên trái *@
+    <div class="top-nav-bar">
+        <a href="@Url.Action("khoadaotao", "Page")" class="btn-back-left">
+            ← Quay lại danh sách cấp độ
+        </a>
+    </div>
+
+    <div class="checkout-card">
+        <div class="checkout-header">
+            <strong>THANH TOÁN MỞ KHÓA CẤP ĐỘ TRỌN ĐỜI</strong>
+            <span style="background: #f59e0b; color: #111827; padding: 4px 12px; border-radius: 999px; font-size: 13px; font-weight: 700;">
+                Mã đơn: @Model.MaDonHang
+            </span>
+        </div>
+
+        <div class="checkout-body">
+            <div class="qr-box">
+                <div style="font-weight: 700; color: #0f172a;">Quét mã VietQR để thanh toán</div>
+                <div class="qr-frame">
+                    <img src="@Model.LinkQrCode" alt="VietQR Cấp độ" style="max-width: 240px; width: 100%;" />
+                </div>
+                <div style="font-size: 13px; color: #64748b;">
+                    Mã QR đã tự động điền sẵn số tiền và nội dung chuyển khoản <strong>@Model.MaDonHang</strong>.
+                </div>
+            </div>
+
+            <div>
+                <h3 style="margin-top: 0; font-size: 18px; color: #0f172a;">Chi tiết đơn hàng</h3>
+
+                <div class="info-table">
+                    <div class="info-row">
+                        <span style="color: #64748b;">Cấp độ đăng ký:</span>
+                        <strong>@Model.TenCapDo</strong>
+                    </div>
+                    <div class="info-row">
+                        <span style="color: #64748b;">Thời hạn sử dụng:</span>
+                        <span style="color: #16a34a; font-weight: 700;">Vĩnh viễn (Trọn đời)</span>
+                    </div>
+                    <div class="info-row">
+                        <span style="color: #64748b;">Học phí gốc:</span>
+                        <span>@Model.GiaGoc.ToString("N0")đ</span>
+                    </div>
+                    @if (Model.SoTienGiam > 0)
+                    {
+                        <div class="info-row">
+                            <span style="color: #64748b;">Ưu đãi tài khoản nâng cấp (-@Model.PhanTramGiam%):</span>
+                            <span style="color: #16a34a; font-weight: 700;">-@Model.SoTienGiam.ToString("N0")đ</span>
+                        </div>
+                    }
+                    <div class="info-row">
+                        <span style="font-weight: 700;">Số tiền cần chuyển:</span>
+                        <span style="font-size: 22px; font-weight: 800; color: #dc2626;">@Model.ThanhTien.ToString("N0")đ</span>
+                    </div>
+                </div>
+
+                <div class="info-table">
+                    <div class="info-row">
+                        <span style="color: #64748b;">Ngân hàng:</span>
+                        <strong>@Model.TenNganHang</strong>
+                    </div>
+                    <div class="info-row">
+                        <span style="color: #64748b;">Số tài khoản:</span>
+                        <div>
+                            <strong id="stkCd">@Model.SoTaiKhoan</strong>
+                            <button type="button" class="btn-copy" onclick="copyValue('stkCd')">Sao chép</button>
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <span style="color: #64748b;">Chủ tài khoản:</span>
+                        <strong>@Model.ChuTaiKhoan</strong>
+                    </div>
+                    <div class="info-row">
+                        <span style="color: #64748b;">Nội dung CK:</span>
+                        <div>
+                            <strong id="ndCd" style="color: #0d6efd;">@Model.MaDonHang</strong>
+                            <button type="button" class="btn-copy" onclick="copyValue('ndCd')">Sao chép</button>
+                        </div>
+                    </div>
+                </div>
+
+                @if (Model.TrangThai != "SUCCESS")
+                {
+                    <div style="background: #fffbeb; border: 1px solid #fcd34d; color: #92400e; padding: 14px; border-radius: 10px; font-size: 14px; text-align: center; margin-top: 14px;">
+                        ⏳ <strong>Đơn hàng đang chờ xác nhận:</strong> Sau khi chuyển khoản đúng nội dung, quản trị viên sẽ kiểm tra và mở khóa cấp độ cho bạn trong ít phút.
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+        function copyValue(id = "") {
+            const el = document.getElementById(id);
+            if (el) {
+                navigator.clipboard.writeText(el.innerText);
+                alert("Đã sao chép: " + el.innerText);
+            }
+        }
+</script>
