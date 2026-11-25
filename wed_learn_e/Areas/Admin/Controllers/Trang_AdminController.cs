@@ -26,7 +26,14 @@ namespace wed_learn_e.Areas.Admin.Controllers
             // Đổi thành Session Admin
             ViewBag.ho_va_ten = Session["Admin_HoTen"];
 
+            var dsIdNangCap = db.Database.SqlQuery<int>("SELECT id_nguoi_dung FROM nguoi_dung_nang_cap").ToList();
             var users = db.nguoi_dung.Where(u => u.vai_tro != "quan_tri_vien").ToList();
+
+            foreach (var u in users)
+            {
+                u.loai_tai_khoan = dsIdNangCap.Contains(u.id_nguoi_dung) ? 2 : 1;
+            }
+
             return View(users);
         }
         // ===============================================
@@ -255,42 +262,36 @@ namespace wed_learn_e.Areas.Admin.Controllers
 
         // 4. Hàm POST: Cập nhật thông tin học viên
         [HttpPost]
-        public JsonResult SuaNguoiDung(int id, string ho_ten, string email, string vai_tro, int loai_tk, DateTime? hsd)
+        public JsonResult SuaNguoiDung(int id, string vai_tro, int loai_tk)
         {
             try
             {
                 var user = db.nguoi_dung.Find(id);
                 if (user != null)
                 {
-                    user.ho_va_ten = ho_ten;
-                    user.email = email;
                     user.vai_tro = vai_tro;
                     user.loai_tai_khoan = loai_tk;
+                    user.ngay_het_han_vip = null;
 
-                    // Nếu bảng nguoi_dung của bạn có cột ngay_cap_nhat, hãy bỏ comment dòng dưới:
-                    // user.ngay_cap_nhat = DateTime.Now;
-
-                    if (loai_tk == 1)
+                    if (loai_tk == 2)
                     {
-                        user.ngay_het_han_vip = null; // Thường thì hủy hạn sử dụng
+                        db.Database.ExecuteSqlCommand(
+                            @"IF NOT EXISTS (SELECT 1 FROM nguoi_dung_nang_cap WHERE id_nguoi_dung = @p0)
+                      INSERT INTO nguoi_dung_nang_cap (id_nguoi_dung, ngay_nang_cap) VALUES (@p0, GETDATE())",
+                            user.id_nguoi_dung);
                     }
                     else
                     {
-                        user.ngay_het_han_vip = hsd; // VIP thì gán hạn sử dụng mới
+                        db.Database.ExecuteSqlCommand(
+                            "DELETE FROM nguoi_dung_nang_cap WHERE id_nguoi_dung = @p0",
+                            user.id_nguoi_dung);
                     }
 
                     db.SaveChanges();
-                    return Json(new { success = true, message = "Cập nhật tài khoản thành công!" });
+                    return Json(new { success = true, message = "Cập nhật gói nâng cấp thành công!" });
                 }
                 return Json(new { success = false, message = "Không tìm thấy người dùng!" });
             }
-            // 1. Bắt lỗi do thiếu trường bắt buộc (Validation)
-            catch (System.Data.Entity.Validation.DbEntityValidationException ex)
-            {
-                string err = string.Join(" | ", ex.EntityValidationErrors.SelectMany(v => v.ValidationErrors).Select(e => e.ErrorMessage));
-                return Json(new { success = false, message = "Thiếu dữ liệu bắt buộc: " + err });
-            }
-            // 2. Lôi cổ lỗi tàng hình (InnerException) của SQL Server ra
             catch (Exception ex)
             {
                 string innerMessage = ex.InnerException != null ? (ex.InnerException.InnerException != null ? ex.InnerException.InnerException.Message : ex.InnerException.Message) : ex.Message;
@@ -338,6 +339,10 @@ namespace wed_learn_e.Areas.Admin.Controllers
                     // thì bạn chỉ việc XÓA 2 DÒNG mục số 6 đi là xong nhé! 
 
                     // Ép hệ thống dọn dẹp sạch sẽ các bảng phụ trước để "Mở khóa"
+                    // Dọn thêm dữ liệu ở các bảng gói nâng cấp, cấp độ và giao dịch
+                    db.Database.ExecuteSqlCommand("DELETE FROM nguoi_dung_nang_cap WHERE id_nguoi_dung = @p0", id);
+                    db.Database.ExecuteSqlCommand("DELETE FROM nguoi_dung_cap_do WHERE id_nguoi_dung = @p0", id);
+                    db.Database.ExecuteSqlCommand("DELETE FROM giao_dich WHERE id_nguoi_dung = @p0", id);
                     db.SaveChanges();
 
                     // ========================================================
@@ -368,33 +373,6 @@ namespace wed_learn_e.Areas.Admin.Controllers
                     success = false,
                     message = "Không thể xóa! Thủ phạm đang chặn là: \n\n" + loiGoc
                 });
-            }
-        }
-        // Hàm POST: Đổi mật khẩu người dùng
-        [HttpPost]
-        public JsonResult DoiMatKhauNguoiDung(int id, string mat_khau_moi)
-        {
-            try
-            {
-                var user = db.nguoi_dung.Find(id);
-                if (user != null)
-                {
-                    if (string.IsNullOrEmpty(mat_khau_moi))
-                    {
-                        return Json(new { success = false, message = "Mật khẩu không được để trống!" });
-                    }
-
-                    // Cập nhật mật khẩu mới
-                    user.mat_khau = mat_khau_moi;
-                    db.SaveChanges();
-
-                    return Json(new { success = true, message = "Đã đổi mật khẩu thành công cho học viên: " + user.ho_va_ten });
-                }
-                return Json(new { success = false, message = "Không tìm thấy người dùng!" });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = "Lỗi hệ thống: " + ex.Message });
             }
         }
         public ActionResult Course_Setting()

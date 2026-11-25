@@ -128,17 +128,17 @@ namespace wed_learn_e.Controllers
         // Hàm hỗ trợ tự động kiểm tra và tước quyền VIP nếu hết hạn
         private void KiemTraVaThuHoiVIP(nguoi_dung user)
         {
-            // CẬP NHẬT: Kiểm tra nếu là VIP loại 2 (Tháng) HOẶC loại 3 (Năm)
-            if ((user.loai_tai_khoan == 2 || user.loai_tai_khoan == 3) && user.ngay_het_han_vip != null)
-            {
-                // Nếu ngày hiện tại đã vượt qua ngày hết hạn
-                if (DateTime.Now > user.ngay_het_han_vip)
-                {
-                    user.loai_tai_khoan = 1;      // Đưa về tài khoản thường (1)
-                    user.ngay_het_han_vip = null; // Xóa ngày hết hạn đi
+            int countNangCap = db.Database.SqlQuery<int>(
+                "SELECT COUNT(*) FROM nguoi_dung_nang_cap WHERE id_nguoi_dung = @p0",
+                user.id_nguoi_dung
+            ).FirstOrDefault();
 
-                    db.SaveChanges(); // Lưu cập nhật xuống Database
-                }
+            int loaiDung = countNangCap > 0 ? 2 : 1;
+            if (user.loai_tai_khoan != loaiDung)
+            {
+                user.loai_tai_khoan = loaiDung;
+                user.ngay_het_han_vip = null;
+                db.SaveChanges();
             }
         }
         // POST đăng nhập
@@ -213,6 +213,12 @@ namespace wed_learn_e.Controllers
             if (Session["user_id"] == null) return RedirectToAction("dangnhap", "User");
             int userId = Convert.ToInt32(Session["user_id"]);
             var nguoiDung = db.nguoi_dung.FirstOrDefault(u => u.id_nguoi_dung == userId);
+            int countNangCap = db.Database.SqlQuery<int>(
+        "SELECT COUNT(*) FROM nguoi_dung_nang_cap WHERE id_nguoi_dung = @p0",
+        userId
+    ).FirstOrDefault();
+
+            ViewBag.DaNangCap = countNangCap > 0;
 
             // 1. Lấy các Cấp độ mà người dùng đã đăng ký (có trong bảng tien_do_hoc_tap)
             var listIdKhoaHocDaDangKy = db.tien_do_hoc_tap

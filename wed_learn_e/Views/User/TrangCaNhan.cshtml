@@ -265,17 +265,20 @@
 
         <div id="thong-tin" class="tab-content @(TempData["ActiveTab"] == null || TempData["ActiveTab"].ToString() == "thong-tin" ? "active" : "")">
             <h2 style="color:#1a73e8; margin-top:0;">Thông Tin Cá Nhân</h2>
+            @{
+                bool daNangCap = ViewBag.DaNangCap != null && (bool)ViewBag.DaNangCap;
+            }
             <div style="margin-bottom:20px; padding: 15px; background: #eef7ff; border: 1px dashed #bfe0ff; border-radius: 8px;">
                 <label style="font-weight: bold; color: #1a73e8; margin-bottom: 5px; display: block;">Hạng tài khoản của bạn:</label>
 
-                @if (Model.loai_tai_khoan == 2 || Model.loai_tai_khoan == 3)
+                @if (daNangCap)
                 {
                     <span style="background: #f59e0b; color: white; padding: 6px 15px; border-radius: 20px; font-weight: bold; font-size: 14px; display: inline-block; box-shadow: 0 2px 5px rgba(245,158,11,0.3);">👑 ĐÃ NÂNG CẤP (VĨNH VIỄN)</span>
                 }
                 else
                 {
                     <span style="background: #6c757d; color: white; padding: 6px 15px; border-radius: 20px; font-weight: bold; font-size: 14px; display: inline-block;">👤 TÀI KHOẢN THƯỜNG</span>
-                    <a href="@Url.Action("TrangMuaVIP", "Page")" style="color: #1a73e8; margin-left: 12px; font-weight: bold; text-decoration: none; font-size: 14px;">🚀 Nâng cấp tài khoản ngay</a>
+                    <a href="@Url.Action("Index", "NangCap")" style="color: #1a73e8; margin-left: 12px; font-weight: bold; text-decoration: none; font-size: 14px;">🚀 Nâng cấp tài khoản ngay</a>
                 }
             </div>
             @if (TempData["LoiThongTin"] != null)
