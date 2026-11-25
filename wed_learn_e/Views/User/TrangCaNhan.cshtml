@@ -268,26 +268,14 @@
             <div style="margin-bottom:20px; padding: 15px; background: #eef7ff; border: 1px dashed #bfe0ff; border-radius: 8px;">
                 <label style="font-weight: bold; color: #1a73e8; margin-bottom: 5px; display: block;">Hạng tài khoản của bạn:</label>
 
-                @if (Model.loai_tai_khoan == 2)
+                @if (Model.loai_tai_khoan == 2 || Model.loai_tai_khoan == 3)
                 {
-                    <span style="background: #28a745; color: white; padding: 6px 15px; border-radius: 20px; font-weight: bold; font-size: 14px; display: inline-block; box-shadow: 0 2px 5px rgba(40,167,69,0.3);">💎 VIP THÁNG</span>
-                    if (Model.ngay_het_han_vip != null)
-                    {
-                        <span style="color: #555; margin-left: 10px; font-size: 14px;">(Sử dụng đến: <b>@Model.ngay_het_han_vip.Value.ToString("dd/MM/yyyy")</b>)</span>
-                    }
-                }
-                else if (Model.loai_tai_khoan == 3)
-                {
-                    <span style="background: #f39c12; color: white; padding: 6px 15px; border-radius: 20px; font-weight: bold; font-size: 14px; display: inline-block; box-shadow: 0 2px 5px rgba(243,156,18,0.3);">👑 VIP NĂM</span>
-                    if (Model.ngay_het_han_vip != null)
-                    {
-                        <span style="color: #555; margin-left: 10px; font-size: 14px;">(Sử dụng đến: <b>@Model.ngay_het_han_vip.Value.ToString("dd/MM/yyyy")</b>)</span>
-                    }
+                    <span style="background: #f59e0b; color: white; padding: 6px 15px; border-radius: 20px; font-weight: bold; font-size: 14px; display: inline-block; box-shadow: 0 2px 5px rgba(245,158,11,0.3);">👑 ĐÃ NÂNG CẤP (VĨNH VIỄN)</span>
                 }
                 else
                 {
                     <span style="background: #6c757d; color: white; padding: 6px 15px; border-radius: 20px; font-weight: bold; font-size: 14px; display: inline-block;">👤 TÀI KHOẢN THƯỜNG</span>
-                    <a href="@Url.Action("TrangMuaVIP", "Page")" style="color: #1a73e8; margin-left: 12px; font-weight: bold; text-decoration: none; font-size: 14px;">🚀 Nâng cấp VIP ngay</a>
+                    <a href="@Url.Action("TrangMuaVIP", "Page")" style="color: #1a73e8; margin-left: 12px; font-weight: bold; text-decoration: none; font-size: 14px;">🚀 Nâng cấp tài khoản ngay</a>
                 }
             </div>
             @if (TempData["LoiThongTin"] != null)

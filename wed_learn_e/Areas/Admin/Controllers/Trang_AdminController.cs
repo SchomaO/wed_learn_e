@@ -164,6 +164,95 @@ namespace wed_learn_e.Areas.Admin.Controllers
                 return Json(new { success = false, message = "Lỗi hệ thống: " + ex.Message });
             }
         }
+
+        // 4. Hàm POST: Mở khóa toàn bộ Cấp độ (Cấp quyền + Mở toàn bộ bài học trong cấp)
+        [HttpPost]
+        public ActionResult ThemCapDoChoHocVien(int id_nguoi_dung, int id_cap_do)
+        {
+            try
+            {
+                // A. Cấp quyền sở hữu cấp độ trong bảng nguoi_dung_cap_do (nếu chưa có)
+                db.Database.ExecuteSqlCommand(
+                    @"IF NOT EXISTS (SELECT 1 FROM nguoi_dung_cap_do WHERE id_nguoi_dung = @p0 AND id_cap_do = @p1)
+              INSERT INTO nguoi_dung_cap_do (id_nguoi_dung, id_cap_do, ngay_mua) VALUES (@p0, @p1, GETDATE())",
+                    id_nguoi_dung, id_cap_do);
+
+                // B. Mở khóa toàn bộ bài học thuộc cấp độ đó trong tien_do_hoc_tap
+                var dsBaiTrongCap = db.khoa_hoc.Where(k => k.id_cap_do == id_cap_do).ToList();
+                var listIdDaCo = db.tien_do_hoc_tap
+                    .Where(t => t.id_nguoi_dung == id_nguoi_dung)
+                    .Select(t => t.id_khoa_hoc)
+                    .ToList();
+
+                int soBaiThemMoi = 0;
+                foreach (var bai in dsBaiTrongCap)
+                {
+                    if (!listIdDaCo.Contains(bai.id_khoa_hoc))
+                    {
+                        db.tien_do_hoc_tap.Add(new tien_do_hoc_tap
+                        {
+                            id_nguoi_dung = id_nguoi_dung,
+                            id_khoa_hoc = bai.id_khoa_hoc
+                        });
+                        soBaiThemMoi++;
+                    }
+                }
+
+                // Cập nhật lại số lượng khóa học của user
+                var user = db.nguoi_dung.Find(id_nguoi_dung);
+                if (user != null)
+                {
+                    user.so_luong_khoa_hoc = (user.so_luong_khoa_hoc ?? 0) + soBaiThemMoi;
+                }
+
+                db.SaveChanges();
+                return Json(new { success = true, message = $"Đã mở khóa toàn bộ Cấp độ {id_cap_do} ({soBaiThemMoi} bài học)!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Lỗi hệ thống: " + ex.Message });
+            }
+        }
+
+        // 5. Hàm POST: Thu hồi toàn bộ Cấp độ (Xóa quyền sở hữu cấp độ + Xóa toàn bộ bài học của cấp đó)
+        [HttpPost]
+        public ActionResult ThuHoiCapDoCuaHocVien(int id_nguoi_dung, int id_cap_do)
+        {
+            try
+            {
+                // A. Thu hồi quyền truy cập cấp độ trong bảng nguoi_dung_cap_do
+                db.Database.ExecuteSqlCommand(
+                    "DELETE FROM nguoi_dung_cap_do WHERE id_nguoi_dung = @p0 AND id_cap_do = @p1",
+                    id_nguoi_dung, id_cap_do);
+
+                // B. Xóa các bản ghi tiến độ bài học thuộc cấp độ đó (dùng foreach thay cho RemoveRange)
+                var dsCanXoa = db.tien_do_hoc_tap
+                    .Where(t => t.id_nguoi_dung == id_nguoi_dung && t.khoa_hoc.id_cap_do == id_cap_do)
+                    .ToList();
+
+                int soBaiBiXoa = dsCanXoa.Count;
+                foreach (var item in dsCanXoa)
+                {
+                    db.tien_do_hoc_tap.Remove(item);
+                }
+
+                // Cập nhật lại tổng số khóa học của user
+                var user = db.nguoi_dung.Find(id_nguoi_dung);
+                if (user != null)
+                {
+                    int hienTai = user.so_luong_khoa_hoc ?? 0;
+                    user.so_luong_khoa_hoc = Math.Max(0, hienTai - soBaiBiXoa);
+                }
+
+                db.SaveChanges();
+                return Json(new { success = true, message = $"Đã thu hồi toàn bộ quyền truy cập và {soBaiBiXoa} bài học của Cấp độ {id_cap_do}!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Lỗi hệ thống: " + ex.Message });
+            }
+        }
+
         // 4. Hàm POST: Cập nhật thông tin học viên
         [HttpPost]
         public JsonResult SuaNguoiDung(int id, string ho_ten, string email, string vai_tro, int loai_tk, DateTime? hsd)

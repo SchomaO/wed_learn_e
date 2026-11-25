@@ -45,7 +45,7 @@
                     <th class="px-6 py-4">Người dùng</th>
                     <th class="px-6 py-4">Tài khoản & Ngày tạo</th>
                     <th class="px-6 py-4 text-center whitespace-nowrap">Vai trò</th>
-                    <th class="px-6 py-4 text-center">Trạng thái VIP</th>
+                    <th class="px-6 py-4 text-center">Trạng thái</th>
                     <th class="px-6 py-4 text-center">Khóa học</th>
                     <th class="px-6 py-4 text-right whitespace-nowrap">Thao tác</th>
                 </tr>
@@ -96,25 +96,18 @@
                         </td>
 
                         @* CỘT 4: LOẠI TÀI KHOẢN (VIP) + XỬ LÝ NULL *@
-                        <td class="px-6 py-4 text-center">
-                            @if (item.loai_tai_khoan == 2)
-                            {
-                                <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold border border-green-200">VIP THÁNG</span>
-                            }
-                            else if (item.loai_tai_khoan == 3)
-                            {
-                                <span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs font-bold border border-yellow-200">VIP NĂM</span>
-                            }
-                            else // Gộp cả Null và 1 vào chung
-                            {
-                                <span class="bg-gray-100 text-gray-500 px-2 py-1 rounded text-xs font-bold border border-gray-200">THƯỜNG</span>
-                            }
-
-                            @if (item.ngay_het_han_vip != null)
-                            {
-                                <div class="text-[11px] text-gray-500 mt-1.5"><i class="fas fa-clock mr-1"></i>HSD: @item.ngay_het_han_vip.Value.ToString("dd/MM/yyyy")</div>
-                            }
-                        </td>
+                    <td class="px-6 py-4 text-center">
+                        @if (item.loai_tai_khoan == 2 || item.loai_tai_khoan == 3)
+                        {
+                            <span class="bg-amber-100 text-amber-700 px-2.5 py-1 rounded text-xs font-bold border border-amber-200">
+                                <i class="fas fa-crown mr-1"></i>ĐÃ NÂNG CẤP
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="bg-gray-100 text-gray-500 px-2.5 py-1 rounded text-xs font-bold border border-gray-200">THƯỜNG</span>
+                        }
+                    </td>
 
                         @* CỘT 5: SỐ LƯỢNG KHÓA HỌC *@
                         <td class="px-6 py-4 text-center">
@@ -127,9 +120,6 @@
                         @* CỘT 6: THAO TÁC (Đổi Mật Khẩu, Sửa, Xóa, Khóa học) *@
                         <td class="px-6 py-4 text-right whitespace-nowrap">
                             <div class="flex items-center justify-end gap-2">
-                                <button onclick="openPasswordModal(@item.id_nguoi_dung, '@item.ho_va_ten')" class="text-orange-500 hover:text-orange-700 font-bold transition px-2.5 py-1.5 bg-orange-50 rounded hover:bg-orange-100 flex items-center">
-                                    <i class="fas fa-key mr-1.5"></i> Đổi MK
-                                </button>
 
                                 <button onclick="openEditModal(@item.id_nguoi_dung, '@item.ho_va_ten', '@item.email', '@item.vai_tro', @(item.loai_tai_khoan ?? 1), '@(item.ngay_het_han_vip.HasValue ? item.ngay_het_han_vip.Value.ToString("yyyy-MM-dd") : "")')" class="text-blue-600 hover:text-blue-900 font-bold transition px-2.5 py-1.5 bg-blue-50 rounded hover:bg-blue-100 flex items-center">
                                     <i class="fas fa-edit mr-1.5"></i> Sửa
@@ -160,11 +150,11 @@
         <div class="space-y-4">
             <div>
                 <label class="block text-xs font-bold text-gray-500 uppercase">Họ và tên</label>
-                <input type="text" id="edit_ho_ten" class="w-full mt-1 border-2 rounded-lg p-2 focus:border-indigo-500 outline-none font-medium" />
+                <input type="text" id="edit_ho_ten" readonly class="w-full mt-1 border-2 rounded-lg p-2 bg-gray-100 text-gray-500 cursor-not-allowed outline-none font-medium" />
             </div>
             <div>
                 <label class="block text-xs font-bold text-gray-500 uppercase">Email</label>
-                <input type="email" id="edit_email" class="w-full mt-1 border-2 rounded-lg p-2 focus:border-indigo-500 outline-none font-medium" />
+                <input type="email" id="edit_email" readonly class="w-full mt-1 border-2 rounded-lg p-2 bg-gray-100 text-gray-500 cursor-not-allowed outline-none font-medium" />
             </div>
             <div class="hidden">
                 <label class="block text-xs font-bold text-gray-500 uppercase">Vai trò (Quyền)</label>
@@ -174,18 +164,11 @@
                 </select>
             </div>
             <div>
-                <label class="block text-xs font-bold text-gray-500 uppercase">Loại tài khoản (VIP)</label>
+                <label class="block text-xs font-bold text-gray-500 uppercase">Loại tài khoản</label>
                 <select id="edit_loai_tk" class="w-full mt-1 border-2 rounded-lg p-2 focus:border-indigo-500 outline-none font-bold text-green-600">
-                    <option value="1">Thường (Miễn phí)</option>
-                    <option value="2">VIP Tháng</option>
-                    <option value="3">VIP Năm</option>
+                    <option value="1">Thường</option>
+                    <option value="2">Nâng Cấp</option>
                 </select>
-            </div>
-
-            <!-- THÊM KHỐI NGÀY HẾT HẠN VÀO ĐÂY -->
-            <div id="div_hsd" class="hidden">
-                <label class="block text-xs font-bold text-gray-500 uppercase">Ngày hết hạn VIP</label>
-                <input type="date" id="edit_hsd" class="w-full mt-1 border-2 rounded-lg p-2 focus:border-indigo-500 outline-none font-bold text-red-600" />
             </div>
         </div>
         <div class="mt-6 flex justify-end gap-3">
@@ -195,26 +178,6 @@
     </div>
 </div>
 
-<div id="passwordModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden z-[9999] flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 relative">
-        <button onclick="closePasswordModal()" class="absolute top-4 right-4 text-gray-400 hover:text-red-500"><i class="fas fa-times text-xl"></i></button>
-        <h3 class="text-xl font-bold text-orange-600 mb-2 border-b pb-2"><i class="fas fa-key mr-2"></i>Đổi Mật Khẩu</h3>
-        <p class="text-sm text-gray-600 mb-4">Đang đổi mật khẩu cho: <b id="lblPwUserName" class="text-indigo-900"></b></p>
-
-        <input type="hidden" id="pw_user_id" />
-        <div class="space-y-4">
-            <div>
-                <label class="block text-xs font-bold text-gray-500 uppercase">Nhập mật khẩu mới</label>
-                <input type="text" id="txtNewPassword" placeholder="Nhập mật khẩu mới..." class="w-full mt-1 border-2 border-orange-200 rounded-lg p-3 font-bold text-lg focus:border-orange-500 outline-none" />
-                <p class="text-[11px] text-gray-400 mt-1 italic">*Mật khẩu mới sẽ được áp dụng ngay lập tức.</p>
-            </div>
-        </div>
-        <div class="mt-6 flex gap-3">
-            <button onclick="closePasswordModal()" class="flex-1 py-2 bg-gray-100 text-gray-700 font-bold rounded-lg hover:bg-gray-200">Hủy</button>
-            <button onclick="saveNewPassword()" class="flex-1 py-2 bg-orange-500 text-white font-bold rounded-lg shadow-lg hover:bg-orange-600">Đổi Mật Khẩu</button>
-        </div>
-    </div>
-</div>
 <div id="modalSettings" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden z-[9999] flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 relative">
         <button onclick="closeSettingsModal()" class="absolute top-4 right-4 text-gray-400 hover:text-red-500"><i class="fas fa-times text-xl"></i></button>
@@ -250,37 +213,9 @@
             let vTro = (vaiTro == 'quan_tri_vien' || vaiTro == 'admin') ? 'quan_tri_vien' : 'nguoi_dung';
             $("#edit_vai_tro").val(vTro);
             $("#edit_loai_tk").val(loaiTk || 1);
-
-            // KIỂM TRA ĐỂ ẨN HIỆN Ô NGÀY HẾT HẠN
-            if (loaiTk == 2 || loaiTk == 3) {
-                $("#div_hsd").removeClass("hidden");
-                $("#edit_hsd").val(hsd);
-            } else {
-                $("#div_hsd").addClass("hidden");
-                $("#edit_hsd").val("");
-            }
-
             $("#editUserModal").removeClass("hidden").addClass("flex");
         }
 
-        // LẮNG NGHE SỰ KIỆN: Khi Admin bấm đổi qua lại giữa VIP và Thường trong bảng sửa
-        $(document).ready(function () {
-            $("#edit_loai_tk").change(function () {
-                let val = $(this).val();
-                if (val == 2 || val == 3) {
-                    $("#div_hsd").removeClass("hidden");
-                    // Tính năng xịn: Tự động cộng ngày nếu Admin vừa chuyển sang VIP
-                    if (!$("#edit_hsd").val()) {
-                        let d = new Date();
-                        d.setDate(d.getDate() + (val == 2 ? 30 : 365));
-                        $("#edit_hsd").val(d.toISOString().split('T')[0]);
-                    }
-                } else {
-                    $("#div_hsd").addClass("hidden");
-                    $("#edit_hsd").val(""); // Xóa ngày đi
-                }
-            });
-        });
 
         function closeEditModal() { $("#editUserModal").addClass("hidden").removeClass("flex"); }
 
@@ -291,7 +226,6 @@
                 email: $("#edit_email").val(),
                 vai_tro: $("#edit_vai_tro").val(),
                 loai_tk: $("#edit_loai_tk").val(),
-                hsd: $("#edit_hsd").val() // Gửi thêm ngày hết hạn về máy chủ
             };
 
             $.post("/Admin/Trang_Admin/SuaNguoiDung", data, function (res) {
@@ -302,32 +236,6 @@
                     alert("❌ Lỗi: " + res.message);
                 }
             });
-        }
-
-        // --- CHỨC NĂNG ĐỔI MẬT KHẨU ---
-        function openPasswordModal(id, name) {
-            $("#pw_user_id").val(id);
-            $("#lblPwUserName").text(name);
-            $("#txtNewPassword").val(""); // Xóa trắng ô pass
-            $("#passwordModal").removeClass("hidden").addClass("flex");
-        }
-
-        function closePasswordModal() { $("#passwordModal").addClass("hidden").removeClass("flex"); }
-
-        function saveNewPassword() {
-            let pass = $("#txtNewPassword").val().trim();
-            if (pass.length < 3) { alert("⚠️ Mật khẩu quá ngắn, vui lòng nhập lại!"); return; }
-
-            if (confirm("Chắc chắn muốn đổi mật khẩu cho người này?")) {
-                $.post("/Admin/Trang_Admin/DoiMatKhauNguoiDung", { id: $("#pw_user_id").val(), mat_khau_moi: pass }, function (res) {
-                    if (res.success) {
-                        alert("✅ " + res.message);
-                        closePasswordModal();
-                    } else {
-                        alert("❌ Lỗi: " + res.message);
-                    }
-                });
-            }
         }
         // --- CHỨC NĂNG CÀI ĐẶT HỆ THỐNG ---
         function openSettingsModal() {

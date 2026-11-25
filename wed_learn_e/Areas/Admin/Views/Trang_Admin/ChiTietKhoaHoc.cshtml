@@ -4,16 +4,28 @@
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
     var hocVien = ViewBag.HocVien as wed_learn_e.Models.nguoi_dung;
     var khoaChuaHoc = ViewBag.KhoaChuaHoc as IEnumerable<wed_learn_e.Models.khoa_hoc>;
+
+    var nhomCapDaCo = Model != null
+        ? Model.GroupBy(m => m.khoa_hoc.id_cap_do).OrderBy(g => g.Key).ToList()
+        : new List<IGrouping<int?, wed_learn_e.Models.tien_do_hoc_tap>>();
+
+    int tongBaiDaMo = Model != null ? Model.Count() : 0;
+    bool laGoiNangCap = hocVien != null && (hocVien.loai_tai_khoan == 2 || hocVien.loai_tai_khoan == 3);
 }
 
-@* Phần Header có chứa nút Quay lại *@
-<div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-6 flex justify-between items-center">
-    <div>
-        <h2 class="text-2xl font-bold text-gray-800">Quản lý khóa học</h2>
-        <p class="text-gray-500 mt-1">Đang thao tác trên học viên: <b class="text-indigo-600">@hocVien.ho_va_ten (@hocVien.email)</b></p>
+@* 1. Phần Header có chứa nút Quay lại (Giữ nguyên cấu trúc) *@
+<div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div class="flex items-center gap-4">
+        <img src="https://ui-avatars.com/api/?name=@(string.IsNullOrEmpty(hocVien?.ho_va_ten) ? "U" : hocVien.ho_va_ten)&background=4f46e5&color=fff&bold=true"
+             class="w-12 h-12 rounded-full shadow-sm" alt="Avatar" />
+        <div>
+            <h2 class="text-2xl font-bold text-gray-800">Quản lý khóa học</h2>
+            <p class="text-gray-500 mt-0.5 text-sm">
+                Đang thao tác trên học viên: <b class="text-indigo-600">@hocVien.ho_va_ten (@hocVien.email)</b>
+            </p>
+        </div>
     </div>
 
-    @* Nút Quay lại trang danh sách (Dùng Url.Action để trỏ về trang Index) *@
     <a href="@Url.Action("Index")" class="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2.5 px-5 rounded-lg transition">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
@@ -22,110 +34,154 @@
     </a>
 </div>
 
-@* Khu vực Thêm khóa học mới *@
-<div class="bg-gray-50 p-6 rounded-xl border border-gray-200 mb-6 flex gap-4 items-center">
-    <select id="cbKhoaHocMoi" class="flex-1 p-3 border border-gray-300 rounded-lg">
-        <option value="">-- Chọn khóa học muốn cấp quyền --</option>
+@* 2. Thẻ thống kê nhanh hồ sơ học viên *@
+<div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+    <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4">
+        <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl">
+            <i class="fas fa-layer-group"></i>
+        </div>
+        <div>
+            <p class="text-xs font-bold uppercase text-gray-400">Cấp độ đang sở hữu</p>
+            <h4 class="text-2xl font-bold text-gray-800 mt-0.5">@nhomCapDaCo.Count <span class="text-sm font-normal text-gray-500">cấp độ</span></h4>
+        </div>
+    </div>
 
-        @{
-            // Gộp nhóm các khóa học chưa học theo ID Cấp độ (sắp xếp từ thấp lên cao)
-            var khoaTheoCap = khoaChuaHoc.GroupBy(k => k.id_cap_do).OrderBy(g => g.Key);
-        }
+    <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4">
+        <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">
+            <i class="fas fa-book-open"></i>
+        </div>
+        <div>
+            <p class="text-xs font-bold uppercase text-gray-400">Tổng bài học đã mở</p>
+            <h4 class="text-2xl font-bold text-gray-800 mt-0.5">@tongBaiDaMo <span class="text-sm font-normal text-gray-500">bài học</span></h4>
+        </div>
+    </div>
 
-        @foreach (var nhomCapDo in khoaTheoCap)
+    <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4">
+        <div class="w-12 h-12 rounded-xl @(laGoiNangCap ? "bg-amber-50 text-amber-600" : "bg-gray-100 text-gray-500") flex items-center justify-center text-xl">
+            <i class="fas @(laGoiNangCap ? "fa-crown" : "fa-user")"></i>
+        </div>
+        <div>
+            <p class="text-xs font-bold uppercase text-gray-400">Hạng tài khoản</p>
+            <h4 class="text-lg font-bold @(laGoiNangCap ? "text-amber-600" : "text-gray-700") mt-0.5">
+                @(laGoiNangCap ? "Gói Nâng Cấp (Vĩnh viễn)" : "Tài khoản Thường")
+            </h4>
+        </div>
+    </div>
+</div>
+
+@* 3. Khu vực Cấp quyền nhanh theo Cấp độ *@
+<div class="bg-white p-5 rounded-xl shadow-sm border border-indigo-100 mb-6 flex flex-col md:flex-row gap-4 items-center">
+    <div class="flex items-center gap-2 text-indigo-700 font-bold text-sm whitespace-nowrap">
+        <i class="fas fa-unlock-alt"></i> Cấp quyền nhanh:
+    </div>
+    <select id="cbCapDoMoi" class="flex-1 w-full p-2.5 border border-gray-300 rounded-lg text-sm font-medium focus:border-indigo-500 outline-none">
+        <option value="">-- Chọn cấp độ muốn mở khóa toàn bộ cho học viên --</option>
+        @if (khoaChuaHoc != null)
         {
-            <optgroup label="⭐ CẤP ĐỘ @nhomCapDo.Key">
-                @foreach (var k in nhomCapDo)
-                {
-                    <option value="@k.id_khoa_hoc">@k.ten_khoa_hoc</option>
-                }
-            </optgroup>
+            foreach (var nhom in khoaChuaHoc.GroupBy(k => k.id_cap_do).OrderBy(g => g.Key))
+            {
+                <option value="@nhom.Key">⭐ Cấp độ @nhom.Key — Mở khóa trọn bộ (@nhom.Count() bài học)</option>
+            }
         }
     </select>
 
-    <button id="btnThemKhoa" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg transition whitespace-nowrap">
-        + Thêm khóa học
+    <button id="btnThemCapDo" class="w-full md:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-6 rounded-lg shadow-sm transition whitespace-nowrap">
+        <i class="fas fa-plus mr-1.5"></i> Mở khóa cấp độ
     </button>
 </div>
 
-@* Bảng danh sách khóa học ĐANG CÓ *@
-<div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-    <table class="w-full text-left border-collapse">
-        <thead>
-            <tr class="bg-gray-100 text-gray-500 text-xs uppercase font-semibold">
-                <th class="px-6 py-4">Tên khóa học</th>
-                <th class="px-6 py-4">Cấp độ</th>
-                <th class="px-6 py-4 text-right">Thao tác</th>
-            </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-100 text-sm" id="bangKhoaHoc">
-            @if (Model != null && Model.Any())
-            {
-                foreach (var item in Model)
-                {
-                    <tr class="hover:bg-gray-50 transition">
-                        <td class="px-6 py-4 font-bold text-gray-700">@item.khoa_hoc.ten_khoa_hoc</td>
-                        <td class="px-6 py-4 text-gray-500">Cấp @item.khoa_hoc.id_cap_do</td>
-                        <td class="px-6 py-4 text-right">
-                            <button onclick="xoaKhoaHoc(@item.id_khoa_hoc)" class="bg-red-100 text-red-600 hover:bg-red-200 px-3 py-1.5 rounded text-xs font-bold transition">
-                                <i class="fas fa-trash"></i> Thu hồi (Xóa)
+@* 4. Danh sách chi tiết theo từng Cấp độ (Giao diện thẻ trực quan) *@
+@if (nhomCapDaCo.Any())
+{
+    <div class="space-y-5">
+        @foreach (var nhomCap in nhomCapDaCo)
+        {
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                @* Thanh tiêu đề của từng Cấp độ *@
+                <div class="bg-gray-50/80 px-6 py-4 border-b border-gray-100 flex flex-wrap justify-between items-center gap-3">
+                    <div class="flex items-center gap-3">
+                        <span class="bg-indigo-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg uppercase tracking-wide">
+                            Cấp độ @nhomCap.Key
+                        </span>
+                        <span class="text-sm text-gray-600 font-medium">
+                            Đã kích hoạt <b class="text-gray-900">@nhomCap.Count()</b> bài học trong cấp độ này
+                        </span>
+                    </div>
+
+                    <button onclick="thuHoiCapDo(@nhomCap.Key)"
+                            class="bg-red-50 text-red-600 hover:bg-red-600 hover:text-white border border-red-200 px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
+                        <i class="fas fa-trash-alt"></i> Thu hồi cả cấp độ @nhomCap.Key
+                    </button>
+                </div>
+
+                @* Lưới hiển thị các bài học bên trong cấp độ đó *@
+                <div class="p-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    @foreach (var item in nhomCap)
+                    {
+                        <div class="flex items-center justify-between p-3 rounded-lg border border-gray-100 bg-gray-50/50 hover:bg-indigo-50/40 hover:border-indigo-200 transition group">
+                            <div class="flex items-center gap-2.5 min-w-0">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+                                <span class="text-sm font-semibold text-gray-700 truncate" title="@item.khoa_hoc.ten_khoa_hoc">
+                                    @item.khoa_hoc.ten_khoa_hoc
+                                </span>
+                            </div>
+
+                            <button onclick="xoaKhoaHoc(@item.id_khoa_hoc)" title="Gỡ riêng bài này"
+                                    class="text-gray-400 hover:text-red-500 ml-2 p-1 rounded opacity-70 group-hover:opacity-100 transition">
+                                <i class="fas fa-times"></i>
                             </button>
-                        </td>
-                    </tr>
-                }
-            }
-            else
-            {
-                <tr>
-                    <td colspan="3" class="px-6 py-8 text-center text-gray-400 italic">Học viên này chưa đăng ký khóa học nào.</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center">
+        <div class="w-16 h-16 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">
+            <i class="fas fa-folder-open"></i>
+        </div>
+        <h4 class="text-gray-700 font-bold text-base">Chưa có dữ liệu khóa học</h4>
+        <p class="text-gray-400 text-sm mt-1">Học viên này hiện chưa mở khóa cấp độ nào. Bạn có thể cấp quyền nhanh ở khung phía trên.</p>
+    </div>
+}
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     var userId = @hocVien.id_nguoi_dung;
 
-    // THÊM KHÓA HỌC BẰNG AJAX
-    $("#btnThemKhoa").click(function () {
-        var idKhoaHoc = $("#cbKhoaHocMoi").val();
-        if (!idKhoaHoc) {
-            alert("Vui lòng chọn 1 khóa học để thêm!");
+    // 1. MỞ KHÓA CẢ CẤP ĐỘ
+    $("#btnThemCapDo").click(function () {
+        var idCapDo = $("#cbCapDoMoi").val();
+        if (!idCapDo) {
+            alert("⚠️ Vui lòng chọn 1 cấp độ để mở khóa!");
             return;
         }
 
-        $.ajax({
-            type: "POST",
-            url: '@Url.Action("ThemKhoaHocChoHocVien")',
-            data: { id_nguoi_dung: userId, id_khoa_hoc: idKhoaHoc },
-            success: function (res) {
-                if (res.success) {
-                    alert(res.message);
-                    location.reload(); // Load lại trang để cập nhật bảng
-                } else {
-                    alert(res.message);
-                }
-            }
+        $.post('@Url.Action("ThemCapDoChoHocVien")', { id_nguoi_dung: userId, id_cap_do: idCapDo }, function (res) {
+            alert(res.message);
+            if (res.success) location.reload();
         });
     });
 
-    // XÓA KHÓA HỌC BẰNG AJAX
+    // 2. THU HỒI CẢ CẤP ĐỘ
+    function thuHoiCapDo(idCapDo) {
+        if (confirm("Bạn có chắc chắn muốn thu hồi toàn bộ bài học của Cấp độ " + idCapDo + " không?")) {
+            $.post('@Url.Action("ThuHoiCapDoCuaHocVien")', { id_nguoi_dung: userId, id_cap_do: idCapDo }, function (res) {
+                alert(res.message);
+                if (res.success) location.reload();
+            });
+        }
+    }
+
+    // 3. GỠ LẺ 1 BÀI HỌC (Khi cần thiết)
     function xoaKhoaHoc(idKhoaHoc) {
-        if (confirm("Bạn có chắc chắn muốn gỡ khóa học này khỏi học viên không?")) {
-            $.ajax({
-                type: "POST",
-                url: '@Url.Action("XoaKhoaHocCuaHocVien")',
-                data: { id_nguoi_dung: userId, id_khoa_hoc: idKhoaHoc },
-                success: function (res) {
-                    if (res.success) {
-                        alert(res.message);
-                        location.reload(); // Load lại trang
-                    } else {
-                        alert(res.message);
-                    }
-                }
+        if (confirm("Gỡ riêng bài học này khỏi tiến độ của học viên?")) {
+            $.post('@Url.Action("XoaKhoaHocCuaHocVien")', { id_nguoi_dung: userId, id_khoa_hoc: idKhoaHoc }, function (res) {
+                alert(res.message);
+                if (res.success) location.reload();
             });
         }
     }

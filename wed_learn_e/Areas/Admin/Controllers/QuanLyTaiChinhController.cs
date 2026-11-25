@@ -3,6 +3,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Web.Mvc;
+using wed_learn_e.Helpers;
 using wed_learn_e.Controllers;
 using wed_learn_e.Models;
 
@@ -172,11 +173,53 @@ namespace wed_learn_e.Areas.Admin.Controllers
         [HttpPost]
         public JsonResult DuyetGiaoDich(string maDonHang)
         {
+            if (string.IsNullOrWhiteSpace(maDonHang))
+                return Json(new { success = false, message = "Mã đơn hàng không hợp lệ." });
+
+            string emailNguoiDung = null;
+            string hoTen = "Học viên";
+            string loaiGiaoDich = "";
+            string tenDichVu = "";
+            decimal thanhTien = 0;
+
             try
             {
                 using (SqlConnection conn = new SqlConnection(_connStr))
                 {
                     conn.Open();
+
+                    // 1. Lấy thông tin người dùng và đơn hàng trước khi xác nhận
+                    string sqlInfo = @"
+                        SELECT nd.email,
+                               ISNULL(NULLIF(nd.ho_va_ten, ''), nd.ten_dang_nhap) AS ho_va_ten,
+                               gd.loai_giao_dich,
+                               gd.thanh_tien,
+                               CASE 
+                                   WHEN gd.loai_giao_dich = 'NANG_CAP' THEN N'Gói Nâng Cấp Tài Khoản Vĩnh Viễn (VIP)'
+                                   ELSE ISNULL(cd.ten_cap_do, N'Cấp độ #' + CAST(gd.id_cap_do AS NVARCHAR))
+                               END AS ten_dich_vu
+                        FROM giao_dich gd
+                        INNER JOIN nguoi_dung nd ON gd.id_nguoi_dung = nd.id_nguoi_dung
+                        LEFT JOIN cap_do cd ON gd.id_cap_do = cd.id_cap_do
+                        WHERE gd.ma_don_hang = @ma";
+
+                    using (SqlCommand cmdInfo = new SqlCommand(sqlInfo, conn))
+                    {
+                        cmdInfo.Parameters.AddWithValue("@ma", maDonHang);
+                        using (SqlDataReader rd = cmdInfo.ExecuteReader())
+                        {
+                            if (rd.Read())
+                            {
+                                emailNguoiDung = rd["email"] == DBNull.Value ? null : rd["email"].ToString();
+                                hoTen = rd["ho_va_ten"].ToString();
+                                loaiGiaoDich = rd["loai_giao_dich"].ToString();
+                                tenDichVu = rd["ten_dich_vu"].ToString();
+                                thanhTien = Convert.ToDecimal(rd["thanh_tien"]);
+                            }
+                        }
+                    }
+
+                    // 2. Xác nhận thanh toán & mở khóa quyền lợi trong SQL
                     using (SqlCommand cmd = new SqlCommand("sp_XacNhanThanhToan", conn))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
@@ -184,7 +227,24 @@ namespace wed_learn_e.Areas.Admin.Controllers
                         cmd.ExecuteNonQuery();
                     }
                 }
-                return Json(new { success = true, message = $"Đã xác nhận thanh toán đơn {maDonHang}." });
+
+                // 3. Gửi email thông báo cho học viên
+                string loiMail;
+                bool daGuiMail = EmailHelper.GuiMailXacNhanThanhToan(
+                    emailNguoiDung,
+                    hoTen,
+                    maDonHang,
+                    loaiGiaoDich,
+                    tenDichVu,
+                    thanhTien,
+                    out loiMail
+                );
+
+                string msg = daGuiMail
+                    ? $"Đã xác nhận thanh toán đơn {maDonHang} và gửi email thông báo tới {emailNguoiDung}."
+                    : $"Đã xác nhận đơn {maDonHang} nhưng gửi mail thất bại: {loiMail}";
+
+                return Json(new { success = true, message = msg });
             }
             catch (Exception ex)
             {
@@ -193,13 +253,52 @@ namespace wed_learn_e.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public JsonResult HuyGiaoDich(string maDonHang)
+        public JsonResult HuyGiaoDich(string maDonHang, string lyDo = null)
         {
+            if (string.IsNullOrWhiteSpace(maDonHang))
+                return Json(new { success = false, message = "Mã đơn hàng không hợp lệ." });
+
+            string emailNguoiDung = null;
+            string hoTen = "Học viên";
+            string tenDichVu = "";
+            decimal thanhTien = 0;
+
             try
             {
                 using (SqlConnection conn = new SqlConnection(_connStr))
                 {
                     conn.Open();
+
+                    // 1. Lấy thông tin người dùng và đơn hàng trước khi cập nhật trạng thái
+                    string sqlInfo = @"
+                        SELECT nd.email,
+                               ISNULL(NULLIF(nd.ho_va_ten, ''), nd.ten_dang_nhap) AS ho_va_ten,
+                               gd.thanh_tien,
+                               CASE 
+                                   WHEN gd.loai_giao_dich = 'NANG_CAP' THEN N'Gói Nâng Cấp Tài Khoản Vĩnh Viễn (VIP)'
+                                   ELSE ISNULL(cd.ten_cap_do, N'Cấp độ #' + CAST(gd.id_cap_do AS NVARCHAR))
+                               END AS ten_dich_vu
+                        FROM giao_dich gd
+                        INNER JOIN nguoi_dung nd ON gd.id_nguoi_dung = nd.id_nguoi_dung
+                        LEFT JOIN cap_do cd ON gd.id_cap_do = cd.id_cap_do
+                        WHERE gd.ma_don_hang = @ma";
+
+                    using (SqlCommand cmdInfo = new SqlCommand(sqlInfo, conn))
+                    {
+                        cmdInfo.Parameters.AddWithValue("@ma", maDonHang);
+                        using (SqlDataReader rd = cmdInfo.ExecuteReader())
+                        {
+                            if (rd.Read())
+                            {
+                                emailNguoiDung = rd["email"] == DBNull.Value ? null : rd["email"].ToString();
+                                hoTen = rd["ho_va_ten"].ToString();
+                                tenDichVu = rd["ten_dich_vu"].ToString();
+                                thanhTien = Convert.ToDecimal(rd["thanh_tien"]);
+                            }
+                        }
+                    }
+
+                    // 2. Cập nhật trạng thái đơn sang FAILED
                     string sql = "UPDATE giao_dich SET trang_thai = 'FAILED' WHERE ma_don_hang = @ma AND trang_thai = 'PENDING'";
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
                     {
@@ -209,7 +308,28 @@ namespace wed_learn_e.Areas.Admin.Controllers
                             return Json(new { success = false, message = "Chỉ có thể hủy giao dịch đang ở trạng thái chờ (PENDING)." });
                     }
                 }
-                return Json(new { success = true, message = $"Đã hủy đơn hàng {maDonHang}." });
+
+                // 3. Gửi email thông báo hủy giao dịch tới học viên
+                string lyDoGuiMail = string.IsNullOrWhiteSpace(lyDo)
+                    ? "Chưa ghi nhận khoản thanh toán hợp lệ hoặc giao dịch đã quá thời hạn xử lý."
+                    : lyDo.Trim();
+
+                string loiMail;
+                bool daGuiMail = EmailHelper.GuiMailHuyGiaoDich(
+                    emailNguoiDung,
+                    hoTen,
+                    maDonHang,
+                    tenDichVu,
+                    thanhTien,
+                    lyDoGuiMail,
+                    out loiMail
+                );
+
+                string msg = daGuiMail
+                    ? $"Đã hủy đơn hàng {maDonHang} và gửi email thông báo tới {emailNguoiDung}."
+                    : $"Đã hủy đơn hàng {maDonHang} nhưng gửi mail thất bại: {loiMail}";
+
+                return Json(new { success = true, message = msg });
             }
             catch (Exception ex)
             {
